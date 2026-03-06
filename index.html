@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Cup Watch Guide · Oakland Roots SC</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">⚽ Oakland First, Always · World Cup 2026 Watch Guide ⚽</div>
+  <div class="header-inner">
+    <div class="header-logos">
+      <img src="assets/Oakland_Roots.png" alt="Oakland Roots SC" class="header-logo">
+        <div class="header-title">
+          <h1>World Cup <span>2026</span><br>Watch Guide</h1>
+        </div>
+      <img src="assets/Oakland_Soul.png" alt="Oakland Soul" class="header-logo">
+    </div>
+    <div class="sub">Oakland, Emeryville, Berkeley, and San Leandro</div>
+    <span class="tagline">Oakland First, Always</span>
+  </div>
+</header>
+
+<!-- FILTERS -->
+<div class="filters">
+  <div class="filter-label">Filter by nation:</div>
+  <div class="filter-buttons" id="filterButtons">
+    <button class="filter-btn active" onclick="filterBars('all', this)">🌍 All Bars</button>
+  </div>
+</div>
+
+<!-- BAR LIST -->
+<div class="list-section" id="barList">
+  <div class="state-box">
+    <div class="spinner"></div>
+    <p>Loading bars from the sheet…</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-badge">🌿 Oakland Roots SC · Oakland First, Always</div>
+  <br>
+  World Cup 2026 Watch Guide · Oakland &amp; Emeryville &nbsp;|&nbsp;
+  <a href="https://www.oaklandrootssc.com" target="_blank">oaklandrootssc.com</a>
+  &nbsp;|&nbsp;
+  <div class="suggest-bar">
+    <p><strong>Know a bar that should be on this list?</strong></p>
+    <a href="mailto:info@oaklandroots.com?subject=World Cup Bar Suggestion&body=Bar Name:%0AAddress:%0ANation Featured:%0AWebsite/Notes:" class="suggest-link">
+      Suggest a Bar →
+    </a>
+  </div>
+  <a href="https://www.google.com/maps/search/bars+near+Oakland+CA" target="_blank">Find more bars on Maps →</a>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
