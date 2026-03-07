@@ -68,7 +68,7 @@ let gMarkers = []; // { marker, nation }
 
 window.buildMap = function(bars) {
   const loadingEl = document.getElementById('map-loading');
-  const mappable = bars.filter(b => b.place_id);
+  const mappable = bars.filter(b => b.address);
 
   if (!mappable.length) {
     if (loadingEl) loadingEl.style.display = 'none';
@@ -92,6 +92,7 @@ window.buildMap = function(bars) {
   });
 
   const bounds = new google.maps.LatLngBounds();
+  const geocoder = new google.maps.Geocoder();
   let resolved = 0;
 
   const checkDone = () => {
@@ -103,40 +104,39 @@ window.buildMap = function(bars) {
     }
   };
 
-  mappable.forEach(async bar => {
-    try {
-      const place = new google.maps.places.Place({
-        id: bar.place_id,
-        requestedLanguage: 'en',
-      });
+  mappable.forEach(bar => {
+    // Prefer place_id for accuracy, fall back to address string
+    const request = bar.place_id
+      ? { placeId: bar.place_id }
+      : { address: bar.address };
 
-      await place.fetchFields({ fields: ['location'] });
-
-      const pos = place.location;
-      bounds.extend(pos);
-
-      const marker = new google.maps.Marker({
-        position: pos,
-        map: gMap,
-        title: bar.name,
-        icon: makePinIcon(false),
-        optimized: false,
-      });
-
-      marker.addListener('click', () => {
-        window.open(buildMapsUrl(bar), '_blank');
-      });
-
-      gMarkers.push({
-        marker,
-        nation: (bar.nation || 'all nations').toLowerCase().trim(),
-      });
-    } catch (err) {
-      console.warn(`Could not resolve place_id for ${bar.name}:`, err);
-    } finally {
+    geocoder.geocode(request, (results, status) => {
       resolved++;
+      if (status === 'OK' && results[0]) {
+        const pos = results[0].geometry.location;
+        bounds.extend(pos);
+
+        const marker = new google.maps.Marker({
+          position: pos,
+          map: gMap,
+          title: bar.name,
+          icon: makePinIcon(false),
+          optimized: false,
+        });
+
+        marker.addListener('click', () => {
+          window.open(buildMapsUrl(bar), '_blank');
+        });
+
+        gMarkers.push({
+          marker,
+          nation: (bar.nation || 'all nations').toLowerCase().trim(),
+        });
+      } else {
+        console.warn(`Geocode failed for ${bar.name}: ${status}`);
+      }
       checkDone();
-    }
+    });
   });
 };
 
