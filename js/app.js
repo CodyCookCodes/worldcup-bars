@@ -138,7 +138,7 @@ window.buildMap = function(bars) {
               border-radius: 6px;
               min-width: 160px;
             ">
-              <div style="font-weight: 700; white-space: normal; work-break:break-word; font-size: 0.95rem; color: #ffffff; margin-bottom: 3px;">
+              <div style="font-weight: 700; white-space: normal; word-break:break-word; font-size: 0.95rem; color: #ffffff; margin-bottom: 3px;">
                 ${escape(bar.name)}
               </div>
               <div style="font-size: 0.75rem; color: #F79621; margin-bottom: 8px;">
