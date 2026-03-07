@@ -104,8 +104,10 @@ window.buildMap = function(bars) {
     }
   };
 
+  // One shared InfoWindow so only one is open at a time
+  const infoWindow = new google.maps.InfoWindow();
+
   mappable.forEach(bar => {
-    // Prefer place_id for accuracy, fall back to address string
     const request = bar.place_id
       ? { placeId: bar.place_id }
       : { address: bar.address };
@@ -125,7 +127,37 @@ window.buildMap = function(bars) {
         });
 
         marker.addListener('click', () => {
-          window.open(buildMapsUrl(bar), '_blank');
+          infoWindow.setContent(`
+            <div style="
+              font-family: 'Inter', sans-serif;
+              background: #1a1a1a;
+              color: #f0f0f0;
+              padding: 10px 12px;
+              border-radius: 6px;
+              min-width: 160px;
+              max-width: 220px;
+            ">
+              <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff; margin-bottom: 3px;">
+                ${escape(bar.name)}
+              </div>
+              <div style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">
+                ${escape(bar.address || '')}
+              </div>
+              <a href="${buildMapsUrl(bar)}" target="_blank" style="
+                display: inline-block;
+                font-size: 0.72rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #111;
+                background: #F79621;
+                border-radius: 4px;
+                padding: 4px 10px;
+                text-decoration: none;
+              ">📍 Open in Maps</a>
+            </div>
+          `);
+          infoWindow.open(gMap, marker);
         });
 
         gMarkers.push({
