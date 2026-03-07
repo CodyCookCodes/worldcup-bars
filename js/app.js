@@ -92,45 +92,51 @@ window.buildMap = function(bars) {
   });
 
   const bounds = new google.maps.LatLngBounds();
-  const service = new google.maps.places.PlacesService(gMap);
   let resolved = 0;
 
-  mappable.forEach(bar => {
-    service.getDetails(
-      { placeId: bar.place_id, fields: ['geometry'] },
-      (result, status) => {
-        resolved++;
-        if (status === google.maps.places.PlacesServiceStatus.OK && result.geometry) {
-          const pos = result.geometry.location;
-          bounds.extend(pos);
+  const checkDone = () => {
+    if (resolved === mappable.length && !bounds.isEmpty()) {
+      gMap.fitBounds(bounds);
+      google.maps.event.addListenerOnce(gMap, 'bounds_changed', () => {
+        if (gMap.getZoom() > 15) gMap.setZoom(15);
+      });
+    }
+  };
 
-          const marker = new google.maps.Marker({
-            position: pos,
-            map: gMap,
-            title: bar.name,
-            icon: makePinIcon(false),
-            optimized: false,
-          });
+  mappable.forEach(async bar => {
+    try {
+      const place = new google.maps.places.Place({
+        id: bar.place_id,
+        requestedLanguage: 'en',
+      });
 
-          marker.addListener('click', () => {
-            window.open(buildMapsUrl(bar), '_blank');
-          });
+      await place.fetchFields({ fields: ['location'] });
 
-          gMarkers.push({
-            marker,
-            nation: (bar.nation || 'all nations').toLowerCase().trim(),
-          });
-        }
+      const pos = place.location;
+      bounds.extend(pos);
 
-        // Once all requests are done, fit the map
-        if (resolved === mappable.length && !bounds.isEmpty()) {
-          gMap.fitBounds(bounds);
-          google.maps.event.addListenerOnce(gMap, 'bounds_changed', () => {
-            if (gMap.getZoom() > 15) gMap.setZoom(15);
-          });
-        }
-      }
-    );
+      const marker = new google.maps.Marker({
+        position: pos,
+        map: gMap,
+        title: bar.name,
+        icon: makePinIcon(false),
+        optimized: false,
+      });
+
+      marker.addListener('click', () => {
+        window.open(buildMapsUrl(bar), '_blank');
+      });
+
+      gMarkers.push({
+        marker,
+        nation: (bar.nation || 'all nations').toLowerCase().trim(),
+      });
+    } catch (err) {
+      console.warn(`Could not resolve place_id for ${bar.name}:`, err);
+    } finally {
+      resolved++;
+      checkDone();
+    }
   });
 };
 
