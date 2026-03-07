@@ -284,3 +284,7 @@ footer a { color: var(--orange); text-decoration: none; }
   height: 14px !important;
 }
 .gm-style-iw-d::-webkit-scrollbar { display: none; }
+
+.gm-style .gm-style-iw-c {
+  max-width: 300px !important;
+}
