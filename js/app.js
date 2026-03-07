@@ -318,3 +318,18 @@ async function loadBars() {
 }
 
 loadBars();
+
+function initMap() {
+  if (window._barsReady) {
+    window.buildMap(window._barsData);
+  } else {
+    window._mapReady = true;
+  }
+}
+
+// Dynamically load Maps script using key from config.js
+const script = document.createElement('script');
+script.src = `https://maps.googleapis.com/maps/api/js?key=${window.MAPS_API_KEY}&callback=initMap`;
+script.async = true;
+script.defer = true;
+document.head.appendChild(script);

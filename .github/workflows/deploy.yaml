@@ -28,7 +28,9 @@ jobs:
       - name: Inject API key into config.js and index.html
         run: |
           echo "window.MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" > config.js
-          sed -i "s/YOUR_API_KEY_PLACEHOLDER/${{ secrets.MAPS_API_KEY }}/g" index.html
+          - name: Inject API key into config.js
+        run: |
+          echo "window.MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" > config.js
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
