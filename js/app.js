@@ -142,8 +142,8 @@ window.buildMap = function(bars) {
               <div style="font-weight: 700; font-size: 0.95rem; color: #ffffff; margin-bottom: 3px;">
                 ${escape(bar.name)}
               </div>
-              <div style="font-size: 0.75rem; color: #888; margin-bottom: 8px;">
-                ${escape(bar.address || '')}
+              <div style="font-size: 0.75rem; color: #F79621; margin-bottom: 8px;">
+                ${escape(bar.nation || '')}
               </div>
               <a href="${buildMapsUrl(bar)}" target="_blank" style="
                 display: inline-block;
