@@ -23,6 +23,15 @@
   </div>
 </header>
 
+<!-- MAP -->
+<div class="map-section">
+  <div id="map"></div>
+  <div id="map-loading" class="map-loading">
+    <div class="spinner"></div>
+    <p>Loading map…</p>
+  </div>
+</div>
+
 <!-- FILTERS -->
 <div class="filters">
   <div class="filter-label">Filter by nation:</div>
@@ -57,5 +66,17 @@
 
 <script src="config.js"></script>
 <script src="js/app.js"></script>
+<script>
+  function initMap() {
+    if (window._barsReady) {
+      window.buildMap(window._barsData);
+    } else {
+      window._mapReady = true;
+    }
+  }
+</script>
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_PLACEHOLDER&libraries=places&callback=initMap">
+</script>
 </body>
 </html>

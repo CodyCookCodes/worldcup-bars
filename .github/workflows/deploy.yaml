@@ -25,9 +25,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject API key into config.js
+      - name: Inject API key into config.js and index.html
         run: |
           echo "window.MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" > config.js
+          sed -i "s/YOUR_API_KEY_PLACEHOLDER/${{ secrets.MAPS_API_KEY }}/g" index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
