@@ -158,6 +158,7 @@ window.buildMap = function(bars) {
               ">📍 Open in Maps</a>
             </div>
           `);
+          infoWindow.setOptions({maxWidth: 250});
           infoWindow.open(gMap, marker);
         });
 
