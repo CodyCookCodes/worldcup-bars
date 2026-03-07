@@ -105,7 +105,9 @@ window.buildMap = function(bars) {
   };
 
   // One shared InfoWindow so only one is open at a time
-  const infoWindow = new google.maps.InfoWindow();
+  const infoWindow = new google.maps.InfoWindow({
+    disableAutoPan: false,
+  });
 
   mappable.forEach(bar => {
     const request = bar.place_id
