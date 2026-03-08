@@ -133,7 +133,7 @@ window.filterMapPins = function(nation) {
 // ─── Highlight pins for multiple nations (used by match row click) ────────────
 window.filterMapPinsMulti = function(nations) {
   gMarkers.forEach(({ marker, nations: pinNations }) => {
-    const isMatch = nations.some(n => pinNations.includes(n));
+    const isMatch = pinNations.includes('all nations') || nations.some(n => pinNations.includes(n));
     marker.setIcon(makePinIcon(!isMatch));
     marker.setZIndex(isMatch ? 10 : 1);
   });
