@@ -44,9 +44,9 @@ function initMap() {
 loadBars();
 loadMatches();
 
-// Dynamically load Maps script using key from config.js
+// Dynamically load Maps script — MAPS_API_KEY injected into constants.js by deploy workflow
 const script = document.createElement('script');
-script.src = `https://maps.googleapis.com/maps/api/js?key=${window.MAPS_API_KEY}&callback=initMap`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
 script.async = true;
 script.defer = true;
 document.head.appendChild(script);
