@@ -129,3 +129,12 @@ window.filterMapPins = function(nation) {
     marker.setZIndex(isMatch ? 10 : 1);
   });
 };
+
+// ─── Highlight pins for multiple nations (used by match row click) ────────────
+window.filterMapPinsMulti = function(nations) {
+  gMarkers.forEach(({ marker, nation: pinNation }) => {
+    const isMatch = nations.includes(pinNation);
+    marker.setIcon(makePinIcon(!isMatch));
+    marker.setZIndex(isMatch ? 10 : 1);
+  });
+};

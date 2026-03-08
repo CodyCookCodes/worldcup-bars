@@ -1,16 +1,6 @@
 // ─── Matches Module ───────────────────────────────────────────────────────────
-// Reads from a separate "Matches" tab in the same Google Sheet.
-// Set MATCHES_GID to the gid= value of your Matches tab.
-// The sheet columns (row 1 = headers) should be:
-//   match_id | date       | time  | home_team | away_team | home_score | away_score | stage       | group
-//   M1       | 2026-06-11 | 19:00 | Mexico    | TBD       |            |            | Group Stage | A
-//
-// Scores: leave home_score / away_score blank for unplayed matches.
-// The "stage" column accepts: Group Stage, Round of 32, Round of 16,
-//   Quarter-Final, Semi-Final, Bronze Final, Final
-// ─────────────────────────────────────────────────────────────────────────────
-
 // MATCHES_CSV_URL is defined in constants.js
+// Sheet columns: date | time | home_team | away_team | home_score | away_score | stage | group
 
 // ─── Parse CSV for matches (no 'name' column filter) ─────────────────────────
 function parseMatchesCSV(text) {
@@ -29,40 +19,31 @@ function parseMatchesCSV(text) {
     const row = {};
     headers.forEach((h, i) => row[h] = (cols[i] || '').replace(/^"|"$/g, '').trim());
     return row;
-  }).filter(row => row.date || row.home_team); // keep rows that have a date or home_team
+  }).filter(row => row.date || row.home_team);
 }
 
-// Parse a YYYY-MM-DD string as a local date (no timezone shift)
+// ─── Date helpers ─────────────────────────────────────────────────────────────
 function parseLocalDate(str) {
   if (!str) return null;
   const [y, m, d] = str.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
 
-function getMatchState(match) {
+function getDayState(date) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  const matchDate = parseLocalDate(match.date);
-  if (!matchDate) return 'future';
-
-  const hasScore = match.home_score !== '' && match.away_score !== '';
-  if (hasScore) return 'past';
-
   const weekFromNow = new Date(today);
   weekFromNow.setDate(weekFromNow.getDate() + 7);
 
-  if (matchDate.getTime() === today.getTime()) return 'today';
-  if (matchDate < today) return 'past';
-  if (matchDate <= weekFromNow) return 'soon';
+  if (!date) return 'future';
+  if (date.getTime() === today.getTime()) return 'today';
+  if (date < today) return 'past';
+  if (date <= weekFromNow) return 'soon';
   return 'future';
 }
 
-function formatMatchDate(dateStr, timeStr) {
-  const d = parseLocalDate(dateStr);
-  if (!d) return '';
-  const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
-  return timeStr ? `${dateLabel} · ${timeStr}` : dateLabel;
+function formatDayHeader(date) {
+  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
 function stageLabel(stage) {
@@ -78,16 +59,52 @@ function stageLabel(stage) {
   return map[(stage || '').toLowerCase().trim()] || stage || '';
 }
 
-function buildMatchCard(match, state) {
+// ─── Single match row within a day card ──────────────────────────────────────
+function buildMatchRow(match) {
   const hasScore = match.home_score !== '' && match.away_score !== '';
   const homeWon = hasScore && Number(match.home_score) > Number(match.away_score);
   const awayWon = hasScore && Number(match.away_score) > Number(match.home_score);
 
+  const scoreOrTime = hasScore
+    ? `<span class="mr-score">
+         <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${escape(match.home_score)}</span>
+         <span class="score-sep">–</span>
+         <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${escape(match.away_score)}</span>
+       </span>`
+    : `<span class="mr-time">${escape(match.time || 'TBD')}</span>`;
+
+  const groupInfo = match.group
+    ? `<span class="mr-stage">${escape(stageLabel(match.stage))} · Grp ${escape(match.group)}</span>`
+    : `<span class="mr-stage">${escape(stageLabel(match.stage))}</span>`;
+
+  const homeKey = (match.home_team || '').toLowerCase().trim();
+  const awayKey = (match.away_team || '').toLowerCase().trim();
+
+  return `
+    <div class="match-row" data-home="${homeKey}" data-away="${awayKey}" title="Filter bars for this match">
+      <div class="mr-teams">
+        <span class="mr-team">
+          ${getFlag(match.home_team)}
+          <span class="mr-name ${homeWon ? 'team--winner' : ''}">${escape(match.home_team || 'TBD')}</span>
+        </span>
+        <span class="mr-middle">${scoreOrTime}</span>
+        <span class="mr-team mr-team--away">
+          <span class="mr-name ${awayWon ? 'team--winner' : ''}">${escape(match.away_team || 'TBD')}</span>
+          ${getFlag(match.away_team)}
+        </span>
+      </div>
+      ${groupInfo}
+    </div>`;
+}
+
+// ─── Day column card ──────────────────────────────────────────────────────────
+function buildDayCard(dateStr, matchesForDay, state) {
+  const date = parseLocalDate(dateStr);
   const stateClass = {
-    past:   'match-card--past',
-    today:  'match-card--today',
-    soon:   'match-card--soon',
-    future: 'match-card--future',
+    past:   'day-card--past',
+    today:  'day-card--today',
+    soon:   'day-card--soon',
+    future: 'day-card--future',
   }[state] || '';
 
   const badge = state === 'today'
@@ -96,78 +113,100 @@ function buildMatchCard(match, state) {
     ? `<span class="match-badge match-badge--soon">THIS WEEK</span>`
     : '';
 
-  const scoreOrTime = hasScore
-    ? `<div class="match-score">
-         <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${escape(match.home_score)}</span>
-         <span class="score-sep">–</span>
-         <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${escape(match.away_score)}</span>
-       </div>`
-    : `<div class="match-time">${escape(match.time || 'TBD')}</div>`;
-
-  const groupInfo = match.group ? `<span class="match-group">Group ${escape(match.group)}</span>` : '';
-
   return `
-    <div class="match-card ${stateClass}" data-state="${state}" data-match-id="${escape(match.match_id)}">
+    <div class="day-card ${stateClass}">
       ${badge}
-      <div class="match-stage-row">
-        <span class="match-stage">${escape(stageLabel(match.stage))}</span>
-        ${groupInfo}
-      </div>
-      <div class="match-teams">
-        <div class="match-team ${homeWon ? 'team--winner' : ''}">
-          <span class="team-flag">${getFlag(match.home_team)}</span>
-          <span class="team-name">${escape(match.home_team || 'TBD')}</span>
-        </div>
-        <div class="match-vs-col">
-          ${scoreOrTime}
-        </div>
-        <div class="match-team match-team--away ${awayWon ? 'team--winner' : ''}">
-          <span class="team-name">${escape(match.away_team || 'TBD')}</span>
-          <span class="team-flag">${getFlag(match.away_team)}</span>
-        </div>
-      </div>
-      <div class="match-meta">
-        <span class="match-date">${formatMatchDate(match.date, '')}</span>
+      <div class="day-header">${formatDayHeader(date)}</div>
+      <div class="day-matches">
+        ${matchesForDay.map(buildMatchRow).join('')}
       </div>
     </div>`;
 }
 
+// ─── Click handler: filter bars by the two nations in a match row ─────────────
+function handleMatchRowClick(e) {
+  const row = e.currentTarget;
+  const home = row.dataset.home;
+  const away = row.dataset.away;
+
+  // Deactivate all filter buttons
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+  // Show blocks matching home, away, or all nations
+  document.querySelectorAll('.category-block').forEach(block => {
+    const n = block.dataset.nation;
+    if (n === home || n === away || n === 'all nations') {
+      block.classList.remove('hidden');
+    } else {
+      block.classList.add('hidden');
+    }
+  });
+
+  // Update map pins — highlight both nations
+  if (window.filterMapPinsMulti) window.filterMapPinsMulti([home, away]);
+
+  // Scroll down to bar list
+  const barList = document.getElementById('barList');
+  if (barList) barList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Visual feedback: highlight selected row
+  document.querySelectorAll('.match-row').forEach(r => r.classList.remove('match-row--active'));
+  row.classList.add('match-row--active');
+}
+
+// ─── Build and render the carousel ───────────────────────────────────────────
 function buildMatchCarousel(matches) {
   const section = document.getElementById('matchCarousel');
   if (!section) return;
 
   if (!matches.length) {
-    section.style.display = 'none';
+    const track = document.getElementById('matchTrack');
+    if (track) track.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:20px 0;">Match schedule coming soon.</div>';
     return;
   }
 
-  // Sort by date then match_id
+  // Sort by date
   matches.sort((a, b) => {
     const da = parseLocalDate(a.date), db = parseLocalDate(b.date);
     if (da && db && da.getTime() !== db.getTime()) return da - db;
-    return (a.match_id || '').localeCompare(b.match_id || '', undefined, { numeric: true });
+    return (a.time || '').localeCompare(b.time || '');
+  });
+
+  // Group by date
+  const byDate = {};
+  matches.forEach(m => {
+    const key = m.date || 'unknown';
+    if (!byDate[key]) byDate[key] = [];
+    byDate[key].push(m);
   });
 
   const track = document.getElementById('matchTrack');
-  track.innerHTML = matches.map(m => buildMatchCard(m, getMatchState(m))).join('');
+  track.innerHTML = Object.entries(byDate).map(([dateStr, dayMatches]) => {
+    const date = parseLocalDate(dateStr);
+    const state = date ? getDayState(date) : 'future';
+    return buildDayCard(dateStr, dayMatches, state);
+  }).join('');
 
-  // Scroll so today/soon cards are visible, centered
+  // Attach click handlers to every match row
+  track.querySelectorAll('.match-row').forEach(row => {
+    row.addEventListener('click', handleMatchRowClick);
+  });
+
+  // Scroll to today/soon
   requestAnimationFrame(() => {
-    const todayCard = track.querySelector('.match-card--today, .match-card--soon');
+    const todayCard = track.querySelector('.day-card--today, .day-card--soon');
     if (todayCard) {
-      const trackRect = track.parentElement.getBoundingClientRect();
-      const cardRect = todayCard.getBoundingClientRect();
-      const scrollLeft = todayCard.offsetLeft - (trackRect.width / 2) + (cardRect.width / 2);
+      const scrollLeft = todayCard.offsetLeft - (track.parentElement.getBoundingClientRect().width / 2) + (todayCard.getBoundingClientRect().width / 2);
       track.parentElement.scrollTo({ left: Math.max(0, scrollLeft), behavior: 'smooth' });
     }
   });
 
   // Arrow nav
   document.getElementById('matchPrev').addEventListener('click', () => {
-    track.parentElement.scrollBy({ left: -320, behavior: 'smooth' });
+    track.parentElement.scrollBy({ left: -300, behavior: 'smooth' });
   });
   document.getElementById('matchNext').addEventListener('click', () => {
-    track.parentElement.scrollBy({ left: 320, behavior: 'smooth' });
+    track.parentElement.scrollBy({ left: 300, behavior: 'smooth' });
   });
 }
 
@@ -180,7 +219,7 @@ async function loadMatches() {
     buildMatchCarousel(matches);
   } catch (err) {
     console.warn('Match schedule could not be loaded:', err);
-    const section = document.getElementById('matchCarousel');
-    if (section) section.style.display = 'none';
+    const track = document.getElementById('matchTrack');
+    if (track) track.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:20px 0;">Match schedule coming soon.</div>';
   }
 }

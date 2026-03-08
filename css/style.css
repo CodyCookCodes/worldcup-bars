@@ -542,3 +542,136 @@ footer a { color: var(--orange); text-decoration: none; }
   .match-card { width: 220px; }
   .matches-title { font-size: 0.85rem; }
 }
+
+/* ─── Day Card (replaces individual match cards) ────────────────────────────── */
+
+.day-card {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  width: 240px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 12px 12px 10px;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.day-card--past   { opacity: 0.6; border-color: #1e1e1e; }
+.day-card--today  { border-color: #F79621; background: #1a1200; box-shadow: 0 0 18px rgba(247,150,33,0.18); }
+.day-card--soon   { border-color: #555; }
+.day-card--future { opacity: 0.8; }
+
+.day-header {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #F79621;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+.day-card--past .day-header { color: #555; }
+
+/* ─── Match Row ──────────────────────────────────────────────────────────────── */
+
+.day-matches {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-row {
+  background: #1a1a1a;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 7px 8px 5px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.match-row:hover {
+  border-color: #F79621;
+  background: #1f1700;
+}
+
+.match-row--active {
+  border-color: #F79621;
+  background: #1f1700;
+}
+
+.mr-teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.mr-team {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mr-team--away {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+
+.mr-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68px;
+}
+
+.mr-team--away .mr-name {
+  text-align: right;
+}
+
+.team--winner { color: #F79621; }
+
+.mr-middle {
+  display: flex;
+  justify-content: center;
+  min-width: 36px;
+}
+
+.mr-score {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mr-time {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #666;
+  letter-spacing: 0.3px;
+}
+
+.score-sep { color: #444; font-size: 0.85rem; }
+.score-win  { color: #F79621; }
+.score-loss { color: #555; }
+
+.mr-stage {
+  display: block;
+  font-size: 0.58rem;
+  color: #555;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .day-card { width: 200px; }
+}
