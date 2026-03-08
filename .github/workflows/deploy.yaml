@@ -25,9 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject API key into config.js
+      - name: Inject API key into constants.js
         run: |
-          echo "window.MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" > config.js
+          echo "const MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" >> js/constants.js
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -37,3 +37,25 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
