@@ -147,7 +147,8 @@ function handleMatchRowClick(e) {
 
   // Scroll down to bar list
   const barList = document.getElementById('barList');
-  if (barList) barList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const mapSection = document.querySelector('.map-section');
+    if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   // Visual feedback: highlight selected row
   document.querySelectorAll('.match-row').forEach(r => r.classList.remove('match-row--active'));

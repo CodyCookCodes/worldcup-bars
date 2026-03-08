@@ -111,7 +111,7 @@ window.buildMap = function(bars) {
 
         gMarkers.push({
           marker,
-          nation: (bar.nation || 'all nations').toLowerCase().trim(),
+          nations: (bar.nation || 'all nations').split(',').map(n => n.toLowerCase().trim()),
         });
       } else {
         console.warn(`Geocode failed for ${bar.name}: ${status}`);
@@ -123,8 +123,8 @@ window.buildMap = function(bars) {
 
 // ─── Show/grey-out pins based on the active nation filter ────────────────────
 window.filterMapPins = function(nation) {
-  gMarkers.forEach(({ marker, nation: pinNation }) => {
-    const isMatch = nation === 'all' || pinNation === nation;
+  gMarkers.forEach(({ marker, nations }) => {
+    const isMatch = nation === 'all' || nations.includes(nation);
     marker.setIcon(makePinIcon(!isMatch));
     marker.setZIndex(isMatch ? 10 : 1);
   });
@@ -132,8 +132,8 @@ window.filterMapPins = function(nation) {
 
 // ─── Highlight pins for multiple nations (used by match row click) ────────────
 window.filterMapPinsMulti = function(nations) {
-  gMarkers.forEach(({ marker, nation: pinNation }) => {
-    const isMatch = nations.includes(pinNation);
+  gMarkers.forEach(({ marker, nations: pinNations }) => {
+    const isMatch = nations.some(n => pinNations.includes(n));
     marker.setIcon(makePinIcon(!isMatch));
     marker.setZIndex(isMatch ? 10 : 1);
   });

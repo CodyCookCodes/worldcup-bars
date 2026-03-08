@@ -17,9 +17,11 @@ function buildPage(bars) {
   // Group bars by nation
   const groups = {};
   bars.forEach(bar => {
-    const nation = (bar.nation || 'All Nations').trim();
-    if (!groups[nation]) groups[nation] = [];
-    groups[nation].push(bar);
+    const nations = (bar.nation || 'All Nations').split(',').map(n => n.trim());
+    nations.forEach(nation => {
+      if (!groups[nation]) groups[nation] = [];
+      groups[nation].push(bar);
+    });
   });
 
   // Sort nations alphabetically; keep "All Nations" last
