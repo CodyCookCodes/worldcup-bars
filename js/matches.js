@@ -12,6 +12,26 @@
 
 // MATCHES_CSV_URL is defined in constants.js
 
+// ─── Parse CSV for matches (no 'name' column filter) ─────────────────────────
+function parseMatchesCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  return lines.slice(1).map(line => {
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    const row = {};
+    headers.forEach((h, i) => row[h] = (cols[i] || '').replace(/^"|"$/g, '').trim());
+    return row;
+  }).filter(row => row.date || row.home_team); // keep rows that have a date or home_team
+}
+
 // Parse a YYYY-MM-DD string as a local date (no timezone shift)
 function parseLocalDate(str) {
   if (!str) return null;
@@ -156,7 +176,7 @@ async function loadMatches() {
     const res = await fetch(MATCHES_CSV_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-    const matches = parseCSV(text); // reuses utils.js parseCSV
+    const matches = parseMatchesCSV(text);
     buildMatchCarousel(matches);
   } catch (err) {
     console.warn('Match schedule could not be loaded:', err);
