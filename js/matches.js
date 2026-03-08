@@ -10,13 +10,7 @@
 //   Quarter-Final, Semi-Final, Bronze Final, Final
 // ─────────────────────────────────────────────────────────────────────────────
 
-const MATCHES_GID = window.MATCHES_SHEET_GID || '1'; // override in config.js
-
-function getMatchesCSVUrl() {
-  // Re-use the base sheet URL but swap to the Matches tab gid
-  const base = SHEET_CSV_URL.replace(/gid=\d+/, `gid=${MATCHES_GID}`);
-  return base;
-}
+// MATCHES_CSV_URL is defined in constants.js
 
 // Parse a YYYY-MM-DD string as a local date (no timezone shift)
 function parseLocalDate(str) {
@@ -159,7 +153,7 @@ function buildMatchCarousel(matches) {
 
 async function loadMatches() {
   try {
-    const res = await fetch(getMatchesCSVUrl());
+    const res = await fetch(MATCHES_CSV_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
     const matches = parseCSV(text); // reuses utils.js parseCSV
