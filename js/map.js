@@ -57,24 +57,18 @@ window.buildMap = function(bars) {
     maxWidth: 280,
   });
 
-  mappable.forEach(bar => {
-    const request = bar.place_id
-      ? { placeId: bar.place_id }
-      : { address: bar.address };
+  // ── localStorage cache key for a bar ──────────────────────────────────────
+  const cacheKey = bar => 'geo:' + (bar.place_id || bar.address || bar.name);
 
-    geocoder.geocode(request, (results, status) => {
-      resolved++;
-      if (status === 'OK' && results[0]) {
-        const pos = results[0].geometry.location;
-        bounds.extend(pos);
-
-        const marker = new google.maps.Marker({
-          position: pos,
-          map: gMap,
-          title: bar.name,
-          icon: makePinIcon('orange'),
-          optimized: false,
-        });
+  const placeMarker = (bar, pos) => {
+    bounds.extend(pos);
+    const marker = new google.maps.Marker({
+      position: pos,
+      map: gMap,
+      title: bar.name,
+      icon: makePinIcon('orange'),
+      optimized: false,
+    });
 
         marker.addListener('click', () => {
           infoWindow.setContent(`
@@ -113,6 +107,38 @@ window.buildMap = function(bars) {
           marker,
           nations: (bar.nation || 'all nations').split(',').map(n => n.toLowerCase().trim()),
         });
+    return marker;
+  };
+
+  mappable.forEach(bar => {
+    // ── Check localStorage cache first ──────────────────────────────────────
+    const key = cacheKey(bar);
+    try {
+      const cached = localStorage.getItem(key);
+      if (cached) {
+        const { lat, lng } = JSON.parse(cached);
+        const pos = new google.maps.LatLng(lat, lng);
+        placeMarker(bar, pos);
+        resolved++;
+        checkDone();
+        return;
+      }
+    } catch (e) { /* ignore bad cache entries */ }
+
+    // ── Fall back to geocoder ───────────────────────────────────────────────
+    const request = bar.place_id
+      ? { placeId: bar.place_id }
+      : { address: bar.address };
+
+    geocoder.geocode(request, (results, status) => {
+      resolved++;
+      if (status === 'OK' && results[0]) {
+        const pos = results[0].geometry.location;
+        // Save to cache for next time
+        try {
+          localStorage.setItem(key, JSON.stringify({ lat: pos.lat(), lng: pos.lng() }));
+        } catch (e) { /* storage full or unavailable */ }
+        placeMarker(bar, pos);
       } else {
         console.warn(`Geocode failed for ${bar.name}: ${status}`);
       }
