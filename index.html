@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>World Cup Soccer Trail · Oakland Roots SC</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/matches.css">
   <link rel="icon" href="assets/Oakland_Roots.png" type="image/png">
 </head>
 <body>
@@ -24,12 +25,28 @@
   </div>
 </header>
 
+<!-- MATCH CAROUSEL -->
+<section class="matches-section" id="matchCarousel">
+  <div class="matches-header">
+    <span class="matches-title">&#9917; Match Schedule</span>
+    <div class="matches-nav">
+      <button class="match-nav-btn" id="matchPrev" aria-label="Previous matches">&#8592;</button>
+      <button class="match-nav-btn" id="matchNext" aria-label="Next matches">&#8594;</button>
+    </div>
+  </div>
+  <div class="matches-scroll">
+    <div class="matches-track" id="matchTrack">
+      <div style="color:#555; font-size:0.8rem; padding: 20px;">Loading schedule&#8230;</div>
+    </div>
+  </div>
+</section>
+
 <!-- MAP -->
 <div class="map-section">
   <div id="map"></div>
   <div id="map-loading" class="map-loading">
     <div class="spinner"></div>
-    <p>Loading map…</p>
+    <p>Loading map&#8230;</p>
   </div>
 </div>
 
@@ -37,7 +54,7 @@
 <div class="filters">
   <div class="filter-label">Filter by nation:</div>
   <div class="filter-buttons" id="filterButtons">
-    <button class="filter-btn active" onclick="filterBars('all', this)">🌍 All Bars</button>
+    <button class="filter-btn active" onclick="filterBars('all', this)">&#127757; All Bars</button>
   </div>
 </div>
 
@@ -45,7 +62,7 @@
 <div class="list-section" id="barList">
   <div class="state-box">
     <div class="spinner"></div>
-    <p>Loading bars from the sheet…</p>
+    <p>Loading bars from the sheet&#8230;</p>
   </div>
 </div>
 
@@ -62,15 +79,15 @@
       Suggest a Bar →
     </a>
   </div>
-  <a href="https://www.google.com/maps/search/bars+near+Oakland+CA" target="_blank">Find more bars on Maps →</a>
+  <a href="https://www.google.com/maps/search/bars+near+Oakland+CA" target="_blank">Find more bars on Maps &#8594;</a>
 </footer>
 
-<!-- Scripts: config first, then dependencies in order, then entry point -->
 <script src="config.js"></script>
 <script src="js/constants.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/map.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/matches.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

@@ -288,3 +288,257 @@ footer a { color: var(--orange); text-decoration: none; }
 .gm-style .gm-style-iw-c {
   max-width: 300px !important;
 }
+
+/* ─── Match Carousel Section ─────────────────────────────────────────────────── */
+
+.matches-section {
+  position: relative;
+  padding: 28px 0 20px;
+  background: #0d0d0d;
+  border-bottom: 1px solid #222;
+}
+
+.matches-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 14px;
+}
+
+.matches-title {
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #F79621;
+}
+
+.matches-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.match-nav-btn {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #aaa;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.match-nav-btn:hover {
+  background: #F79621;
+  color: #111;
+  border-color: #F79621;
+}
+
+/* Scrollable track */
+.matches-scroll {
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 20px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+.matches-scroll::-webkit-scrollbar { height: 4px; }
+.matches-scroll::-webkit-scrollbar-track { background: transparent; }
+.matches-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+.matches-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+}
+
+/* ─── Individual Match Card ───────────────────────────────────────────────────── */
+
+.match-card {
+  scroll-snap-align: center;
+  flex-shrink: 0;
+  width: 260px;
+  background: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+  position: relative;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.match-card:hover {
+  transform: translateY(-2px);
+  border-color: #444;
+}
+
+/* State variants */
+.match-card--past {
+  opacity: 0.65;
+  border-color: #1e1e1e;
+}
+.match-card--past:hover {
+  opacity: 0.85;
+}
+
+.match-card--today {
+  border-color: #F79621;
+  background: #1a1200;
+  box-shadow: 0 0 18px rgba(247, 150, 33, 0.18);
+  opacity: 1;
+}
+
+.match-card--soon {
+  border-color: #555;
+  background: #141414;
+}
+
+.match-card--future {
+  opacity: 0.75;
+}
+
+/* Badge */
+.match-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.match-badge--today {
+  background: #F79621;
+  color: #111;
+}
+.match-badge--soon {
+  background: #2a2a2a;
+  color: #aaa;
+  border: 1px solid #444;
+}
+
+/* Stage row */
+.match-stage-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+.match-stage {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #666;
+}
+
+.match-group {
+  font-size: 0.65rem;
+  color: #555;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* Teams row */
+.match-teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.match-team {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.match-team--away {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.team-flag img,
+.team-flag span {
+  display: block;
+}
+
+.team-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ccc;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.team--winner .team-name {
+  color: #F79621;
+}
+
+/* Scores */
+.match-vs-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match-score {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Oswald', 'Impact', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+.score-sep {
+  color: #444;
+  font-size: 1rem;
+}
+.score-win { color: #F79621; }
+.score-loss { color: #555; }
+
+.match-time {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.5px;
+}
+
+/* Meta row */
+.match-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #1e1e1e;
+  padding-top: 8px;
+  gap: 4px;
+}
+
+.match-date,
+.match-date { flex-shrink: 0; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .match-card { width: 220px; }
+  .matches-title { font-size: 0.85rem; }
+}

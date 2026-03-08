@@ -42,6 +42,7 @@ function initMap() {
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 loadBars();
+loadMatches();
 
 // Dynamically load Maps script using key from config.js
 const script = document.createElement('script');
