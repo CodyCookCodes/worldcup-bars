@@ -17,11 +17,9 @@ function buildPage(bars) {
   // Group bars by nation
   const groups = {};
   bars.forEach(bar => {
-    const nations = (bar.nation || 'All Nations').split(',').map(n => n.trim());
-    nations.forEach(nation => {
-      if (!groups[nation]) groups[nation] = [];
-      groups[nation].push(bar);
-    });
+    const nation = (bar.nation || 'All Nations').trim();
+    if (!groups[nation]) groups[nation] = [];
+    groups[nation].push(bar);
   });
 
   // Sort nations alphabetically; keep "All Nations" last
@@ -58,6 +56,9 @@ function buildPage(bars) {
 function filterBars(nation, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+
+  // Clear any active match row highlight
+  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
   document.querySelectorAll('.category-block').forEach(block => {
     nation === 'all'
