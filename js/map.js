@@ -3,8 +3,8 @@ let gMap = null;
 let gMarkers = []; // { marker, nation }
 
 // ─── Build a Google Maps pin icon (orange = active, grey = inactive) ──────────
-function makePinIcon(grey = false) {
-  const svg = grey ? GREY_PIN_SVG : ORANGE_PIN_SVG;
+function makePinIcon(mode = 'orange') {
+  const svg = mode === 'grey' ? GREY_PIN_SVG : mode === 'red' ? RED_PIN_SVG : ORANGE_PIN_SVG;
   return {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
     scaledSize: new google.maps.Size(28, 36),
@@ -72,7 +72,7 @@ window.buildMap = function(bars) {
           position: pos,
           map: gMap,
           title: bar.name,
-          icon: makePinIcon(false),
+          icon: makePinIcon('orange'),
           optimized: false,
         });
 
@@ -125,16 +125,18 @@ window.buildMap = function(bars) {
 window.filterMapPins = function(nation) {
   gMarkers.forEach(({ marker, nations }) => {
     const isMatch = nation === 'all' || nations.includes(nation);
-    marker.setIcon(makePinIcon(!isMatch));
+    marker.setIcon(makePinIcon(isMatch ? 'orange' : 'grey'));
     marker.setZIndex(isMatch ? 10 : 1);
   });
 };
 
-// ─── Highlight pins for multiple nations (used by match row click) ────────────
+// ─── Highlight pins for multiple nations (match row click) ────────────────────
 window.filterMapPinsMulti = function(nations) {
   gMarkers.forEach(({ marker, nations: pinNations }) => {
-    const isMatch = pinNations.includes('all nations') || nations.some(n => pinNations.includes(n));
-    marker.setIcon(makePinIcon(!isMatch));
-    marker.setZIndex(isMatch ? 10 : 1);
+    const isAllNations = pinNations.includes('all nations');
+    const isMatch = nations.some(n => pinNations.includes(n));
+    const mode = isMatch ? 'red' : isAllNations ? 'orange' : 'grey';
+    marker.setIcon(makePinIcon(mode));
+    marker.setZIndex(isMatch ? 10 : isAllNations ? 5 : 1);
   });
 };
