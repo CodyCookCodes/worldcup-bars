@@ -27,8 +27,9 @@ window.buildMap = function(bars) {
   if (loadingEl) loadingEl.style.display = 'none';
   mapEl.style.display = 'block';
 
+  const isMobile = window.innerWidth < 600;
   gMap = new google.maps.Map(mapEl, {
-    zoom: 13,
+    zoom: isMobile ? 12 : 13,
     center: { lat: 37.8044, lng: -122.2712 },
     styles: MAP_STYLE,
     disableDefaultUI: false,
@@ -73,17 +74,16 @@ window.buildMap = function(bars) {
         marker.addListener('click', () => {
           infoWindow.setContent(`
             <div style="
-              font-family: 'Inter', sans-serif;
               background: #1a1a1a;
               color: #f0f0f0;
               padding: 10px 12px;
               border-radius: 6px;
             ">
               <div style="font-weight: 700; white-space: normal; word-break:break-word; font-size: 0.95rem; color: #ffffff; margin-bottom: 3px;">
-                ${escape(bar.name)}
+                ${esc(bar.name)}
               </div>
               <div style="font-size: 0.75rem; color: #F79621; margin-bottom: 8px;">
-                ${escape(bar.nation || '')}
+                ${esc(bar.nation || '')}
               </div>
               <a href="${buildMapsUrl(bar)}" target="_blank" style="
                 display: inline-block;
@@ -116,18 +116,22 @@ window.buildMap = function(bars) {
     try {
       const cached = localStorage.getItem(key);
       if (cached) {
-        const { lat, lng } = JSON.parse(cached);
-        const pos = new google.maps.LatLng(lat, lng);
-        placeMarker(bar, pos);
-        resolved++;
-        checkDone();
-        return;
+        const { lat, lng, ts } = JSON.parse(cached);
+        const sevenDays = 7 * 24 * 60 * 60 * 1000;
+        if (ts && Date.now() - ts < sevenDays) {
+          const pos = new google.maps.LatLng(lat, lng);
+          placeMarker(bar, pos);
+          resolved++;
+          checkDone();
+          return;
+        }
       }
     } catch (e) { /* ignore bad cache entries */ }
 
     // ── Fall back to geocoder ───────────────────────────────────────────────
-    const request = bar.place_id
-      ? { placeId: bar.place_id }
+    const safePlaceId = bar.place_id ? bar.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
+    const request = safePlaceId
+      ? { placeId: safePlaceId }
       : { address: bar.address };
 
     geocoder.geocode(request, (results, status) => {
@@ -136,7 +140,7 @@ window.buildMap = function(bars) {
         const pos = results[0].geometry.location;
         // Save to cache for next time
         try {
-          localStorage.setItem(key, JSON.stringify({ lat: pos.lat(), lng: pos.lng() }));
+          localStorage.setItem(key, JSON.stringify({ lat: pos.lat(), lng: pos.lng(), ts: Date.now() }));
         } catch (e) { /* storage full or unavailable */ }
         placeMarker(bar, pos);
       } else {

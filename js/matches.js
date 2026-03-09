@@ -67,15 +67,15 @@ function buildMatchRow(match) {
 
   const scoreOrTime = hasScore
     ? `<span class="mr-score">
-         <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${escape(match.home_score)}</span>
+         <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${esc(match.home_score)}</span>
          <span class="score-sep">–</span>
-         <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${escape(match.away_score)}</span>
+         <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${esc(match.away_score)}</span>
        </span>`
-    : `<span class="mr-time">${escape(match.time || 'TBD')}</span>`;
+    : `<span class="mr-time">${esc(match.time || 'TBD')}</span>`;
 
   const groupInfo = match.group
-    ? `<span class="mr-stage">${escape(stageLabel(match.stage))} · Grp ${escape(match.group)}</span>`
-    : `<span class="mr-stage">${escape(stageLabel(match.stage))}</span>`;
+    ? `<span class="mr-stage">${esc(stageLabel(match.stage))} · Grp ${esc(match.group)}</span>`
+    : `<span class="mr-stage">${esc(stageLabel(match.stage))}</span>`;
 
   const homeKey = (match.home_team || '').toLowerCase().trim();
   const awayKey = (match.away_team || '').toLowerCase().trim();
@@ -85,11 +85,11 @@ function buildMatchRow(match) {
       <div class="mr-teams">
         <span class="mr-team">
           ${getFlag(match.home_team)}
-          <span class="mr-name ${homeWon ? 'team--winner' : ''}">${escape(match.home_team || 'TBD')}</span>
+          <span class="mr-name ${homeWon ? 'team--winner' : ''}">${esc(match.home_team || 'TBD')}</span>
         </span>
         <span class="mr-middle">${scoreOrTime}</span>
         <span class="mr-team mr-team--away">
-          <span class="mr-name ${awayWon ? 'team--winner' : ''}">${escape(match.away_team || 'TBD')}</span>
+          <span class="mr-name ${awayWon ? 'team--winner' : ''}">${esc(match.away_team || 'TBD')}</span>
           ${getFlag(match.away_team)}
         </span>
       </div>
@@ -213,7 +213,10 @@ function buildMatchCarousel(matches) {
 
 async function loadMatches() {
   try {
-    const res = await fetch(MATCHES_CSV_URL);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(MATCHES_CSV_URL, { signal: controller.signal });
+    clearTimeout(timeout);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
     const matches = parseMatchesCSV(text);

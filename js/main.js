@@ -1,7 +1,10 @@
 // ─── Fetch CSV, parse bars, kick off rendering ────────────────────────────────
 async function loadBars() {
   try {
-    const res = await fetch(SHEET_CSV_URL);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch(SHEET_CSV_URL, { signal: controller.signal });
+    clearTimeout(timeout);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
     const bars = parseCSV(text);
@@ -17,6 +20,13 @@ async function loadBars() {
       window._barsReady = true;
     }
   } catch (err) {
+    if (err.name === 'AbortError') {
+      document.getElementById('barList').innerHTML = `
+        <div class="state-box">
+          <div class="icon">⏱️</div>
+          <p>Request timed out. Please check your connection and refresh.</p>
+        </div>`;
+    } else {
     document.getElementById('barList').innerHTML = `
       <div class="state-box">
         <div class="icon">⚠️</div>
@@ -27,6 +37,7 @@ async function loadBars() {
         </a></p>
       </div>`;
     document.querySelector('.map-section').style.display = 'none';
+    }
     console.error(err);
   }
 }
