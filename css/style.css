@@ -191,6 +191,13 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   align-items: center;
   gap: 6px;
 }
+
+@media (max-width: 600px) {
+  .filter-btn {
+    padding: 9px 16px;
+    font-size: 0.88rem;
+  }
+}
 .filter-btn:hover { border-color: var(--orange); color: var(--orange); }
 .filter-btn.active { background: var(--orange); color: var(--black); border-color: var(--orange); font-weight: 700; }
 .filter-btn img { border-radius: 2px; vertical-align: middle; }
@@ -213,6 +220,11 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 /* ── CATEGORY BLOCKS ── */
 .list-section { max-width: 960px; margin: 28px auto 60px; padding: 0 16px; }
 .category-block { margin-bottom: 40px; }
+
+@media (max-width: 600px) {
+  .list-section { margin: 20px auto 40px; }
+  .category-block { margin-bottom: 28px; }
+}
 .category-header {
   display: flex;
   align-items: center;
@@ -271,6 +283,12 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 
 .bar-name { font-weight: 700; font-size: 0.98rem; color: var(--white); margin-bottom: 3px; }
 .bar-address { font-size: 0.76rem; color: var(--muted); margin-bottom: 10px; }
+
+@media (max-width: 600px) {
+  .bar-name { font-size: 1.05rem; }
+  .bar-address { font-size: 0.82rem; }
+  .map-link { font-size: 0.8rem; padding: 6px 14px; }
+}
 .bar-meta { display: flex; gap: 6px; flex-wrap: wrap; }
 .pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid; }
 .pill-type   { color: var(--muted);  border-color: var(--border); background: var(--card2); font-weight: 500; }
@@ -627,15 +645,22 @@ footer a { color: var(--orange); text-decoration: none; }
 /* ─── Day Card (replaces individual match cards) ────────────────────────────── */
 
 .day-card {
-  scroll-snap-align: center;
+  scroll-snap-align: start;
   flex-shrink: 0;
-  width: clamp(200px, 72vw, 260px);
+  width: 260px;
   background: #141414;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
   padding: 12px 12px 10px;
   position: relative;
   transition: border-color 0.2s, transform 0.2s;
+}
+
+@media (max-width: 600px) {
+  .day-card {
+    width: 88vw;
+    padding: 14px 14px 12px;
+  }
 }
 
 .day-card--past   { opacity: 0.6; border-color: #1e1e1e; }
@@ -651,6 +676,17 @@ footer a { color: var(--orange); text-decoration: none; }
   color: #F79621;
   margin-bottom: 10px;
   margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .day-header {
+    font-size: 0.82rem;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .day-header { font-size: 0.8rem; }
 }
 
 .day-card--past .day-header { color: #555; }
@@ -670,6 +706,10 @@ footer a { color: var(--orange); text-decoration: none; }
   padding: 7px 8px 5px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
+}
+
+@media (max-width: 600px) {
+  .match-row { padding: 9px 10px 7px; }
 }
 
 .match-row:hover {
@@ -711,6 +751,13 @@ footer a { color: var(--orange); text-decoration: none; }
   max-width: 68px;
 }
 
+@media (max-width: 600px) {
+  .mr-name {
+    font-size: 0.78rem;
+    max-width: 100px;
+  }
+}
+
 .mr-team--away .mr-name {
   text-align: right;
 }
@@ -740,6 +787,10 @@ footer a { color: var(--orange); text-decoration: none; }
   letter-spacing: 0.3px;
 }
 
+@media (max-width: 600px) {
+  .mr-time { font-size: 0.72rem; }
+}
+
 .score-sep { color: #444; font-size: 0.85rem; }
 .score-win  { color: #F79621; }
 .score-loss { color: #555; }
@@ -750,4 +801,31 @@ footer a { color: var(--orange); text-decoration: none; }
   color: #555;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+}
+
+@media (max-width: 600px) {
+  .mr-stage { font-size: 0.65rem; }
+}
+/* ─── Mobile Polish ──────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+
+  /* Bigger filter buttons — easier to tap */
+  .filter-btn {
+    padding: 9px 16px;
+    font-size: 0.88rem;
+  }
+
+  /* Bigger bar card text */
+  .bar-name    { font-size: 1.05rem; }
+  .bar-address { font-size: 0.82rem; }
+  .map-link    { font-size: 0.8rem; padding: 6px 12px; margin-top: 14px; }
+
+  /* Bigger match row tap targets */
+  .match-row { padding: 10px 10px 8px; }
+  .day-matches { gap: 10px; }
+
+  /* Slightly tighter section spacing so less scrolling */
+  .list-section { margin-top: 20px; margin-bottom: 40px; }
+  .filters      { margin-top: 20px; }
+  .category-block { margin-bottom: 28px; }
 }
