@@ -16,6 +16,15 @@ function getFlag(nation) {
   return `<img src="https://flagcdn.com/40x30/${code}.png" width="28" height="21" style="border-radius:2px" alt="${esc(nation)}">`;
 }
 
+// ─── Larger flag for match rows ───────────────────────────────────────────────
+function getMatchFlag(nation) {
+  const key = (nation || '').toLowerCase().trim();
+  if (!(key in FLAGS)) return '<span style="font-size:1.5rem">🏳</span>';
+  const code = FLAGS[key];
+  if (code === null) return '<span style="font-size:1.5rem">🌍</span>';
+  return `<img src="https://flagcdn.com/48x36/${code}.png" width="36" height="27" style="border-radius:2px" alt="${esc(nation)}">`;
+}
+
 // ─── Parse CSV text into an array of row objects ──────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().split('\n');

@@ -84,13 +84,13 @@ function buildMatchRow(match) {
     <div class="match-row" data-home="${homeKey}" data-away="${awayKey}" title="Filter bars for this match">
       <div class="mr-teams">
         <span class="mr-team">
-          ${getFlag(match.home_team)}
+          ${getMatchFlag(match.home_team)}
           <span class="mr-name ${homeWon ? 'team--winner' : ''}">${esc(match.home_team || 'TBD')}</span>
         </span>
         <span class="mr-middle">${scoreOrTime}</span>
         <span class="mr-team mr-team--away">
           <span class="mr-name ${awayWon ? 'team--winner' : ''}">${esc(match.away_team || 'TBD')}</span>
-          ${getFlag(match.away_team)}
+          ${getMatchFlag(match.away_team)}
         </span>
       </div>
       ${groupInfo}
@@ -113,20 +113,12 @@ function buildDayCard(dateStr, matchesForDay, state) {
     ? `<span class="match-badge match-badge--soon">THIS WEEK</span>`
     : '';
 
-  const MAX = 5;
-  const visible = matchesForDay.slice(0, MAX);
-  const overflow = matchesForDay.length - MAX;
-  const overflowHtml = overflow > 0
-    ? `<div class="day-overflow">+${overflow} more match${overflow !== 1 ? 'es' : ''}</div>`
-    : '';
-
   return `
     <div class="day-card ${stateClass}">
       ${badge}
       <div class="day-header">${formatDayHeader(date)}</div>
       <div class="day-matches">
-        ${visible.map(buildMatchRow).join('')}
-        ${overflowHtml}
+        ${matchesForDay.map(buildMatchRow).join('')}
       </div>
     </div>`;
 }
