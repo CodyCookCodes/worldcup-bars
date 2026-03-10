@@ -92,7 +92,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   text-align: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .header-inner { padding: 16px 16px 18px; }
   .header-logo  { height: 56px; }
   .header-logos { gap: 14px; }
@@ -246,8 +246,8 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 /* ── BAR CARDS ── */
 .bar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 
-@media (max-width: 600px) {
-  .bar-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 768px) {
+  .bar-grid { grid-template-columns: repeat(1, 1fr); }
 }
 .bar-card {
   background: var(--card);
