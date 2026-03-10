@@ -244,7 +244,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 }
 
 /* ── BAR CARDS ── */
-.bar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.bar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 .bar-card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -633,11 +633,11 @@ footer a { color: var(--orange); text-decoration: none; }
 .day-card {
   scroll-snap-align: start;
   flex-shrink: 0;
-  width: clamp(200px, 72vw, 260px);
+  width: clamp(260px, 72vw, 320px);
   background: #141414;
   border: 1px solid #2a2a2a;
   border-radius: 10px;
-  padding: 12px 12px 10px;
+  padding: 14px 14px 12px;
   position: relative;
   transition: border-color 0.2s, transform 0.2s;
 }
@@ -731,16 +731,6 @@ footer a { color: var(--orange); text-decoration: none; }
   flex-direction: row-reverse;
 }
 
-.mr-name {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #ccc;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 68px;
-}
-
 .mr-team--away .mr-name {
   text-align: right;
 }
@@ -780,4 +770,22 @@ footer a { color: var(--orange); text-decoration: none; }
   color: #555;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+}
+
+.day-overflow {
+  font-size: 0.62rem;
+  color: #555;
+  text-align: center;
+  padding: 4px 0 2px;
+  letter-spacing: 0.5px;
+}
+
+.mr-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
 }

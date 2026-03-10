@@ -113,12 +113,20 @@ function buildDayCard(dateStr, matchesForDay, state) {
     ? `<span class="match-badge match-badge--soon">THIS WEEK</span>`
     : '';
 
+  const MAX = 5;
+  const visible = matchesForDay.slice(0, MAX);
+  const overflow = matchesForDay.length - MAX;
+  const overflowHtml = overflow > 0
+    ? `<div class="day-overflow">+${overflow} more match${overflow !== 1 ? 'es' : ''}</div>`
+    : '';
+
   return `
     <div class="day-card ${stateClass}">
       ${badge}
       <div class="day-header">${formatDayHeader(date)}</div>
       <div class="day-matches">
-        ${matchesForDay.map(buildMatchRow).join('')}
+        ${visible.map(buildMatchRow).join('')}
+        ${overflowHtml}
       </div>
     </div>`;
 }
