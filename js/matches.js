@@ -189,31 +189,8 @@ function buildMatchCarousel(matches) {
     byDate[key].push(m);
   });
 
-  // On mobile (touch device), only show today + tomorrow
-  const isMobile = window.matchMedia('(pointer: coarse)').matches;
-  let entries = Object.entries(byDate);
-  if (isMobile) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    entries = entries.filter(([dateStr]) => {
-      const d = parseLocalDate(dateStr);
-      return d && (d.getTime() === today.getTime() || d.getTime() === tomorrow.getTime());
-    });
-    // If no matches today/tomorrow (e.g. pre-tournament), show next 2 upcoming days
-    if (!entries.length) {
-      entries = Object.entries(byDate)
-        .filter(([dateStr]) => {
-          const d = parseLocalDate(dateStr);
-          return d && d >= today;
-        })
-        .slice(0, 2);
-    }
-  }
-
   const track = document.getElementById('matchTrack');
-  track.innerHTML = entries.map(([dateStr, dayMatches]) => {
+  track.innerHTML = Object.entries(byDate).map(([dateStr, dayMatches]) => {
     const date = parseLocalDate(dateStr);
     const state = date ? getDayState(date) : 'future';
     return buildDayCard(dateStr, dayMatches, state);
