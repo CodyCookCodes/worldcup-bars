@@ -189,8 +189,8 @@ function buildMatchCarousel(matches) {
     byDate[key].push(m);
   });
 
-  // On mobile, only show today + tomorrow
-  const isMobile = window.innerWidth < 600;
+  // On mobile (touch device), only show today + tomorrow
+  const isMobile = window.matchMedia('(pointer: coarse)').matches;
   let entries = Object.entries(byDate);
   if (isMobile) {
     const today = new Date();

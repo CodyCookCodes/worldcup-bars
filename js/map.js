@@ -27,7 +27,7 @@ window.buildMap = function(bars) {
   if (loadingEl) loadingEl.style.display = 'none';
   mapEl.style.display = 'block';
 
-  const isMobile = window.innerWidth < 600;
+  const isMobile = window.matchMedia('(pointer: coarse)').matches;
   gMap = new google.maps.Map(mapEl, {
     zoom: isMobile ? 12 : 13,
     center: { lat: 37.8044, lng: -122.2712 },
