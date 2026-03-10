@@ -648,7 +648,7 @@ footer a { color: var(--orange); text-decoration: none; }
 
 @media (pointer: coarse) {
   .day-card {
-    width: 92vw;
+    width: 80vw;
   }
   .day-header {
     font-size: 0.8rem;
