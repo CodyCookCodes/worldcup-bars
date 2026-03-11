@@ -79,7 +79,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   background: var(--black);
   text-align: center;
   padding: 6px 16px;
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -106,7 +106,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 }
 .header-inner h1 span { color: var(--orange); }
 .header-inner .sub {
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: var(--green);
   font-weight: 600;
   letter-spacing: 2px;
@@ -152,7 +152,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   padding: 0 16px;
 }
 .filter-label {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--muted);
   font-weight: 700;
   text-transform: uppercase;
@@ -176,7 +176,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   .filter-buttons::-webkit-scrollbar { display: none; }
   .filter-btn {
     padding: 10px 16px;
-    font-size: 0.88rem;
+    font-size: 1rem;
   }
 }
 .filter-btn {
@@ -185,7 +185,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   color: var(--text);
   padding: 7px 14px;
   border-radius: 20px;
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   cursor: pointer;
   font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif;
   font-weight: 500;
@@ -197,7 +197,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 }
 .filter-btn:hover { border-color: var(--orange); color: var(--orange); }
 .filter-btn.active { background: var(--orange); color: var(--black); border-color: var(--orange); font-weight: 700; }
-.filter-btn img { border-radius: 2px; vertical-align: middle; }
+.filter-btn img { border-radius: 2px; vertical-align: middle; width: 24px; height: 18px; }
 
 /* ── LOADING / ERROR ── */
 .state-box { text-align: center; padding: 60px 20px; color: var(--muted); }
@@ -226,15 +226,15 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   border-bottom: 2px solid var(--border);
 }
 .cat-flag { display: flex; align-items: center; }
-.cat-flag img { border-radius: 2px; }
+.cat-flag img { border-radius: 2px; width: 36px; height: 27px; }
 .cat-title {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1.35rem;
+  font-size: 1.6rem;
   letter-spacing: 2px;
   color: var(--yellow);
 }
 .cat-count {
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   color: var(--muted);
   background: var(--card2);
   border: 1px solid var(--border);
@@ -277,10 +277,10 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 }
 .bar-card:hover::before { opacity: 1; }
 
-.bar-name { font-weight: 700; font-size: 0.98rem; color: var(--white); margin-bottom: 3px; }
-.bar-address { font-size: 0.76rem; color: var(--muted); margin-bottom: 10px; }
+.bar-name { font-weight: 700; font-size: 1.1rem; color: var(--white); margin-bottom: 3px; }
+.bar-address { font-size: 0.88rem; color: var(--muted); margin-bottom: 10px; }
 .bar-meta { display: flex; gap: 6px; flex-wrap: wrap; }
-.pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid; }
+.pill { font-size: 0.82rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; border: 1px solid; }
 .pill-type   { color: var(--muted);  border-color: var(--border); background: var(--card2); font-weight: 500; }
 .pill-hours  { color: var(--green);  border-color: rgba(37,182,124,0.3); background: rgba(37,182,124,0.07); }
 .map-link {
@@ -288,7 +288,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   align-items: center;
   gap: 5px;
   margin-top: 12px;
-  font-size: 0.74rem;
+  font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -303,7 +303,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 .map-link:hover { background: var(--orange); color: var(--black); }
 
 /* ── FOOTER ── */
-footer { border-top: 1px solid var(--border); padding: 24px 20px; text-align: center; font-size: 0.74rem; color: var(--muted); }
+footer { border-top: 1px solid var(--border); padding: 24px 20px; text-align: center; font-size: 0.88rem; color: var(--muted); }
 
 @media (pointer: coarse) {
   footer { padding: 20px 16px; font-size: 0.72rem; line-height: 1.8; }
@@ -319,7 +319,7 @@ footer { border-top: 1px solid var(--border); padding: 24px 20px; text-align: ce
   padding: 6px 14px;
   margin-bottom: 10px;
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   color: var(--green);
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -328,9 +328,9 @@ footer a { color: var(--orange); text-decoration: none; }
 .hidden { display: none !important; }
 
 @media (pointer: coarse) {
-  .bar-name { font-size: 1.05rem; }
-  .bar-address { font-size: 0.82rem; }
-  .map-link { font-size: 0.8rem; padding: 6px 12px; }
+  .bar-name { font-size: 1.15rem; }
+  .bar-address { font-size: 0.92rem; }
+  .map-link { font-size: 0.9rem; padding: 6px 12px; }
 }
 
 /* ── GOOGLE INFOWINDOW DARK OVERRIDE ── */
@@ -388,7 +388,7 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .matches-title {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -651,21 +651,21 @@ footer a { color: var(--orange); text-decoration: none; }
     width: 80vw;
   }
   .day-header {
-    font-size: 0.9rem;
+    font-size: 1.05rem;
     letter-spacing: 1px;
   }
   .mr-name {
-    font-size: 0.85rem;
-    max-width: 110px;
+    font-size: 1rem;
+    max-width: 120px;
   }
   .mr-time {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
   .mr-stage {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
   }
   .mr-score {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
   .match-row {
     padding: 10px 12px 8px;
@@ -684,7 +684,7 @@ footer a { color: var(--orange); text-decoration: none; }
 .day-card--future { opacity: 0.8; }
 
 .day-header {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -762,7 +762,7 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .mr-score {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #fff;
   display: flex;
@@ -771,7 +771,7 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 
 .mr-time {
-  font-size: 0.62rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #666;
   letter-spacing: 0.3px;
@@ -783,14 +783,14 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .mr-stage {
   display: block;
-  font-size: 0.58rem;
+  font-size: 0.75rem;
   color: #555;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 .day-overflow {
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   color: #555;
   text-align: center;
   padding: 4px 0 2px;
@@ -798,11 +798,11 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 
 .mr-name {
-  font-size: 0.72rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #ccc;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 90px;
+  max-width: 110px;
 }
