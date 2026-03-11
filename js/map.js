@@ -47,7 +47,7 @@ window.buildMap = function(bars) {
     if (resolved === mappable.length && !bounds.isEmpty()) {
       gMap.fitBounds(bounds);
       google.maps.event.addListenerOnce(gMap, 'bounds_changed', () => {
-        if (gMap.getZoom() > 15) gMap.setZoom(15);
+        if (gMap.getZoom() > 14) gMap.setZoom(14);
       });
     }
   };
