@@ -94,7 +94,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 
 @media (pointer: coarse) {
   .header-inner { padding: 16px 16px 18px; }
-  .header-logo  { height: 56px; }
+  .header-logo  { height: 100px; }
   .header-logos { gap: 14px; }
 }
 .header-inner h1 {
