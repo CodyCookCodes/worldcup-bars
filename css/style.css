@@ -142,7 +142,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 }
 
 @media (pointer: coarse) {
-  .map-section { height: 500px; }
+  .map-section { height: 600px; }
 }
 
 /* ── FILTERS ── */
