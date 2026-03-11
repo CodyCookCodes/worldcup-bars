@@ -87,7 +87,7 @@ window.buildMap = function(bars) {
               </div>
               <a href="${buildMapsUrl(bar)}" target="_blank" style="
                 display: inline-block;
-                font-size: 2rem;
+                font-size: 1.3rem;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
@@ -96,7 +96,7 @@ window.buildMap = function(bars) {
                 border-radius: 4px;
                 padding: 4px 10px;
                 text-decoration: none;
-              ">📍 Open in Maps</a>
+              ">Open in Maps</a>
             </div>
           `);
           infoWindow.setOptions({ maxWidth: 350, minWidth: 250 });
