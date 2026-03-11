@@ -79,15 +79,15 @@ window.buildMap = function(bars) {
               padding: 10px 12px;
               border-radius: 6px;
             ">
-              <div style="font-weight: 700; white-space: normal; word-break:break-word; font-size: 1.3rem; color: #ffffff; margin-bottom: 3px;">
+              <div style="font-weight: 700; white-space: normal; word-break:break-word; font-size: 2.3rem; color: #ffffff; margin-bottom: 3px;">
                 ${esc(bar.name)}
               </div>
-              <div style="font-size: 1rem; color: #F79621; margin-bottom: 8px;">
+              <div style="font-size: 2rem; color: #F79621; margin-bottom: 8px;">
                 ${esc(bar.nation || '')}
               </div>
               <a href="${buildMapsUrl(bar)}" target="_blank" style="
                 display: inline-block;
-                font-size: 1rem;
+                font-size: 2rem;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
