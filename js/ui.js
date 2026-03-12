@@ -4,6 +4,7 @@ function buildCard(bar) {
     <a class="bar-card" href="${buildMapsUrl(bar)}" target="_blank">
       <div class="bar-name">${esc(bar.name)}</div>
       <div class="bar-address">${esc(bar.address || '').replace(/([A-Za-z]+)\s+(Oakland|Emeryville|Berkeley|San Leandro|San Francisco)/, '$1, $2')}</div>
+      <div class="bar-spacer"></div>
       <div class="bar-meta">
         ${bar.type  ? `<span class="pill pill-type">${esc(bar.type)}</span>` : ''}
         ${bar.hours ? `<span class="pill pill-hours">${esc(bar.hours)}</span>` : ''}
