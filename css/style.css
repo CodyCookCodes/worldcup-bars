@@ -811,36 +811,36 @@ footer a { color: var(--orange); text-decoration: none; }
 @media (pointer: coarse) {
 
   /* Header strip + sub */
-  .header-top       { font-size: 1.4rem; }
-  .header-inner .sub { font-size: 1.8rem; }
+  .header-top       { font-size: 0.9rem; }
+  .header-inner .sub { font-size: 1.1rem; }
 
   /* Filters */
-  .filter-label     { font-size: 1.6rem; letter-spacing: 0.5px; }
-  .filter-btn       { font-size: 1.8rem; padding: 12px 20px; gap: 10px; }
+  .filter-label     { font-size: 1rem; letter-spacing: 0.5px; }
+  .filter-btn       { font-size: 1.1rem; padding: 12px 20px; gap: 10px; }
   .filter-btn img   { width: 40px; height: 30px; }
 
   /* Category headers */
-  .cat-title        { font-size: 3rem; letter-spacing: 1px; }
+  .cat-title        { font-size: 1.6rem; letter-spacing: 1px; }
   .cat-count        { font-size: 1.5rem; padding: 4px 12px; }
   .cat-flag img     { width: 56px; height: 42px; }
 
   /* Bar cards */
-  .bar-name         { font-size: 2rem; }
-  .bar-address      { font-size: 1.6rem; }
-  .pill             { font-size: 1.4rem; padding: 4px 12px; }
-  .map-link         { font-size: 1.5rem; padding: 8px 16px; margin-top: 14px; }
+  .bar-name         { font-size: 1.3rem; }
+  .bar-address      { font-size: 1rem; }
+  .pill             { font-size: 0.9rem; padding: 4px 12px; }
+  .map-link         { font-size: 1rem; padding: 8px 16px; margin-top: 14px; }
 
   /* Match carousel */
-  .matches-title    { font-size: 2rem; letter-spacing: 1px; }
+  .matches-title    { font-size: 1.2rem; letter-spacing: 1px; }
   .match-nav-btn    { width: 44px; height: 44px; font-size: 1.4rem; }
 
   /* Day cards */
-  .day-header       { font-size: 1.6rem; letter-spacing: 0.5px; }
-  .mr-name          { font-size: 1.6rem; max-width: 160px; }
-  .mr-time          { font-size: 1.3rem; }
-  .mr-score         { font-size: 2rem; }
-  .mr-stage         { font-size: 1.3rem; }
-  .score-sep        { font-size: 1.6rem; }
+  .day-header       { font-size: 1rem; letter-spacing: 0.5px; }
+  .mr-name          { font-size: 1rem; max-width: 160px; }
+  .mr-time          { font-size: 0.85rem; }
+  .mr-score         { font-size: 1.2rem; }
+  .mr-stage         { font-size: 0.8rem; }
+  .score-sep        { font-size: 1rem; }
   .day-overflow     { font-size: 1.3rem; }
   .match-row        { padding: 12px 14px 10px; }
   .mr-middle        { min-width: 56px; }
@@ -850,12 +850,12 @@ footer a { color: var(--orange); text-decoration: none; }
   .match-badge      { font-size: 1.1rem; padding: 4px 14px; top: -14px; }
 
   /* Footer */
-  footer            { font-size: 1.5rem; line-height: 2; }
-  .footer-badge     { font-size: 1.4rem; padding: 8px 18px; }
+  footer            { font-size: 0.9rem; line-height: 2; }
+  .footer-badge     { font-size: 0.9rem; padding: 8px 18px; }
 
   /* Loading / error */
-  .state-box p      { font-size: 1.6rem; }
-  .map-loading      { font-size: 1.6rem; }
+  .state-box p      { font-size: 1rem; }
+  .map-loading      { font-size: 1rem; }
 }
 /* ── BUILT BY ── */
 .built-by {
