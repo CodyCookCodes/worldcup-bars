@@ -8,7 +8,7 @@ function buildCard(bar) {
         ${bar.type  ? `<span class="pill pill-type">${esc(bar.type)}</span>` : ''}
         ${bar.hours ? `<span class="pill pill-hours">${esc(bar.hours)}</span>` : ''}
       </div>
-      <span class="map-link">📍 Open in Maps</span>
+      <span class="map-link">Open in Maps</span>
     </a>`;
 }
 
@@ -45,7 +45,6 @@ function buildPage(bars) {
       <div class="category-header">
         <span class="cat-flag">${getFlag(nation)}</span>
         <span class="cat-title">${esc(nation)}</span>
-        <span class="cat-count">${groups[nation].length} bar${groups[nation].length !== 1 ? 's' : ''}</span>
       </div>
       <div class="bar-grid">${groups[nation].map(buildCard).join('')}</div>
     </div>

@@ -1,14 +1,15 @@
 // ─── Map state ────────────────────────────────────────────────────────────────
 let gMap = null;
-let gMarkers = []; // { marker, nation }
+let gMarkers = []; // { marker, nations }
+let gInfoWindow = null;
 
 // ─── Build a Google Maps pin icon (orange = active, grey = inactive) ──────────
 function makePinIcon(mode = 'orange') {
   const svg = mode === 'grey' ? GREY_PIN_SVG : mode === 'red' ? RED_PIN_SVG : ORANGE_PIN_SVG;
   return {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
-    scaledSize: new google.maps.Size(28, 36),
-    anchor: new google.maps.Point(14, 36),
+    scaledSize: new google.maps.Size(20, 26),
+    anchor: new google.maps.Point(10, 26),
   };
 }
 
@@ -53,7 +54,7 @@ window.buildMap = function(bars) {
   };
 
   // One shared InfoWindow so only one is open at a time
-  const infoWindow = new google.maps.InfoWindow({
+  gInfoWindow = new google.maps.InfoWindow({
     disableAutoPan: false,
     maxWidth: 280,
   });
@@ -72,22 +73,24 @@ window.buildMap = function(bars) {
     });
 
         marker.addListener('click', () => {
-          infoWindow.setContent(`
+          gInfoWindow.setContent(`
             <div style="
               background: #1a1a1a;
               color: #f0f0f0;
               padding: 10px 12px;
               border-radius: 6px;
+              min-width: 180px;
+              max-width: 240px;
             ">
-              <div style="font-weight: 700; white-space: normal; word-break:break-word; font-size: 2.3rem; color: #ffffff; margin-bottom: 3px;">
+              <div style="font-weight: 600; white-space: normal; padding-right:50px; overflow-wrap: break-word; font-size:1.35rem; color: #ffffff; margin-bottom: 3px;">
                 ${esc(bar.name)}
               </div>
-              <div style="font-size: 2rem; color: #F79621; margin-bottom: 8px;">
+              <div style="font-size: 1rem; color: #F79621; margin-bottom: 8px;">
                 ${esc(bar.nation || '')}
               </div>
               <a href="${buildMapsUrl(bar)}" target="_blank" style="
                 display: inline-block;
-                font-size: 1.3rem;
+                font-size: .85rem;
                 font-weight: 700;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
@@ -99,8 +102,8 @@ window.buildMap = function(bars) {
               ">Open in Maps</a>
             </div>
           `);
-          infoWindow.setOptions({ maxWidth: 350, minWidth: 250 });
-          infoWindow.open(gMap, marker);
+          gInfoWindow.setOptions({ maxWidth: 600});
+          gInfoWindow.open(gMap, marker);
         });
 
         gMarkers.push({
@@ -153,6 +156,7 @@ window.buildMap = function(bars) {
 
 // ─── Show/grey-out pins based on the active nation filter ────────────────────
 window.filterMapPins = function(nation) {
+  if (gInfoWindow) gInfoWindow.close();
   gMarkers.forEach(({ marker, nations }) => {
     const isMatch = nation === 'all' || nations.includes(nation);
     marker.setIcon(makePinIcon(isMatch ? 'orange' : 'grey'));
@@ -162,6 +166,7 @@ window.filterMapPins = function(nation) {
 
 // ─── Highlight pins for multiple nations (match row click) ────────────────────
 window.filterMapPinsMulti = function(nations) {
+  if (gInfoWindow) gInfoWindow.close();
   gMarkers.forEach(({ marker, nations: pinNations }) => {
     const isAllNations = pinNations.includes('all nations');
     const isMatch = nations.some(n => pinNations.includes(n));
