@@ -811,51 +811,51 @@ footer a { color: var(--orange); text-decoration: none; }
 @media (pointer: coarse) {
 
   /* Header strip + sub */
-  .header-top       { font-size: 0.9rem; }
-  .header-inner .sub { font-size: 1.1rem; }
+  .header-top        { font-size: 0.72rem; }
+  .header-inner .sub { font-size: 0.9rem; }
 
   /* Filters */
-  .filter-label     { font-size: 1rem; letter-spacing: 0.5px; }
-  .filter-btn       { font-size: 1.1rem; padding: 12px 20px; gap: 10px; }
-  .filter-btn img   { width: 40px; height: 30px; }
+  .filter-label      { font-size: 0.75rem; letter-spacing: 0.5px; }
+  .filter-btn        { font-size: 0.95rem; padding: 10px 14px; gap: 6px; }
+  .filter-btn img    { width: 28px; height: 21px; }
 
   /* Category headers */
-  .cat-title        { font-size: 1.6rem; letter-spacing: 1px; }
-  .cat-count        { font-size: 1.5rem; padding: 4px 12px; }
-  .cat-flag img     { width: 56px; height: 42px; }
+  .cat-title         { font-size: 1.25rem; letter-spacing: 1px; }
+  .cat-count         { font-size: 0.8rem; padding: 2px 8px; }
+  .cat-flag img      { width: 40px; height: 30px; }
 
   /* Bar cards */
-  .bar-name         { font-size: 1.3rem; }
-  .bar-address      { font-size: 1rem; }
-  .pill             { font-size: 0.9rem; padding: 4px 12px; }
-  .map-link         { font-size: 1rem; padding: 8px 16px; margin-top: 14px; }
+  .bar-name          { font-size: 1rem; }
+  .bar-address       { font-size: 0.85rem; }
+  .pill              { font-size: 0.78rem; padding: 3px 8px; }
+  .map-link          { font-size: 0.88rem; padding: 6px 14px; margin-top: 10px; }
 
   /* Match carousel */
-  .matches-title    { font-size: 1.2rem; letter-spacing: 1px; }
-  .match-nav-btn    { width: 44px; height: 44px; font-size: 1.4rem; }
+  .matches-title     { font-size: 1rem; letter-spacing: 1px; }
+  .match-nav-btn     { width: 36px; height: 36px; font-size: 1rem; }
 
   /* Day cards */
-  .day-header       { font-size: 1rem; letter-spacing: 0.5px; }
-  .mr-name          { font-size: 1rem; max-width: 160px; }
-  .mr-time          { font-size: 0.85rem; }
-  .mr-score         { font-size: 1.2rem; }
-  .mr-stage         { font-size: 0.8rem; }
-  .score-sep        { font-size: 1rem; }
-  .day-overflow     { font-size: 1.3rem; }
-  .match-row        { padding: 12px 14px 10px; }
-  .mr-middle        { min-width: 56px; }
-  .mr-team          { gap: 8px; }
+  .day-header        { font-size: 0.88rem; letter-spacing: 0.5px; }
+  .mr-name           { font-size: 0.88rem; max-width: 120px; }
+  .mr-time           { font-size: 0.78rem; }
+  .mr-score          { font-size: 1rem; }
+  .mr-stage          { font-size: 0.72rem; }
+  .score-sep         { font-size: 0.88rem; }
+  .day-overflow      { font-size: 0.75rem; }
+  .match-row         { padding: 8px 10px 6px; }
+  .mr-middle         { min-width: 44px; }
+  .mr-team           { gap: 6px; }
 
   /* Match badge */
-  .match-badge      { font-size: 1.1rem; padding: 4px 14px; top: -14px; }
+  .match-badge       { font-size: 0.72rem; padding: 3px 10px; top: -12px; }
 
   /* Footer */
-  footer            { font-size: 0.9rem; line-height: 2; }
-  .footer-badge     { font-size: 0.9rem; padding: 8px 18px; }
+  footer             { font-size: 0.74rem; line-height: 1.8; }
+  .footer-badge      { font-size: 0.72rem; padding: 6px 14px; }
 
   /* Loading / error */
-  .state-box p      { font-size: 1rem; }
-  .map-loading      { font-size: 1rem; }
+  .state-box p       { font-size: 0.9rem; }
+  .map-loading       { font-size: 0.9rem; }
 }
 /* ── BUILT BY ── */
 .built-by {
