@@ -1,8 +1,11 @@
 // ─── Sheet URLs ───────────────────────────────────────────────────────────────
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=0&single=true&output=csv';
 
-// Matches tab — replace YOUR_MATCHES_GID with the gid from your published Matches tab URL
+// Matches tab
 const MATCHES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=499767530&single=true&output=csv';
+
+// Watch Parties tab — replace YOUR_WP_GID with the gid from your published Watch Parties tab URL
+const WATCH_PARTIES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=696168736&single=true&output=csv';
 
 // ─── Country → flagcdn code map ───────────────────────────────────────────────
 const FLAGS = {
@@ -66,5 +69,12 @@ const RED_PIN_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
   <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
         fill="#e63946" stroke="#b52833" stroke-width="1.5"/>
+  <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
+</svg>`;
+
+const GREEN_PIN_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+  <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
+        fill="#25B67C" stroke="#1a8a5c" stroke-width="1.5"/>
   <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
 </svg>`;

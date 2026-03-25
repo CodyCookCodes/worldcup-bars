@@ -878,3 +878,46 @@ footer a { color: var(--orange); text-decoration: none; }
   .day-header { font-size: 1.05rem; }
   .match-row  { padding: 10px 12px 8px; }
 }
+
+/* ─── Watch Party Tab Button ─────────────────────────────────────────────────── */
+.filter-btn--watch-party {
+  border-color: rgba(37, 182, 124, 0.4);
+  color: var(--green);
+}
+.filter-btn--watch-party:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+.filter-btn--watch-party.active {
+  background: var(--green);
+  color: var(--black);
+  border-color: var(--green);
+}
+ 
+/* ─── Watch Party Card ───────────────────────────────────────────────────────── */
+.bar-card--watch-party::before {
+  background: var(--green);
+  opacity: 1;
+}
+.bar-card--watch-party:hover {
+  border-color: var(--green);
+  box-shadow: 0 6px 24px rgba(37,182,124,0.12);
+}
+.wp-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.map-link--green {
+  color: var(--green);
+  background: rgba(37,182,124,0.08);
+  border-color: rgba(37,182,124,0.3);
+}
+.map-link--green:hover {
+  background: var(--green);
+  color: var(--black);
+}
+ 

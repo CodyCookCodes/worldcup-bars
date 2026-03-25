@@ -12,7 +12,6 @@ async function loadBars() {
 
     buildPage(bars);
 
-    // Hand bars to map — either map is already ready or we store for when it loads
     window._barsData = bars;
     if (window._mapReady) {
       window.buildMap(bars);
@@ -27,16 +26,16 @@ async function loadBars() {
           <p>Request timed out. Please check your connection and refresh.</p>
         </div>`;
     } else {
-    document.getElementById('barList').innerHTML = `
-      <div class="state-box">
-        <div class="icon">⚠️</div>
-        <p>Couldn't load the bar list.<br><br>
-        Make sure your Google Sheet is published as a CSV.<br><br>
-        <a href="https://support.google.com/docs/answer/183965" target="_blank">
-          How to publish a Google Sheet as CSV →
-        </a></p>
-      </div>`;
-    document.querySelector('.map-section').style.display = 'none';
+      document.getElementById('barList').innerHTML = `
+        <div class="state-box">
+          <div class="icon">⚠️</div>
+          <p>Couldn't load the bar list.<br><br>
+          Make sure your Google Sheet is published as a CSV.<br><br>
+          <a href="https://support.google.com/docs/answer/183965" target="_blank">
+            How to publish a Google Sheet as CSV →
+          </a></p>
+        </div>`;
+      document.querySelector('.map-section').style.display = 'none';
     }
     console.error(err);
   }
@@ -49,13 +48,18 @@ function initMap() {
   } else {
     window._mapReady = true;
   }
+
+  // Place watch party markers if they loaded before the map was ready
+  if (window._watchPartiesReady && window._watchPartiesData && window._watchPartiesData.length) {
+    window.buildWatchPartyMarkers(window._watchPartiesData);
+  }
 }
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 loadBars();
-loadMatches();
+loadMatchesAndWatchParties();
 
-// Dynamically load Maps script — MAPS_API_KEY injected into constants.js by deploy workflow
+// Dynamically load Maps script
 const script = document.createElement('script');
 script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
 script.async = true;
