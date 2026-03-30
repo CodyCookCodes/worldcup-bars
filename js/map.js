@@ -152,7 +152,7 @@ window.buildMap = function(bars) {
   });
 };
 
-// ─── Place watch party markers (green pins) ───────────────────────────────────
+// ─── Place watch party markers (green pins, hidden until Watch Party filter active) ──
 window.buildWatchPartyMarkers = function(watchParties) {
   if (!gMap || !watchParties.length) return;
 
@@ -163,19 +163,24 @@ window.buildWatchPartyMarkers = function(watchParties) {
 
     const safePlaceId = wp.place_id ? wp.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
 
-    // If this watch party is already a bar pin, upgrade it to green
+    const createHiddenMarker = (pos) => {
+      const marker = new google.maps.Marker({
+        position: pos,
+        map: null,  // hidden by default — only shown when Watch Party filter is active
+        title: wp.name,
+        icon: makeWatchPartyPinIcon(false),
+        optimized: false,
+        zIndex: 20,
+      });
+      marker.addListener('click', () => buildWatchPartyInfoWindow(wp, marker));
+      wMarkers.push({ marker, wp });
+    };
+
+    // If this watch party matches an existing bar pin, reuse its position
     if (safePlaceId) {
       const existing = gMarkers.find(m => m.placeId === safePlaceId);
       if (existing) {
-        existing.marker.setIcon(makeWatchPartyPinIcon(false));
-        existing.marker.setZIndex(20);
-        google.maps.event.clearListeners(existing.marker, 'click');
-        existing.marker.addListener('click', () => buildWatchPartyInfoWindow(wp, existing.marker));
-        wMarkers.push({ marker: existing.marker, wp });
-        if (gBounds) {
-          gBounds.extend(existing.marker.getPosition());
-          refitBounds();
-        }
+        createHiddenMarker(existing.marker.getPosition());
         return;
       }
     }
@@ -187,24 +192,7 @@ window.buildWatchPartyMarkers = function(watchParties) {
         console.warn(`Watch party geocode failed for ${wp.name}: ${status}`);
         return;
       }
-
-      const pos = results[0].geometry.location;
-      if (gBounds) {
-        gBounds.extend(pos);
-        refitBounds();
-      }
-
-      const marker = new google.maps.Marker({
-        position: pos,
-        map: gMap,
-        title: wp.name,
-        icon: makeWatchPartyPinIcon(false),
-        optimized: false,
-        zIndex: 20,
-      });
-
-      marker.addListener('click', () => buildWatchPartyInfoWindow(wp, marker));
-      wMarkers.push({ marker, wp });
+      createHiddenMarker(results[0].geometry.location);
     });
   });
 };
@@ -225,7 +213,7 @@ function buildWatchPartyInfoWindow(wp, marker) {
 
   gInfoWindow.setContent(`
     <div style="background:#0d1f16;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
-      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">⚽ Watch Party</div>
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">Watch Party</div>
       <div style="font-weight:700;white-space:normal;padding-right:50px;overflow-wrap:break-word;font-size:1.35rem;color:#ffffff;margin-bottom:6px;">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}
@@ -239,66 +227,58 @@ function buildWatchPartyInfoWindow(wp, marker) {
 // ─── Show only watch party pins, hide all bar pins ────────────────────────────
 window.filterMapWatchParties = function() {
   if (gInfoWindow) gInfoWindow.close();
-  gMarkers.forEach(({ marker }) => {
-    const isWatchParty = wMarkers.some(w => w.marker === marker);
-    if (!isWatchParty) marker.setMap(null);
-  });
-  wMarkers.forEach(({ marker }) => {
-    marker.setMap(gMap);
-    marker.setIcon(makeWatchPartyPinIcon(false));
-    marker.setZIndex(20);
-  });
+  // Hide all regular bar pins
+  gMarkers.forEach(({ marker }) => marker.setMap(null));
+  // Show all watch party green pins
+  wMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
 // ─── Restore all bar pins (called when leaving watch party view) ──────────────
 window.restoreMapPins = function() {
   if (gInfoWindow) gInfoWindow.close();
-  gMarkers.forEach(({ marker }) => {
-    marker.setMap(gMap);
-  });
+  // Hide watch party pins
+  wMarkers.forEach(({ marker }) => marker.setMap(null));
+  // Show all bar pins
+  gMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
 // ─── Show/grey-out bar pins based on the active nation filter ─────────────────
 window.filterMapPins = function(nation) {
   if (gInfoWindow) gInfoWindow.close();
-  // Restore all markers to map first (in case watch party view hid some)
+  // Hide watch party pins — they only appear in Watch Party filter mode
+  wMarkers.forEach(({ marker }) => marker.setMap(null));
+  // Restore all bar markers to map
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
   gMarkers.forEach(({ marker, nations }) => {
-    const isWatchParty = wMarkers.some(w => w.marker === marker);
-    if (isWatchParty) return;
     const isMatch = nation === 'all' || nations.includes(nation);
     marker.setIcon(makePinIcon(isMatch ? 'orange' : 'grey'));
     marker.setZIndex(isMatch ? 10 : 1);
   });
-  wMarkers.forEach(({ marker }) => {
-    marker.setMap(gMap);
-    marker.setIcon(makeWatchPartyPinIcon(false));
-    marker.setZIndex(20);
-  });
 };
 
 // ─── Highlight pins for multiple nations (match row click) ────────────────────
-window.filterMapPinsMulti = function(nations) {
+window.filterMapPinsMulti = function(nations, matchId) {
   if (gInfoWindow) gInfoWindow.close();
-  // Restore all markers first
+  // Restore all bar markers first
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
-
   gMarkers.forEach(({ marker, nations: pinNations }) => {
-    const isWatchParty = wMarkers.some(w => w.marker === marker);
-    if (isWatchParty) return;
     const isAllNations = pinNations.includes('all nations');
     const isMatch = nations.some(n => pinNations.includes(n));
     const mode = isMatch ? 'red' : isAllNations ? 'orange' : 'grey';
     marker.setIcon(makePinIcon(mode));
     marker.setZIndex(isMatch ? 10 : isAllNations ? 5 : 1);
   });
-
+  // Show watch party pins for this specific match (match by ID, or fall back to both team names)
   wMarkers.forEach(({ marker, wp }) => {
-    marker.setMap(gMap);
     const home = (wp.home_team || '').toLowerCase().trim();
     const away = (wp.away_team || '').toLowerCase().trim();
-    const isMatch = nations.includes(home) || nations.includes(away);
-    marker.setIcon(makeWatchPartyPinIcon(isMatch));
-    marker.setZIndex(isMatch ? 30 : 20);
+    const matchesById   = matchId && wp.match_id && wp.match_id.trim() === matchId.trim();
+    const matchesByTeam = home && away && nations.includes(home) && nations.includes(away);
+    if (matchesById || matchesByTeam) {
+      marker.setMap(gMap);
+      marker.setZIndex(30);
+    } else {
+      marker.setMap(null);
+    }
   });
 };

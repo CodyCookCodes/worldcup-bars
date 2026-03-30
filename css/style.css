@@ -894,6 +894,17 @@ footer a { color: var(--orange); text-decoration: none; }
   border-color: var(--green);
 }
  
+/* ─── Watch Party Section ────────────────────────────────────────────────────── */
+#watchPartyList .bar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+#watchPartyList .bar-card--watch-party {
+  width: clamp(160px, 280px, 100%);
+}
+
 /* ─── Watch Party Card ───────────────────────────────────────────────────────── */
 .bar-card--watch-party::before {
   background: var(--green);

@@ -96,14 +96,14 @@ function buildMatchRow(match, watchPartyMatchIds) {
 
   const hasWatchParty = watchPartyMatchIds && watchPartyMatchIds.has(match.match_id);
   const watchPartyBadge = hasWatchParty
-    ? `<span class="mr-watch-party">⚽ Official Watch Party</span>`
+    ? `<span class="mr-watch-party">Official Watch Party</span>`
     : '';
 
   const clickable = !hasScore;
 
   return `
     <div class="match-row${hasScore ? ' match-row--past' : ''}${clickable ? '' : ' match-row--no-click'}"
-         ${clickable ? `data-home="${homeKey}" data-away="${awayKey}" title="Filter bars for this match"` : ''}>
+         ${clickable ? `data-home="${homeKey}" data-away="${awayKey}" data-match-id="${esc(match.match_id || '')}" title="Filter bars for this match"` : ''}>
       <div class="mr-teams">
         <span class="mr-team">
           ${getMatchFlag(match.home_team)}
@@ -145,10 +145,13 @@ function handleMatchRowClick(e) {
   const row = e.currentTarget;
   const home = row.dataset.home;
   const away = row.dataset.away;
+  const matchId = row.dataset.matchId || null;
 
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
 
-  document.querySelectorAll('.category-block').forEach(block => {
+  // Show bar list, filter its category blocks (scoped — don't touch watchPartyList's block)
+  document.getElementById('barList').classList.remove('hidden');
+  document.querySelectorAll('#barList .category-block').forEach(block => {
     const n = block.dataset.nation;
     if (n === home || n === away || n === 'all nations') {
       block.classList.remove('hidden');
@@ -157,7 +160,26 @@ function handleMatchRowClick(e) {
     }
   });
 
-  if (window.filterMapPinsMulti) window.filterMapPinsMulti([home, away]);
+  // Show watch parties for this match (if any), hidden otherwise
+  const allWPs = window._watchPartiesData || [];
+  const matchWPs = allWPs.filter(wp => {
+    const wpHome = (wp.home_team || '').toLowerCase().trim();
+    const wpAway = (wp.away_team || '').toLowerCase().trim();
+    return (matchId && wp.match_id && wp.match_id.trim() === matchId.trim())
+        || (wpHome && wpAway && wpHome === home && wpAway === away);
+  });
+  const wpList = document.getElementById('watchPartyList');
+  if (wpList) {
+    if (matchWPs.length) {
+      const container = document.getElementById('watchPartyCards');
+      if (container) container.innerHTML = matchWPs.map(buildWatchPartyCard).join('');
+      wpList.classList.remove('hidden');
+    } else {
+      wpList.classList.add('hidden');
+    }
+  }
+
+  if (window.filterMapPinsMulti) window.filterMapPinsMulti([home, away], matchId);
 
   const mapSection = document.querySelector('.map-section');
   if (mapSection) mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });

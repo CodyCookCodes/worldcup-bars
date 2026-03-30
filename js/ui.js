@@ -28,8 +28,17 @@ function buildPage(bars) {
     return a.localeCompare(b);
   });
 
-  // Render nation filter buttons
   const filterContainer = document.getElementById('filterButtons');
+
+  // Add Watch Parties tab button — right after "All Bars"
+  const wpBtn = document.createElement('button');
+  wpBtn.className = 'filter-btn filter-btn--watch-party';
+  wpBtn.id = 'watchPartyTabBtn';
+  wpBtn.innerHTML = `Watch Parties`;
+  wpBtn.onclick = function() { filterWatchParties(this); };
+  filterContainer.appendChild(wpBtn);
+
+  // Render nation filter buttons
   sorted.forEach(nation => {
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
@@ -37,14 +46,6 @@ function buildPage(bars) {
     btn.onclick = function() { filterBars(nation.toLowerCase(), this); };
     filterContainer.appendChild(btn);
   });
-
-  // Add Watch Parties tab button — appended after nation filters
-  const wpBtn = document.createElement('button');
-  wpBtn.className = 'filter-btn filter-btn--watch-party';
-  wpBtn.id = 'watchPartyTabBtn';
-  wpBtn.innerHTML = `⚽ Watch Parties`;
-  wpBtn.onclick = function() { filterWatchParties(this); };
-  filterContainer.appendChild(wpBtn);
 
   // Render category blocks
   document.getElementById('barList').innerHTML = sorted.map(nation => `
@@ -64,13 +65,13 @@ function buildPage(bars) {
   wpSection.innerHTML = `
     <div class="category-block">
       <div class="category-header">
-        <span class="cat-title" style="color:var(--green)">⚽ Official Watch Parties</span>
+        <span class="cat-title" style="color:var(--green)">Official Watch Parties</span>
       </div>
       <div id="watchPartyCards" class="bar-grid">
         <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading watch parties…</div>
       </div>
     </div>`;
-  document.getElementById('barList').after(wpSection);
+  document.getElementById('barList').before(wpSection);
 }
 
 // ─── Build a watch party card ─────────────────────────────────────────────────
@@ -84,7 +85,7 @@ function buildWatchPartyCard(wp) {
 
   return `
     <a class="bar-card bar-card--watch-party" href="${buildMapsUrl(wp)}" target="_blank">
-      <div class="wp-badge">⚽ Watch Party</div>
+      <div class="wp-badge">Watch Party</div>
       <div class="bar-name">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}
@@ -141,7 +142,7 @@ function filterBars(nation, btn) {
   // Restore all map pins before filtering
   if (window.restoreMapPins) window.restoreMapPins();
 
-  document.querySelectorAll('.category-block').forEach(block => {
+  document.querySelectorAll('#barList .category-block').forEach(block => {
     nation === 'all'
       ? block.classList.remove('hidden')
       : block.dataset.nation === nation
