@@ -152,3 +152,4 @@ function filterBars(nation, btn) {
 
   if (window.filterMapPins) window.filterMapPins(nation);
 }
+
