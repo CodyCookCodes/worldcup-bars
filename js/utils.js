@@ -12,7 +12,7 @@ function getFlag(nation) {
   const key = nation.toLowerCase().trim();
   if (!(key in FLAGS)) return '<span style="font-size:1.3rem">🏳</span>';
   const code = FLAGS[key];
-  if (code === null) return '<span style="font-size:1.3rem">🌍</span>';
+  if (code === null) return '';
   return `<img src="https://flagcdn.com/40x30/${code}.png" width="28" height="21" style="border-radius:2px" alt="${esc(nation)}">`;
 }
 
