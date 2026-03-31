@@ -72,9 +72,47 @@ const RED_PIN_SVG = `
   <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
 </svg>`;
 
-const GREEN_PIN_SVG = `
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+const ROOTS_PIN_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="31" viewBox="0 0 28 36">
+  <defs>
+    <clipPath id="pinShape">
+      <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"/>
+    </clipPath>
+  </defs>
+  <!-- Base fill cream so no dark gaps -->
   <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
-        fill="#25B67C" stroke="#1a8a5c" stroke-width="1.5"/>
-  <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
-</svg>`;
+        fill="#f5f0e0"/>
+  <g clip-path="url(#pinShape)">
+    <!-- Top left — Roots green -->
+    <polygon points="15,0 0,0 0,14 8,14" fill="#25B67C"/>
+    <!-- Top right — Roots blue -->
+    <polygon points="13,0 28,0 28,14 20,14" fill="#EF4859"/>
+    <!-- Left — Roots red -->
+    <polygon points="0,14 8,14 8,14 4,26 0,22" fill="#EF4859"/>
+    <!-- Right — Roots orange -->
+    <polygon points="28,14 20,14 24,26 28,22" fill="#F79621"/>
+    <!-- Bottom left — Roots yellow, stretches to tip -->
+    <polygon points="4,26 8,14 14,20 14,36" fill="#FAE454"/>
+    <!-- Bottom right — Roots blue, stretches to tip -->
+    <polygon points="24,26 20,14 14,20 14,36" fill="#65C3EF"/>
+    <!-- Center diamond — cream white -->
+    <polygon points="14,6 20,14 14,20 8,14" fill="#f5f0e0" opacity="0.95"/>
+    
+    <!-- Lead lines -->
+    <line x1="14" y1="4" x2="8" y2="14" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="14" y1="4" x2="20" y2="14" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="8" y1="14" x2="14" y2="20" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="20" y1="14" x2="14" y2="20" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="8" y1="14" x2="0" y2="14" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="20" y1="14" x2="28" y2="14" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="8" y1="14" x2="4" y2="26" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="20" y1="14" x2="24" y2="26" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="4" y1="26" x2="14" y2="36" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="24" y1="26" x2="14" y2="36" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="14" y1="20" x2="14" y2="36" stroke="#0d2b1a" stroke-width="0.8"/>
+    <line x1="14" y1="0" x2="14" y2="4" stroke="#0d2b1a" stroke-width="0.8"/>
+  </g>
+  <!-- Outer border -->
+  <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
+        fill="none" stroke="#0d2b1a" stroke-width="1.5"/>
+</svg> `;

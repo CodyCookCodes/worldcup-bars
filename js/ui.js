@@ -1,8 +1,13 @@
 // ─── Build a single bar card ──────────────────────────────────────────────────
 function buildCard(bar) {
+  const nations = (bar.nation || '').split(',').map(n => n.trim()).filter(Boolean);
+  const nationLine = nations.length > 1
+    ? `<div class="bar-nations">${nations.map(n => esc(n)).join(' / ')}</div>`
+    : '';
   return `
     <a class="bar-card" href="${buildMapsUrl(bar)}" target="_blank">
       <div class="bar-name">${esc(bar.name)}</div>
+      ${nationLine}
       <div class="bar-address">${esc(bar.address || '').replace(/([A-Za-z]+)\s+(Oakland|Emeryville|Berkeley|San Leandro|San Francisco)/, '$1, $2')}</div>
       <div class="bar-spacer"></div>
       <div class="bar-meta">
@@ -17,9 +22,12 @@ function buildCard(bar) {
 function buildPage(bars) {
   const groups = {};
   bars.forEach(bar => {
-    const nation = (bar.nation || 'All Nations').trim();
-    if (!groups[nation]) groups[nation] = [];
-    groups[nation].push(bar);
+    const nations = (bar.nation || 'All Nations')
+      .split(',').map(n => n.trim()).filter(Boolean);
+    nations.forEach(nation => {
+      if (!groups[nation]) groups[nation] = [];
+      groups[nation].push(bar);
+    });
   });
 
   const sorted = Object.keys(groups).sort((a, b) => {
@@ -49,7 +57,7 @@ function buildPage(bars) {
 
   // Render category blocks
   document.getElementById('barList').innerHTML = sorted.map(nation => `
-    <div class="category-block" data-nation="${esc(nation.toLowerCase())}">
+    <div class="category-block" data-nations="${esc(nation.toLowerCase())}">
       <div class="category-header">
         <span class="cat-flag">${getFlag(nation)}</span>
         <span class="cat-title">${esc(nation)}</span>
@@ -143,11 +151,9 @@ function filterBars(nation, btn) {
   if (window.restoreMapPins) window.restoreMapPins();
 
   document.querySelectorAll('#barList .category-block').forEach(block => {
-    nation === 'all'
-      ? block.classList.remove('hidden')
-      : block.dataset.nation === nation
-        ? block.classList.remove('hidden')
-        : block.classList.add('hidden');
+    const blockNations = (block.dataset.nations || '').split(',');
+    const isMatch = nation === 'all' || blockNations.includes(nation);
+    block.classList.toggle('hidden', !isMatch);
   });
 
   if (window.filterMapPins) window.filterMapPins(nation);

@@ -279,6 +279,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 .bar-card:hover::before { opacity: 1; }
 .bar-spacer { flex: 1; }
 .bar-name { font-weight: 700; font-size: 1.15rem; color: var(--white); margin-bottom: 4px; }
+.bar-nations { font-size: 0.78rem; color: var(--orange); font-weight: 600; margin-bottom: 4px; }
 .bar-address { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; min-height: 2.8em; line-height: 1.4; }
 .bar-meta { display: flex; gap: 6px; flex-wrap: wrap; }
 .pill { font-size: 0.82rem; padding: 3px 10px; border-radius: 4px; font-weight: 600; border: 1px solid; }

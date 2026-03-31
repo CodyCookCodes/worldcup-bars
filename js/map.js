@@ -9,7 +9,7 @@ let gInfoWindow = null;
 function makePinIcon(mode = 'orange') {
   const svg = mode === 'grey'  ? GREY_PIN_SVG
             : mode === 'red'   ? RED_PIN_SVG
-            : mode === 'green' ? GREEN_PIN_SVG
+            : mode === 'green' ? ROOTS_PIN_SVG
             : ORANGE_PIN_SVG;
   return {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
@@ -21,7 +21,7 @@ function makePinIcon(mode = 'orange') {
 function makeWatchPartyPinIcon(large = false) {
   const size = large ? 32 : 26;
   return {
-    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(GREEN_PIN_SVG),
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(ROOTS_PIN_SVG),
     scaledSize: new google.maps.Size(size, Math.round(size * 1.3)),
     anchor: new google.maps.Point(size / 2, Math.round(size * 1.3)),
   };
@@ -118,6 +118,18 @@ window.buildMap = function(bars) {
   };
 
   mappable.forEach(bar => {
+    // Use coordinates directly if provided — no geocoder call needed
+    if (bar.cords && bar.cords.trim()) {
+      const [latStr, lngStr] = bar.cords.split(',');
+      const lat = parseFloat(latStr), lng = parseFloat(lngStr);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        placeMarker(bar, new google.maps.LatLng(lat, lng));
+        resolved++;
+        checkDone();
+        return;
+      }
+    }
+
     const key = cacheKey(bar);
     try {
       const cached = localStorage.getItem(key);
@@ -159,7 +171,7 @@ window.buildWatchPartyMarkers = function(watchParties) {
   const geocoder = new google.maps.Geocoder();
 
   watchParties.forEach(wp => {
-    if (!wp.address && !wp.place_id) return;
+    if (!wp.cords && !wp.address && !wp.place_id) return;
 
     const safePlaceId = wp.place_id ? wp.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
 
@@ -176,6 +188,16 @@ window.buildWatchPartyMarkers = function(watchParties) {
       wMarkers.push({ marker, wp });
     };
 
+    // Use coordinates directly if provided — no geocoder call needed
+    if (wp.cords && wp.cords.trim()) {
+      const [latStr, lngStr] = wp.cords.split(',');
+      const lat = parseFloat(latStr), lng = parseFloat(lngStr);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        createHiddenMarker(new google.maps.LatLng(lat, lng));
+        return;
+      }
+    }
+
     // If this watch party matches an existing bar pin, reuse its position
     if (safePlaceId) {
       const existing = gMarkers.find(m => m.placeId === safePlaceId);
@@ -186,7 +208,7 @@ window.buildWatchPartyMarkers = function(watchParties) {
     }
 
     const request = safePlaceId ? { placeId: safePlaceId } : { address: wp.address };
-
+    
     geocoder.geocode(request, (results, status) => {
       if (status !== 'OK' || !results[0]) {
         console.warn(`Watch party geocode failed for ${wp.name}: ${status}`);

@@ -152,12 +152,9 @@ function handleMatchRowClick(e) {
   // Show bar list, filter its category blocks (scoped — don't touch watchPartyList's block)
   document.getElementById('barList').classList.remove('hidden');
   document.querySelectorAll('#barList .category-block').forEach(block => {
-    const n = block.dataset.nation;
-    if (n === home || n === away || n === 'all nations') {
-      block.classList.remove('hidden');
-    } else {
-      block.classList.add('hidden');
-    }
+    const blockNations = (block.dataset.nations || '').split(',');
+    const isMatch = blockNations.includes(home) || blockNations.includes(away) || blockNations.includes('all nations');
+    block.classList.toggle('hidden', !isMatch);
   });
 
   // Show watch parties for this match (if any), hidden otherwise
@@ -299,12 +296,13 @@ async function loadMatchesAndWatchParties() {
   window._watchPartiesData = enrichedWatchParties;
 
   // Poll for gMap to be initialized before placing watch party markers
+  // Poll until gMap is ready, then place markers
   const tryPlaceWatchParties = () => {
     if (window._gMapReady) {
       window.buildWatchPartyMarkers(enrichedWatchParties);
     } else {
-      window._watchPartiesReady = true;
+      setTimeout(tryPlaceWatchParties, 200);
     }
   };
-  setTimeout(tryPlaceWatchParties, 1000);
+  setTimeout(tryPlaceWatchParties, 200);
 }
