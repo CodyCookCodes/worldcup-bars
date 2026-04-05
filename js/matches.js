@@ -132,7 +132,6 @@ function buildDayCard(dateStr, matchesForDay, state, watchPartyMatchIds) {
 
   return `
     <div class="day-card ${stateClass}">
-      ${badge}
       <div class="day-header">${formatDayHeader(date)}</div>
       <div class="day-matches">
         ${matchesForDay.map(m => buildMatchRow(m, watchPartyMatchIds)).join('')}
@@ -218,9 +217,26 @@ function buildMatchCarousel(matches, watchParties) {
   });
 
   const track = document.getElementById('matchTrack');
+
+  // Determine if any day is actually today or soon
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const allDates = Object.keys(byDate).map(d => parseLocalDate(d)).filter(Boolean);
+  const firstMatchDate = allDates.length ? new Date(Math.min(...allDates.map(d => d.getTime()))) : null;
+  const beforeTournament = firstMatchDate && today < firstMatchDate;
+
+  let firstFutureDone = false;
+
   track.innerHTML = Object.entries(byDate).map(([dateStr, dayMatches]) => {
     const date = parseLocalDate(dateStr);
-    const state = date ? getDayState(date) : 'future';
+    let state = date ? getDayState(date) : 'future';
+
+    // If we're before the tournament starts, highlight the first day as 'today'
+    if (beforeTournament && state === 'future' && !firstFutureDone) {
+      state = 'today';
+      firstFutureDone = true;
+    }
+
     return buildDayCard(dateStr, dayMatches, state, watchPartyMatchIds);
   }).join('');
 
