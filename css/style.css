@@ -2,17 +2,10 @@
 
 @font-face {
   font-family: 'United Sans Cond';
-  src: url('../fonts/UnitedSansCondHeavy.woff2') format('woff2'),
+  src: url('../fonts/UnitedSansCdBd.otf') format('opentype'),
+       url('../fonts/UnitedSansCondHeavy.woff2') format('woff2'),
        url('../fonts/UnitedSansCondHeavy.otf') format('opentype');
   font-weight: 700;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'United Sans Cond';
-  src: url('../fonts/UnitedSansCondRegular.woff2') format('woff2'),
-       url('../fonts/UnitedSansCondRegular.otf') format('opentype');
-  font-weight: 400;
   font-style: normal;
 }
 
@@ -62,12 +55,35 @@ button, a { touch-action: manipulation; }
 body { font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif; background: var(--black); color: var(--text); min-height: 100vh; }
 
 /* ── HEADER ── */
-header { background: var(--black); border-bottom: 4px solid var(--orange); }
+header {
+  background: var(--black);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Mosaic pattern background — faded behind header content */
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/roots_mosaic_pattern_big_stroke.svg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
 .header-logos {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px;
+  position: relative; /* sit above ::before */
+}
+
+/* 3D crest — slightly larger than Soul logo */
+.header-logo--crest {
+  height: 120px;
 }
 
 .header-logo {
@@ -75,43 +91,74 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   width: auto;
   object-fit: contain;
 }
+
+/* Wordmark SVG replaces h1 */
+.header-wordmark {
+  height: clamp(60px, 10vw, 100px);
+  width: auto;
+  display: block;
+  margin: 0 auto 6px;
+  filter: brightness(0) invert(1); /* force white on dark background */
+}
+
+/* Orange top stripe */
 .header-top {
-  background: var(--black);
+  background: var(--orange);
   text-align: center;
   padding: 6px 16px;
-  font-size: 0.72rem;
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--black);
+  position: relative;
 }
+
 .header-inner {
   max-width: 960px;
   margin: 0 auto;
   padding: 28px 20px 24px;
   text-align: center;
+  position: relative;
 }
 
 @media (pointer: coarse) {
   .header-inner { padding: 16px 16px 18px; }
-  .header-logo  { height: 100px; }
-  .header-logos { gap: 14px; }
+  .header-logo  { height: 90px; }
+  .header-logo--crest { height: 100px; }
+  .header-logos { gap: 12px; }
+  .header-wordmark { height: clamp(40px, 8vw, 70px); }
 }
+
 .header-inner h1 {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
   font-size: clamp(2.4rem, 7vw, 4rem);
   letter-spacing: 4px;
-  line-height: 1;
+  line-height: 0.9;
   color: var(--white);
+  text-transform: uppercase;
 }
 .header-inner h1 span { color: var(--orange); }
 .header-inner .sub {
   font-size: 0.85rem;
-  color: var(--green);
+  color: var(--orange);
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-top: 6px;
+}
+
+/* ── MOSAIC DIVIDER — five brand colors ── */
+.mosaic-divider {
+  height: 5px;
+  background: linear-gradient(to right,
+    #EF4859 0%   20%,
+    #65C2EE 20%  40%,
+    #FCE354 40%  60%,
+    #F89521 60%  80%,
+    #23B67C 80%  100%
+  );
 }
 
 /* ── MAP ── */
@@ -184,7 +231,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   border: 1px solid var(--border);
   color: var(--text);
   padding: 9px 18px;
-  border-radius: 20px;
+  border-radius: 4px;
   font-size: 0.95rem;
   cursor: pointer;
   font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif;
@@ -229,9 +276,11 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 .cat-flag img { border-radius: 2px; }
 .cat-title {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
-  font-size: 1.35rem;
-  letter-spacing: 2px;
-  color: var(--yellow);
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  letter-spacing: 3px;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--orange);
 }
 .cat-count {
   font-size: 0.75rem;
@@ -252,7 +301,7 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
 .bar-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 16px;
   text-decoration: none;
   color: inherit;
@@ -271,8 +320,8 @@ header { background: var(--black); border-bottom: 4px solid var(--orange); }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 3px;
-  border-radius: 10px 10px 0 0;
-  background: var(--green);
+  border-radius: 4px 4px 0 0;
+  background: var(--orange);
   opacity: 0;
   transition: opacity 0.18s;
 }
@@ -394,9 +443,9 @@ footer a { color: var(--orange); text-decoration: none; }
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
-  color: #F79621;
+  color: var(--orange);
 }
 
 .matches-nav {
@@ -823,7 +872,7 @@ footer a { color: var(--orange); text-decoration: none; }
   .filter-btn img    { width: 28px; height: 21px; }
 
   /* Category headers */
-  .cat-title         { font-size: 1.25rem; letter-spacing: 1px; }
+  .cat-title         { font-size: 1.5rem; letter-spacing: 2px; }
   .cat-count         { font-size: 0.8rem; padding: 2px 8px; }
   .cat-flag img      { width: 40px; height: 30px; }
 
@@ -933,3 +982,55 @@ footer a { color: var(--orange); text-decoration: none; }
   color: var(--black);
 }
  
+/* ── FILTER LABEL — United Sans Cond brand voice ── */
+.filter-label {
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+/* ── SUGGEST BAR ── */
+.suggest-bar { margin-top: 12px; }
+.suggest-bar p {
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.suggest-link {
+  color: var(--orange);
+  text-decoration: none;
+  font-weight: 700;
+  border: 1px solid rgba(247,150,33,0.3);
+  padding: 5px 14px;
+  border-radius: 4px;
+  transition: all 0.15s;
+  display: inline-block;
+}
+.suggest-link:hover { background: var(--orange); color: var(--black); }
+
+/* ── MATCH-ROW NO-CLICK ── */
+.match-row--no-click { cursor: default; }
+.match-row--no-click:hover { border-color: #222; background: #1a1a1a; }
+
+/* ── MR WATCH PARTY BADGE ── */
+.mr-watch-party {
+  display: inline-block;
+  margin-top: 5px;
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--green);
+  background: rgba(37,182,124,0.1);
+  border: 1px solid rgba(37,182,124,0.3);
+  border-radius: 3px;
+  padding: 2px 7px;
+}
