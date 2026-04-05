@@ -87,8 +87,8 @@ header::before {
 }
 
 .header-logo {
-  height: 110px;
-  width: auto;
+  height: 100px;
+  width: 100px;;
   object-fit: contain;
 }
 
