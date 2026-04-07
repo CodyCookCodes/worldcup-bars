@@ -69,7 +69,7 @@ header::before {
   background-image: url('../assets/roots_mosaic_pattern_big_stroke.svg');
   background-size: cover;
   background-position: center;
-  opacity: 0.07;
+  opacity: 0.1;
   pointer-events: none;
 }
 
