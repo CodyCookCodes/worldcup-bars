@@ -49,7 +49,7 @@ function initMap() {
     window._mapReady = true;
   }
 
-  // Place watch party markers if they loaded before the map was ready
+  // Place Roots Events markers if they loaded before the map was ready
   if (window._watchPartiesReady && window._watchPartiesData && window._watchPartiesData.length) {
     window.buildWatchPartyMarkers(window._watchPartiesData);
   }

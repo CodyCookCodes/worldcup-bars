@@ -96,7 +96,7 @@ function buildMatchRow(match, watchPartyMatchIds) {
 
   const hasWatchParty = watchPartyMatchIds && watchPartyMatchIds.has(match.match_id);
   const watchPartyBadge = hasWatchParty
-    ? `<span class="mr-watch-party">Official Watch Party</span>`
+    ? `<span class="mr-watch-party">Official Roots Events</span>`
     : '';
 
   const clickable = !hasScore;
@@ -311,7 +311,7 @@ async function loadMatchesAndWatchParties() {
 
   window._watchPartiesData = enrichedWatchParties;
 
-  // Poll for gMap to be initialized before placing watch party markers
+  // Poll for gMap to be initialized before placing Roots Events markers
   // Poll until gMap is ready, then place markers
   const tryPlaceWatchParties = () => {
     if (window._gMapReady) {

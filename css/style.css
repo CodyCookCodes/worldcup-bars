@@ -78,13 +78,10 @@ header::before {
   align-items: center;
   justify-content: center;
   gap: 24px;
-  position: relative; /* sit above ::before */
+  position: relative; 
 }
 
-/* 3D crest — slightly larger than Soul logo */
-.header-logo--crest {
-  height: 120px;
-}
+
 
 .header-logo {
   height: 100px;
@@ -126,7 +123,6 @@ header::before {
 @media (pointer: coarse) {
   .header-inner { padding: 16px 16px 18px; }
   .header-logo  { height: 90px; }
-  .header-logo--crest { height: 100px; }
   .header-logos { gap: 12px; }
   .header-wordmark { height: clamp(40px, 8vw, 70px); }
 }
@@ -928,7 +924,7 @@ footer a { color: var(--orange); text-decoration: none; }
   .match-row  { padding: 10px 12px 8px; }
 }
 
-/* ─── Watch Party Tab Button ─────────────────────────────────────────────────── */
+/* ─── Roots Events Tab Button ─────────────────────────────────────────────────── */
 .filter-btn--watch-party {
   border-color: rgba(37, 182, 124, 0.4);
   color: var(--green);
@@ -943,7 +939,7 @@ footer a { color: var(--orange); text-decoration: none; }
   border-color: var(--green);
 }
  
-/* ─── Watch Party Section ────────────────────────────────────────────────────── */
+/* ─── Roots Events Section ────────────────────────────────────────────────────── */
 #watchPartyList .bar-grid {
   display: flex;
   flex-wrap: wrap;
@@ -954,7 +950,7 @@ footer a { color: var(--orange); text-decoration: none; }
   width: clamp(160px, 280px, 100%);
 }
 
-/* ─── Watch Party Card ───────────────────────────────────────────────────────── */
+/* ─── Roots Events Card ───────────────────────────────────────────────────────── */
 .bar-card--watch-party::before {
   background: var(--green);
   opacity: 1;
@@ -1018,7 +1014,7 @@ footer a { color: var(--orange); text-decoration: none; }
 .match-row--no-click { cursor: default; }
 .match-row--no-click:hover { border-color: #222; background: #1a1a1a; }
 
-/* ── MR WATCH PARTY BADGE ── */
+/* ── MR Roots Events BADGE ── */
 .mr-watch-party {
   display: inline-block;
   margin-top: 5px;

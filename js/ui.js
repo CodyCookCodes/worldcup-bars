@@ -42,7 +42,7 @@ function buildPage(bars) {
   const wpBtn = document.createElement('button');
   wpBtn.className = 'filter-btn filter-btn--watch-party';
   wpBtn.id = 'watchPartyTabBtn';
-  wpBtn.innerHTML = `Watch Parties`;
+  wpBtn.innerHTML = `Roots Events`;
   wpBtn.onclick = function() { filterWatchParties(this); };
   filterContainer.appendChild(wpBtn);
 
@@ -73,7 +73,7 @@ function buildPage(bars) {
   wpSection.innerHTML = `
     <div class="category-block">
       <div class="category-header">
-        <span class="cat-title" style="color:var(--green)">Official Watch Parties</span>
+        <span class="cat-title" style="color:var(--green)">Official Roots Events</span>
       </div>
       <div id="watchPartyCards" class="bar-grid">
         <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading watch parties…</div>
@@ -82,7 +82,7 @@ function buildPage(bars) {
   document.getElementById('barList').before(wpSection);
 }
 
-// ─── Build a watch party card ─────────────────────────────────────────────────
+// ─── Build a Roots Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const matchLine = (wp.home_team && wp.away_team)
     ? `<div class="bar-address" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
@@ -93,7 +93,7 @@ function buildWatchPartyCard(wp) {
 
   return `
     <a class="bar-card bar-card--watch-party" href="${buildMapsUrl(wp)}" target="_blank">
-      <div class="wp-badge">Watch Party</div>
+      <div class="wp-badge">Roots Events</div>
       <div class="bar-name">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}
@@ -102,7 +102,7 @@ function buildWatchPartyCard(wp) {
     </a>`;
 }
 
-// ─── Populate watch party cards (called once data is ready) ───────────────────
+// ─── Populate Roots Events cards (called once data is ready) ───────────────────
 function renderWatchPartyCards() {
   const container = document.getElementById('watchPartyCards');
   if (!container) return;
@@ -122,7 +122,7 @@ function filterWatchParties(btn) {
   // Clear match row highlight
   document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
-  // Hide bar list, show watch party list
+  // Hide bar list, show Roots Events list
   document.getElementById('barList').classList.add('hidden');
   const wpList = document.getElementById('watchPartyList');
   if (wpList) wpList.classList.remove('hidden');
@@ -142,7 +142,7 @@ function filterBars(nation, btn) {
   // Clear match row highlight
   document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
-  // Show bar list, hide watch party list
+  // Show bar list, hide Roots Events list
   document.getElementById('barList').classList.remove('hidden');
   const wpList = document.getElementById('watchPartyList');
   if (wpList) wpList.classList.add('hidden');
