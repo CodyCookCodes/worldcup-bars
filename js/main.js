@@ -59,6 +59,16 @@ function initMap() {
 loadBars();
 loadMatchesAndWatchParties();
 
+function dismissLoader() {
+  const loader = document.getElementById('page-loader');
+  if (!loader) return;
+  loader.classList.add('fade-out');
+  setTimeout(() => loader.classList.add('hidden'), 400);
+}
+
+// Replace current bootstrap with:
+Promise.all([loadBars(), loadMatchesAndWatchParties()]).then(dismissLoader);
+
 // Dynamically load Maps script
 const script = document.createElement('script');
 script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
