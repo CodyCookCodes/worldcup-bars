@@ -46,6 +46,14 @@ function buildPage(bars) {
   wpBtn.onclick = function() { filterWatchParties(this); };
   filterContainer.appendChild(wpBtn);
 
+  // Add Hotels tab button — after Roots Events
+  const hotelsBtn = document.createElement('button');
+  hotelsBtn.className = 'filter-btn filter-btn--hotels';
+  hotelsBtn.id = 'hotelsTabBtn';
+  hotelsBtn.innerHTML = `Hotels`;
+  hotelsBtn.onclick = function() { filterHotels(this); };
+  filterContainer.appendChild(hotelsBtn);
+
   // Render nation filter buttons
   sorted.forEach(nation => {
     const btn = document.createElement('button');
@@ -80,6 +88,71 @@ function buildPage(bars) {
       </div>
     </div>`;
   document.getElementById('barList').before(wpSection);
+
+  // Hotels section — hidden by default, shown when Hotels tab is active
+  const hotelsSection = document.createElement('div');
+  hotelsSection.id = 'hotelsList';
+  hotelsSection.className = 'hidden';
+  hotelsSection.innerHTML = `
+    <div class="category-block">
+      <div class="category-header">
+        <span class="cat-title" style="color:#65C2EE">Hotels</span>
+      </div>
+      <div id="hotelCards" class="bar-grid">
+        <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading hotels…</div>
+      </div>
+    </div>`;
+  document.getElementById('barList').before(hotelsSection);
+}
+
+// ─── Build a hotel card ───────────────────────────────────────────────────────
+function buildHotelCard(hotel) {
+  const starsLine = hotel.stars
+    ? `<div class="bar-address" style="color:#65C2EE;">${esc(hotel.stars)} Stars</div>`
+    : '';
+  const priceLine = hotel.price_range
+    ? `<div class="bar-address">${esc(hotel.price_range)}</div>`
+    : '';
+
+  return `
+    <a class="bar-card bar-card--hotel" href="${buildMapsUrl(hotel)}" target="_blank">
+      <div class="hotel-badge">Hotel</div>
+      <div class="bar-name">${esc(hotel.name)}</div>
+      ${hotel.neighborhood ? `<div class="bar-address">${esc(hotel.neighborhood)}</div>` : ''}
+      ${starsLine}
+      ${priceLine}
+      <div class="bar-spacer"></div>
+      <span class="map-link map-link--blue">Open in Maps</span>
+    </a>`;
+}
+
+// ─── Populate hotel cards (called once data is ready) ─────────────────────────
+function renderHotelCards() {
+  const container = document.getElementById('hotelCards');
+  if (!container) return;
+  const hotels = window._hotelsData || [];
+  if (!hotels.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">No hotels listed yet.</div>';
+    return;
+  }
+  container.innerHTML = hotels.map(buildHotelCard).join('');
+}
+
+// ─── Switch to Hotels view ────────────────────────────────────────────────────
+function filterHotels(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
+
+  document.getElementById('barList').classList.add('hidden');
+  const wpList = document.getElementById('watchPartyList');
+  if (wpList) wpList.classList.add('hidden');
+  const hotelsList = document.getElementById('hotelsList');
+  if (hotelsList) hotelsList.classList.remove('hidden');
+
+  renderHotelCards();
+
+  if (window.filterMapHotels) window.filterMapHotels();
 }
 
 // ─── Build a Roots Events card ─────────────────────────────────────────────────
@@ -122,8 +195,10 @@ function filterWatchParties(btn) {
   // Clear match row highlight
   document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
-  // Hide bar list, show Roots Events list
+  // Hide bar list and hotels list, show Roots Events list
   document.getElementById('barList').classList.add('hidden');
+  const hotelsList = document.getElementById('hotelsList');
+  if (hotelsList) hotelsList.classList.add('hidden');
   const wpList = document.getElementById('watchPartyList');
   if (wpList) wpList.classList.remove('hidden');
 
@@ -142,10 +217,12 @@ function filterBars(nation, btn) {
   // Clear match row highlight
   document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
-  // Show bar list, hide Roots Events list
+  // Show bar list, hide Roots Events and Hotels lists
   document.getElementById('barList').classList.remove('hidden');
   const wpList = document.getElementById('watchPartyList');
   if (wpList) wpList.classList.add('hidden');
+  const hotelsList = document.getElementById('hotelsList');
+  if (hotelsList) hotelsList.classList.add('hidden');
 
   // Restore all map pins before filtering
   if (window.restoreMapPins) window.restoreMapPins();

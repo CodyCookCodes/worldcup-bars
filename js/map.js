@@ -3,6 +3,7 @@ let gMap = null;
 let gBounds = null;
 let gMarkers = [];   // { marker, nations, placeId }
 let wMarkers = [];   // { marker, wp }
+let hMarkers = [];   // { marker, hotel }
 let gInfoWindow = null;
 
 // ─── Build a Google Maps pin icon ─────────────────────────────────────────────
@@ -15,6 +16,14 @@ function makePinIcon(mode = 'orange') {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
     scaledSize: new google.maps.Size(20, 26),
     anchor: new google.maps.Point(10, 26),
+  };
+}
+
+function makeHotelPinIcon() {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(BLUE_PIN_SVG),
+    scaledSize: new google.maps.Size(22, 28),
+    anchor: new google.maps.Point(11, 28),
   };
 }
 
@@ -67,6 +76,10 @@ window.buildMap = function(bars) {
 
   if (window._watchPartiesReady && window._watchPartiesData && window._watchPartiesData.length) {
     window.buildWatchPartyMarkers(window._watchPartiesData);
+  }
+
+  if (window._hotelsReady && window._hotelsData && window._hotelsData.length) {
+    window.buildHotelMarkers(window._hotelsData);
   }
 
   const geocoder = new google.maps.Geocoder();
@@ -219,6 +232,77 @@ window.buildWatchPartyMarkers = function(watchParties) {
   });
 };
 
+// ─── Hotel markers (blue pins, hidden until Hotels filter active) ─────────────
+window.buildHotelMarkers = function(hotels) {
+  if (!gMap || !hotels.length) return;
+
+  const geocoder = new google.maps.Geocoder();
+
+  hotels.forEach(hotel => {
+    if (!hotel.cords && !hotel.place_id) return;
+
+    const safePlaceId = hotel.place_id ? hotel.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
+
+    const createHiddenMarker = (pos) => {
+      const marker = new google.maps.Marker({
+        position: pos,
+        map: null,  // hidden by default — only shown when Hotels filter is active
+        title: hotel.name,
+        icon: makeHotelPinIcon(),
+        optimized: false,
+        zIndex: 25,
+      });
+      marker.addListener('click', () => buildHotelInfoWindow(hotel, marker));
+      hMarkers.push({ marker, hotel });
+    };
+
+    // Use coordinates directly if provided
+    if (hotel.cords && hotel.cords.trim()) {
+      const [latStr, lngStr] = hotel.cords.split(',');
+      const lat = parseFloat(latStr), lng = parseFloat(lngStr);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        createHiddenMarker(new google.maps.LatLng(lat, lng));
+        return;
+      }
+    }
+
+    const request = safePlaceId ? { placeId: safePlaceId } : null;
+    if (!request) return;
+
+    geocoder.geocode(request, (results, status) => {
+      if (status !== 'OK' || !results[0]) {
+        console.warn(`Hotel geocode failed for ${hotel.name}: ${status}`);
+        return;
+      }
+      createHiddenMarker(results[0].geometry.location);
+    });
+  });
+};
+
+// ─── Hotel InfoWindow content ─────────────────────────────────────────────────
+function buildHotelInfoWindow(hotel, marker) {
+  const starsLine = hotel.stars
+    ? `<div style="font-size:0.85rem;color:#ccc;margin-bottom:4px;">${esc(hotel.stars)} Stars</div>`
+    : '';
+  const priceLine = hotel.price_range
+    ? `<div style="font-size:0.85rem;color:#65C2EE;margin-bottom:4px;">${esc(hotel.price_range)}</div>`
+    : '';
+  const neighborhoodLine = hotel.neighborhood
+    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(hotel.neighborhood)}</div>`
+    : '';
+
+  gInfoWindow.setContent(`
+    <div style="background:#0d1620;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#65C2EE;margin-bottom:5px;">Hotel</div>
+      <div style="font-weight:700;white-space:normal;overflow-wrap:break-word;font-size:1.2rem;color:#ffffff;margin-bottom:4px;">${esc(hotel.name)}</div>
+      ${neighborhoodLine}${starsLine}${priceLine}
+      <a href="${buildMapsUrl(hotel)}" target="_blank" style="display:inline-block;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#111;background:#65C2EE;border-radius:4px;padding:4px 10px;text-decoration:none;">Open in Maps</a>
+    </div>
+  `);
+  gInfoWindow.setOptions({ maxWidth: 350, minWidth: 250 });
+  gInfoWindow.open(gMap, marker);
+}
+
 // ─── Roots Events InfoWindow content ──────────────────────────────────────────
 function buildWatchPartyInfoWindow(wp, marker) {
   const matchLine = (wp.home_team && wp.away_team)
@@ -246,30 +330,35 @@ function buildWatchPartyInfoWindow(wp, marker) {
   gInfoWindow.open(gMap, marker);
 }
 
-// ─── Show only Roots Events pins, hide all bar pins ────────────────────────────
+// ─── Show only Roots Events pins, hide all bar and hotel pins ────────────────
 window.filterMapWatchParties = function() {
   if (gInfoWindow) gInfoWindow.close();
-  // Hide all regular bar pins
   gMarkers.forEach(({ marker }) => marker.setMap(null));
-  // Show all Roots Events green pins
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
   wMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
-// ─── Restore all bar pins (called when leaving Roots Events view) ──────────────
+// ─── Show only hotel pins, hide all bar and Roots Events pins ─────────────────
+window.filterMapHotels = function() {
+  if (gInfoWindow) gInfoWindow.close();
+  gMarkers.forEach(({ marker }) => marker.setMap(null));
+  wMarkers.forEach(({ marker }) => marker.setMap(null));
+  hMarkers.forEach(({ marker }) => marker.setMap(gMap));
+};
+
+// ─── Restore all bar pins (called when leaving Roots Events / Hotels view) ────
 window.restoreMapPins = function() {
   if (gInfoWindow) gInfoWindow.close();
-  // Hide Roots Events pins
   wMarkers.forEach(({ marker }) => marker.setMap(null));
-  // Show all bar pins
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
 // ─── Show/grey-out bar pins based on the active nation filter ─────────────────
 window.filterMapPins = function(nation) {
   if (gInfoWindow) gInfoWindow.close();
-  // Hide Roots Events pins — they only appear in Roots Events filter mode
   wMarkers.forEach(({ marker }) => marker.setMap(null));
-  // Restore all bar markers to map
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
   gMarkers.forEach(({ marker, nations }) => {
     const isMatch = nation === 'all' || nations.includes(nation);
@@ -281,7 +370,7 @@ window.filterMapPins = function(nation) {
 // ─── Highlight pins for multiple nations (match row click) ────────────────────
 window.filterMapPinsMulti = function(nations, matchId) {
   if (gInfoWindow) gInfoWindow.close();
-  // Restore all bar markers first
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
   gMarkers.forEach(({ marker, nations: pinNations }) => {
     const isAllNations = pinNations.includes('all nations');

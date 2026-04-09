@@ -976,7 +976,60 @@ footer a { color: var(--orange); text-decoration: none; }
   background: var(--green);
   color: var(--black);
 }
- 
+
+/* ─── Hotels Tab Button ───────────────────────────────────────────────────────── */
+.filter-btn--hotels {
+  border-color: rgba(101,194,238,0.4);
+  color: #65C2EE;
+}
+.filter-btn--hotels:hover {
+  border-color: #65C2EE;
+  color: #65C2EE;
+}
+.filter-btn--hotels.active {
+  background: #65C2EE;
+  color: var(--black);
+  border-color: #65C2EE;
+}
+
+/* ─── Hotels Section ──────────────────────────────────────────────────────────── */
+#hotelsList .bar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+#hotelsList .bar-card--hotel {
+  width: clamp(160px, 280px, 100%);
+}
+
+/* ─── Hotel Card ──────────────────────────────────────────────────────────────── */
+.bar-card--hotel::before {
+  background: #65C2EE;
+  opacity: 1;
+}
+.bar-card--hotel:hover {
+  border-color: #65C2EE;
+  box-shadow: 0 6px 24px rgba(101,194,238,0.12);
+}
+.hotel-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #65C2EE;
+  margin-bottom: 6px;
+}
+.map-link--blue {
+  color: #65C2EE;
+  background: rgba(101,194,238,0.08);
+  border-color: rgba(101,194,238,0.3);
+}
+.map-link--blue:hover {
+  background: #65C2EE;
+  color: var(--black);
+}
+
 /* ── FILTER LABEL — United Sans Cond brand voice ── */
 .filter-label {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
