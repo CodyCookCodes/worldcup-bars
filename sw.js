@@ -7,7 +7,6 @@ const ASSETS = [
   '/worldcup-bars/',
   '/worldcup-bars/index.html',
   '/worldcup-bars/css/style.css',
-  '/worldcup-bars/js/config.js',
   '/worldcup-bars/js/constants.js',
   '/worldcup-bars/js/utils.js',
   '/worldcup-bars/js/map.js',
