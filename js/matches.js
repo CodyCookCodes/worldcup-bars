@@ -262,6 +262,11 @@ function buildMatchCarousel(matches, watchParties) {
 
 // ─── Load matches + watch parties together ────────────────────────────────────
 async function loadMatchesAndWatchParties() {
+  const LS_MATCHES = 'wc_matches_cache';
+  const LS_WP      = 'wc_wp_cache';
+  const LS_TS      = 'wc_matches_ts';
+  const TTL        = 24 * 60 * 60 * 1000; // 24 hours
+
   const fetchCSV = async (url) => {
     if (!url) throw new Error('No URL');
     const controller = new AbortController();
@@ -287,8 +292,28 @@ async function loadMatchesAndWatchParties() {
     ]);
     matches = parseMatchesCSV(matchText);
     if (wpText) watchParties = parseWatchPartiesCSV(wpText);
+
+    // Save to localStorage for offline fallback
+    try {
+      localStorage.setItem(LS_MATCHES, JSON.stringify(matches));
+      localStorage.setItem(LS_WP, JSON.stringify(watchParties));
+      localStorage.setItem(LS_TS, Date.now().toString());
+    } catch (e) { /* storage full — ignore */ }
+
   } catch (err) {
-    console.warn('Match schedule could not be loaded:', err);
+    console.warn('Matches fetch failed, trying localStorage cache:', err);
+
+    // Try localStorage fallback
+    try {
+      const cachedMatches = localStorage.getItem(LS_MATCHES);
+      const cachedWP      = localStorage.getItem(LS_WP);
+      const ts            = localStorage.getItem(LS_TS);
+      if (cachedMatches && ts && (Date.now() - Number(ts)) < TTL) {
+        matches      = JSON.parse(cachedMatches);
+        watchParties = cachedWP ? JSON.parse(cachedWP) : [];
+        console.log('Matches loaded from localStorage cache');
+      }
+    } catch (e) { /* bad cache — ignore */ }
   }
 
   buildMatchCarousel(matches, watchParties);
