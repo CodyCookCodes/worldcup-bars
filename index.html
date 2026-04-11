@@ -6,22 +6,51 @@
   <title>Soccer Trail · Oakland Roots SC</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/Oakland_Roots.png" type="image/png">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-G5L0TEB3LN');
+  </script>
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-G5L0TEB3LN');
-</script>
 <body>
 
+<!-- PAGE LOADER -->
 <div id="page-loader">
   <img src="assets/Oakland_Roots.png" alt="Loading" class="loader-logo">
   <div class="loader-bar">
     <div class="loader-fill"></div>
+  </div>
+</div>
+
+<!-- EMAIL POPUP -->
+<div id="email-popup-overlay" class="hidden">
+  <div id="email-popup">
+    <button class="popup-close" id="popupClose" aria-label="Close">&#x2715;</button>
+    <img src="assets/Oakland_Roots.png" alt="Oakland Roots SC" class="popup-logo">
+    <div class="popup-eyebrow">Oakland Roots SC</div>
+    <div class="popup-heading">Stay in the Loop</div>
+    <p class="popup-body">
+      Be the first to know when new Watch Parties drop, bars are added to the trail, and exclusive Roots Events are announced.
+    </p>
+    <div class="popup-form" id="popupForm">
+      <input
+        type="email"
+        class="popup-input"
+        id="popupEmail"
+        placeholder="your@email.com"
+        autocomplete="email"
+      >
+      <button class="popup-submit" id="popupSubmit">Count Me In</button>
+      <button class="popup-skip" id="popupSkip">No thanks, just take me to the site</button>
+    </div>
+    <div class="popup-success hidden" id="popupSuccess">
+      <div class="popup-success-icon">⚽</div>
+      <div class="popup-success-msg">You're in!</div>
+      <div class="popup-success-sub">Welcome to the Roots family. Oakland First, Always.</div>
+    </div>
   </div>
 </div>
 
@@ -71,7 +100,6 @@
   </div>
 </div>
 
-
 <!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
@@ -113,5 +141,87 @@
 <script src="js/ui.js"></script>
 <script src="js/matches.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+// ─── Email Popup ──────────────────────────────────────────────────────────────
+(function() {
+  const LS_KEY   = 'wc_email_captured';
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe8UBP2kQP3bYMgCM7SceHVcyo4_Iwew_-Ejv_Cd-gsgd2kOg/formResponse';
+  const ENTRY_ID = 'entry.1075542564';
+
+  // Don't show if user has already submitted or skipped
+  if (localStorage.getItem(LS_KEY)) return;
+
+  const overlay    = document.getElementById('email-popup-overlay');
+  const closeBtn   = document.getElementById('popupClose');
+  const skipBtn    = document.getElementById('popupSkip');
+  const submitBtn  = document.getElementById('popupSubmit');
+  const emailInput = document.getElementById('popupEmail');
+  const form       = document.getElementById('popupForm');
+  const success    = document.getElementById('popupSuccess');
+
+  function showPopup() {
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+  }
+
+  function dismissPopup() {
+    overlay.classList.remove('visible');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+  }
+
+  function skipPopup() {
+    localStorage.setItem(LS_KEY, 'skipped');
+    dismissPopup();
+  }
+
+  async function submitEmail() {
+    const email = emailInput.value.trim();
+    if (!email || !email.includes('@')) {
+      emailInput.focus();
+      emailInput.style.borderColor = '#EF4859';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting\u2026';
+
+    try {
+      await fetch(`${FORM_URL}?${ENTRY_ID}=${encodeURIComponent(email)}`, {
+        method: 'POST',
+        mode: 'no-cors',
+      });
+    } catch (e) {
+      // no-cors fetch always throws — expected
+    }
+
+    localStorage.setItem(LS_KEY, 'submitted');
+    form.classList.add('hidden');
+    success.classList.remove('hidden');
+    setTimeout(dismissPopup, 2500);
+  }
+
+  closeBtn.addEventListener('click', skipPopup);
+  skipBtn.addEventListener('click', skipPopup);
+  submitBtn.addEventListener('click', submitEmail);
+  emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitEmail(); });
+  emailInput.addEventListener('input', () => { emailInput.style.borderColor = ''; });
+
+  // Show after page loader dismisses
+  const loader = document.getElementById('page-loader');
+  if (loader) {
+    const observer = new MutationObserver(() => {
+      if (loader.classList.contains('hidden')) {
+        observer.disconnect();
+        setTimeout(showPopup, 600);
+      }
+    });
+    observer.observe(loader, { attributes: true, attributeFilter: ['class'] });
+  } else {
+    setTimeout(showPopup, 1000);
+  }
+})();
+</script>
+
 </body>
 </html>
