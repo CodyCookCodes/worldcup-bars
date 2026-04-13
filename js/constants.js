@@ -10,6 +10,9 @@ const WATCH_PARTIES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1v
 // Hotels tab
 const HOTELS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=737220771&single=true&output=csv';
 
+// Restaurants tab
+const RESTAURANTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=79488506&single=true&output=csv';
+
 // ─── Country → flagcdn code map ───────────────────────────────────────────────
 const FLAGS = {
   'canada':         'ca', 'mexico':         'mx', 'usa':            'us',
@@ -80,6 +83,13 @@ const BLUE_PIN_SVG = `
   <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
         fill="#65C2EE" stroke="#4a9ab5" stroke-width="1.5"/>
   <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
+</svg>`;
+
+const YELLOW_PIN_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+  <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
+        fill="#FCE354" stroke="#c9aa00" stroke-width="1.5"/>
+  <circle cx="14" cy="14" r="5" fill="#000000" opacity="0.5"/>
 </svg>`;
 
 const ROOTS_PIN_SVG = `

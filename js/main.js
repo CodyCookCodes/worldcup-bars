@@ -173,7 +173,7 @@ function dismissLoader() {
   setTimeout(() => loader.classList.add('hidden'), 400);
 }
 
-Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotels()]).then(dismissLoader);
+Promise.all([loadBars(), loadMatchesAndWatchParties()]).then(dismissLoader);
 
 // Dynamically load Maps script
 const script = document.createElement('script');

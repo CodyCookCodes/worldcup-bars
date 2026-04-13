@@ -23,6 +23,8 @@ const ASSETS = [
   '/worldcup-bars/fonts/texgyreheroscn-bold.otf',
   '/worldcup-bars/fonts/texgyreheroscn-italic.otf',
   '/worldcup-bars/fonts/texgyreheroscn-bolditalic.otf',
+  '/worldcup-bars/guide.html',
+  '/worldcup-bars/js/guide.js',
 ];
 
 // ─── Install — pre-cache all local assets ─────────────────────────────────────
