@@ -1272,18 +1272,7 @@ footer a { color: var(--orange); text-decoration: none; }
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
   font-weight: 700;
   letter-spacing: 1px;
-  margin-right: 8px;
   position: relative;
-}
-.filter-btn--guide::after {
-  content: '';
-  position: absolute;
-  right: -12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 60%;
-  background: var(--border);
 }
 .filter-btn--guide:hover { border-color: var(--yellow); color: var(--yellow); background: rgba(252,227,84,0.08); }
 
