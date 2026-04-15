@@ -13,6 +13,9 @@ const HOTELS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkyg
 // Restaurants tab
 const RESTAURANTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=79488506&single=true&output=csv';
 
+// Events tab
+const EVENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTkHOkygOrrQTtoGTP5ivH6Fe-U_Ym1cqrt7TymLNEHyTSOE1KQJOnCLqi0KpuUEA_UVkXvL8a5OQoe/pub?gid=1030120265&single=true&output=csv';
+
 // ─── Country → flagcdn code map ───────────────────────────────────────────────
 const FLAGS = {
   'canada':         'ca', 'mexico':         'mx', 'usa':            'us',
