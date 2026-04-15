@@ -1276,6 +1276,17 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 .filter-btn--guide:hover { border-color: var(--yellow); color: var(--yellow); background: rgba(252,227,84,0.08); }
 
+/* ─── EVENT BUTTON STYLES ──────────────────────────────────────────────────────── */
+.filter-btn--events {
+  border-color: #e63946;
+}
+
+.filter-btn--events.active,
+.filter-btn--events:hover {
+  background: #e63946;
+  color: #FFF;
+}
+
 /* ─── GUIDE PAGE STYLES ──────────────────────────────────────────────────────── */
 .guide-back-link {
   font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
