@@ -29,6 +29,9 @@ jobs:
         run: |
           echo "const MAPS_API_KEY = '${{ secrets.MAPS_API_KEY }}';" >> js/constants.js
 
+      - name: Bump service worker cache version
+        run: sed -i "s/worldcup-roots-v[0-9]*/worldcup-roots-$(date +%Y%m%d%H%M)/g" sw.js
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -37,25 +40,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

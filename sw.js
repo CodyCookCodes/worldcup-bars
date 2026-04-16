@@ -1,30 +1,30 @@
-// ─── World Cup Soccer Trail · Service Worker ─────────────────────────────────
-// Bump version string on every deploy to force cache refresh
+// ─── East Bay Soccer Trail · Service Worker ──────────────────────────────────
+// Cache version is auto-bumped by GitHub Actions on every deploy
 const CACHE_NAME = 'worldcup-roots-v1';
 
 // Assets to cache on install — all local files, no external APIs
 const ASSETS = [
-  '/worldcup-bars/',
-  '/worldcup-bars/index.html',
-  '/worldcup-bars/css/style.css',
-  '/worldcup-bars/js/constants.js',
-  '/worldcup-bars/js/utils.js',
-  '/worldcup-bars/js/map.js',
-  '/worldcup-bars/js/ui.js',
-  '/worldcup-bars/js/matches.js',
-  '/worldcup-bars/js/main.js',
-  '/worldcup-bars/assets/Oakland_Roots.png',
-  '/worldcup-bars/assets/Oakland_Soul.png',
-  '/worldcup-bars/assets/3d_crest_roots.png',
-  '/worldcup-bars/assets/roots_mosaic_pattern_big_stroke.svg',
-  '/worldcup-bars/assets/oakland_roots_single_color.svg',
-  '/worldcup-bars/fonts/UnitedSansCdBd.otf',
-  '/worldcup-bars/fonts/texgyreheroscn-regular.otf',
-  '/worldcup-bars/fonts/texgyreheroscn-bold.otf',
-  '/worldcup-bars/fonts/texgyreheroscn-italic.otf',
-  '/worldcup-bars/fonts/texgyreheroscn-bolditalic.otf',
-  '/worldcup-bars/guide.html',
-  '/worldcup-bars/js/guide.js',
+  '/',
+  '/index.html',
+  '/guide.html',
+  '/css/style.css',
+  '/js/constants.js',
+  '/js/utils.js',
+  '/js/map.js',
+  '/js/ui.js',
+  '/js/matches.js',
+  '/js/main.js',
+  '/js/guide.js',
+  '/assets/Oakland_Roots.png',
+  '/assets/Oakland_Soul.png',
+  '/assets/3d_crest_roots.png',
+  '/assets/roots_mosaic_pattern_big_stroke.svg',
+  '/assets/oakland_roots_single_color.svg',
+  '/fonts/UnitedSansCdBd.otf',
+  '/fonts/texgyreheroscn-regular.otf',
+  '/fonts/texgyreheroscn-bold.otf',
+  '/fonts/texgyreheroscn-italic.otf',
+  '/fonts/texgyreheroscn-bolditalic.otf',
 ];
 
 // ─── Install — pre-cache all local assets ─────────────────────────────────────
