@@ -1336,3 +1336,38 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .bar-card--restaurant::after { background: var(--yellow); }
 .bar-card--restaurant:hover { border-color: var(--yellow); box-shadow: 0 8px 32px rgba(252,227,84,0.1); }
+
+.bar-card--event {
+  border-color: #e63946;
+}
+
+.bar-card--event:hover {
+  border-color: #e63946;
+  box-shadow: 0 0 0 2px #e63946;
+}
+
+.event-badge {
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e63946;
+  margin-bottom: 6px;
+}
+
+.filter-btn--events {
+  border-color: #e63946;
+  color: #e63946;
+}
+
+.filter-btn--events.active,
+.filter-btn--events:hover {
+  background: #e63946;
+  color: #111;
+}
+
+.map-link--red {
+  color: #e63946;
+  border-color: #e63946;
+}
