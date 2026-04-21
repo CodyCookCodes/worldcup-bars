@@ -1371,3 +1371,12 @@ footer a { color: var(--orange); text-decoration: none; }
   color: #e63946;
   border-color: #e63946;
 }
+
+.bar-card--event {
+  border-color: #e63946;
+  border-top-color: #e63946;
+}
+
+.bar-card--event::before {
+  background: #e63946;
+}
