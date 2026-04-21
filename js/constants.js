@@ -32,7 +32,9 @@ const FLAGS = {
   'saudi arabia':   'sa', 'scotland':       'gb-sct', 'senegal':    'sn',
   'south africa':   'za', 'spain':          'es', 'switzerland':    'ch',
   'tunisia':        'tn', 'uruguay':        'uy', 'uzbekistan':     'uz',
-  'ireland':        'ie', 'all nations':    null,
+  'ireland':        'ie', 'türkiye':        'tr', 'bosnia-herzegovina': 'ba',
+  'czechia':        'cz', 'congo dr':       'cd', 'sweden':         'se',
+  'iraq':           'iq', 'all nations':    null,
 };
 
 // ─── Google Maps dark style ───────────────────────────────────────────────────
