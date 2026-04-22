@@ -17,6 +17,57 @@
 </head>
 <body>
 
+<!-- PASSWORD GATE -->
+<div id="password-gate" style="
+  position:fixed;inset:0;z-index:99999;
+  background:#0d0d0d;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:16px;font-family:'Arial Narrow',Arial,sans-serif;
+">
+  <img src="assets/Oakland_Roots.png" alt="Oakland Roots SC" style="width:80px;margin-bottom:8px;">
+  <div style="color:#f0f0f0;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase;">Preview Access</div>
+  <input id="gate-input" type="password" placeholder="Enter password"
+    style="padding:10px 16px;font-size:1rem;border:2px solid #333;background:#1a1a1a;color:#fff;outline:none;width:240px;text-align:center;">
+  <button id="gate-btn"
+    style="padding:10px 32px;background:#F79621;color:#111;font-weight:700;font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;border:none;cursor:pointer;">
+    Enter
+  </button>
+  <div id="gate-error" style="color:#EF4859;font-size:0.85rem;min-height:1em;"></div>
+</div>
+
+<script>
+(function() {
+  const PASS   = 'rootssc';
+  const LS_KEY = 'wc_gate_approved';
+  const gate   = document.getElementById('password-gate');
+
+  // Already approved — remove immediately and don't show again
+  if (localStorage.getItem(LS_KEY)) {
+    gate.remove();
+    return;
+  }
+
+  function tryUnlock() {
+    const val = document.getElementById('gate-input').value.trim();
+    if (val === PASS) {
+      localStorage.setItem(LS_KEY, '1');
+      gate.style.transition = 'opacity 0.3s';
+      gate.style.opacity = '0';
+      setTimeout(() => gate.remove(), 300);
+    } else {
+      document.getElementById('gate-error').textContent = 'Incorrect password.';
+      document.getElementById('gate-input').value = '';
+      document.getElementById('gate-input').focus();
+    }
+  }
+
+  document.getElementById('gate-btn').addEventListener('click', tryUnlock);
+  document.getElementById('gate-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') tryUnlock();
+  });
+})();
+</script>
+
 <!-- PAGE LOADER -->
 <div id="page-loader">
   <img src="assets/Oakland_Roots.png" alt="Loading" class="loader-logo">
@@ -128,7 +179,6 @@
   <br>
   Soccer Trail 2026 · East Bay &nbsp;|&nbsp;
   <a href="https://www.oaklandrootssc.com" target="_blank">oaklandrootssc.com</a>
-  
 </footer>
 
 <script src="js/config.js" onerror="console.log('No local config, using deployed key')"></script>

@@ -71,6 +71,11 @@ window.buildMap = function(bars) {
     fullscreenControl: true,
   });
 
+  // Suppress default POI popup when clicking map labels
+  gMap.addListener('click', (e) => {
+    if (e.placeId) e.stop();
+  });
+
   gBounds = new google.maps.LatLngBounds();
   window._gMapReady = true;
 
