@@ -149,14 +149,13 @@ header::before {
 .mosaic-divider {
   height: 5px;
   background: linear-gradient(to right,
-    #EF4859 0%   20%,
-    #65C2EE 20%  40%,
-    #FCE354 40%  60%,
-    #F89521 60%  80%,
-    #23B67C 80%  100%
+    #EF4859 0%,
+    #65C2EE 25%,
+    #FCE354 50%,
+    #F89521 75%,
+    #23B67C 100%
   );
 }
-
 /* ── MAP ── */
 .map-section {
   position: relative;
