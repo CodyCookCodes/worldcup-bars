@@ -43,7 +43,7 @@ function parseCSV(text) {
     const row = {};
     headers.forEach((h, i) => row[h] = (cols[i] || '').replace(/^"|"$/g, '').trim());
     return row;
-  }).filter(row => row.name);
+  }).filter(row => row.name || row['event name']);
 }
 
 // ─── Build a Google Maps URL from a bar row ───────────────────────────────────
