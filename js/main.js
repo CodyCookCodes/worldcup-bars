@@ -212,14 +212,7 @@ async function loadNextEvent() {
 
   nameEl.textContent = name;
   detailEl.textContent = [location, dateTime].filter(Boolean).join(' · ');
-
-  if (url) {
-    linkEl.href = url;
-    linkEl.style.display = 'inline-block';
-  } else {
-    linkEl.style.display = 'none';
-  }
-
+  linkEl.style.display = 'inline-block';
   banner.style.display = 'block';
 }
 
