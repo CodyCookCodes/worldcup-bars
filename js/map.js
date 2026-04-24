@@ -4,6 +4,7 @@ let gBounds = null;
 let gMarkers = [];   // { marker, nations, placeId }
 let wMarkers = [];   // { marker, wp }
 let hMarkers = [];   // { marker, hotel }
+let rMarkers = [];   // { marker, restaurant }
 let gInfoWindow = null;
 
 // ─── Build a Google Maps pin icon ─────────────────────────────────────────────
@@ -22,6 +23,14 @@ function makePinIcon(mode = 'orange') {
 function makeHotelPinIcon() {
   return {
     url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(BLUE_PIN_SVG),
+    scaledSize: new google.maps.Size(22, 28),
+    anchor: new google.maps.Point(11, 28),
+  };
+}
+
+function makeRestaurantPinIcon() {
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(YELLOW_PIN_SVG),
     scaledSize: new google.maps.Size(22, 28),
     anchor: new google.maps.Point(11, 28),
   };
@@ -81,10 +90,6 @@ window.buildMap = function(bars) {
 
   if (window._watchPartiesReady && window._watchPartiesData && window._watchPartiesData.length) {
     window.buildWatchPartyMarkers(window._watchPartiesData);
-  }
-
-  if (window._hotelsReady && window._hotelsData && window._hotelsData.length) {
-    window.buildHotelMarkers(window._hotelsData);
   }
 
   const geocoder = new google.maps.Geocoder();
@@ -335,27 +340,109 @@ function buildWatchPartyInfoWindow(wp, marker) {
   gInfoWindow.open(gMap, marker);
 }
 
-// ─── Show only Roots Events pins, hide all bar and hotel pins ────────────────
+// ─── Restaurant markers (yellow pins, hidden until Restaurants filter active) ──
+window.buildRestaurantMarkers = function(restaurants) {
+  if (!gMap || !restaurants.length) return;
+
+  const geocoder = new google.maps.Geocoder();
+
+  restaurants.forEach(restaurant => {
+    if (!restaurant.cords && !restaurant.place_id) return;
+
+    const safePlaceId = restaurant.place_id ? restaurant.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
+
+    const createHiddenMarker = (pos) => {
+      const marker = new google.maps.Marker({
+        position: pos,
+        map: null,  // hidden by default — only shown when Restaurants filter is active
+        title: restaurant.name,
+        icon: makeRestaurantPinIcon(),
+        optimized: false,
+        zIndex: 25,
+      });
+      marker.addListener('click', () => buildRestaurantInfoWindow(restaurant, marker));
+      rMarkers.push({ marker, restaurant });
+    };
+
+    if (restaurant.cords && restaurant.cords.trim()) {
+      const [latStr, lngStr] = restaurant.cords.split(',');
+      const lat = parseFloat(latStr), lng = parseFloat(lngStr);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        createHiddenMarker(new google.maps.LatLng(lat, lng));
+        return;
+      }
+    }
+
+    const request = safePlaceId ? { placeId: safePlaceId } : null;
+    if (!request) return;
+
+    geocoder.geocode(request, (results, status) => {
+      if (status !== 'OK' || !results[0]) {
+        console.warn(`Restaurant geocode failed for ${restaurant.name}: ${status}`);
+        return;
+      }
+      createHiddenMarker(results[0].geometry.location);
+    });
+  });
+};
+
+// ─── Restaurant InfoWindow content ────────────────────────────────────────────
+function buildRestaurantInfoWindow(restaurant, marker) {
+  const cuisineLine = restaurant.cuisine
+    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:4px;">${esc(restaurant.cuisine)}</div>`
+    : '';
+  const priceLine = restaurant.price_range
+    ? `<div style="font-size:0.85rem;color:#FCE354;margin-bottom:4px;">${esc(restaurant.price_range)}</div>`
+    : '';
+  const neighborhoodLine = restaurant.neighborhood
+    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(restaurant.neighborhood)}</div>`
+    : '';
+
+  gInfoWindow.setContent(`
+    <div style="background:#1a1600;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#FCE354;margin-bottom:5px;">Restaurant</div>
+      <div style="font-weight:700;white-space:normal;overflow-wrap:break-word;font-size:1.2rem;color:#ffffff;margin-bottom:4px;">${esc(restaurant.name)}</div>
+      ${neighborhoodLine}${cuisineLine}${priceLine}
+      <a href="${buildMapsUrl(restaurant)}" target="_blank" style="display:inline-block;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#000;background:#FCE354;border-radius:4px;padding:4px 10px;text-decoration:none;">Open in Maps</a>
+    </div>
+  `);
+  gInfoWindow.setOptions({ maxWidth: 350, minWidth: 250 });
+  gInfoWindow.open(gMap, marker);
+}
+
+// ─── Show only Roots Events pins, hide all bar, hotel, restaurant pins ────────
 window.filterMapWatchParties = function() {
   if (gInfoWindow) gInfoWindow.close();
   gMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
   wMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
-// ─── Show only hotel pins, hide all bar and Roots Events pins ─────────────────
+// ─── Show only hotel pins ─────────────────────────────────────────────────────
 window.filterMapHotels = function() {
   if (gInfoWindow) gInfoWindow.close();
   gMarkers.forEach(({ marker }) => marker.setMap(null));
   wMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
-// ─── Restore all bar pins (called when leaving Roots Events / Hotels view) ────
+// ─── Show only restaurant pins ────────────────────────────────────────────────
+window.filterMapRestaurants = function() {
+  if (gInfoWindow) gInfoWindow.close();
+  gMarkers.forEach(({ marker }) => marker.setMap(null));
+  wMarkers.forEach(({ marker }) => marker.setMap(null));
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(gMap));
+};
+
+// ─── Restore all bar pins (called when leaving special views) ─────────────────
 window.restoreMapPins = function() {
   if (gInfoWindow) gInfoWindow.close();
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
 };
 
@@ -364,6 +451,7 @@ window.filterMapPins = function(nation) {
   if (gInfoWindow) gInfoWindow.close();
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
   gMarkers.forEach(({ marker, nations }) => {
     const isMatch = nation === 'all' || nations.includes(nation);
@@ -376,6 +464,7 @@ window.filterMapPins = function(nation) {
 window.filterMapPinsMulti = function(nations, matchId) {
   if (gInfoWindow) gInfoWindow.close();
   hMarkers.forEach(({ marker }) => marker.setMap(null));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
   gMarkers.forEach(({ marker }) => marker.setMap(gMap));
   gMarkers.forEach(({ marker, nations: pinNations }) => {
     const isAllNations = pinNations.includes('all nations');
@@ -384,7 +473,6 @@ window.filterMapPinsMulti = function(nations, matchId) {
     marker.setIcon(makePinIcon(mode));
     marker.setZIndex(isMatch ? 10 : isAllNations ? 5 : 1);
   });
-  // Show Roots Events pins for this specific match (match by ID, or fall back to both team names)
   wMarkers.forEach(({ marker, wp }) => {
     const home = (wp.home_team || '').toLowerCase().trim();
     const away = (wp.away_team || '').toLowerCase().trim();

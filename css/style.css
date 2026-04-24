@@ -288,12 +288,12 @@ header::before {
 }
 
 /* ── BAR CARDS ── */
-.bar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.venue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 
 @media (pointer: coarse) {
-  .bar-grid { grid-template-columns: repeat(2, 1fr); }
+  .venue-grid { grid-template-columns: repeat(2, 1fr); }
 }
-.bar-card {
+.venue-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 4px;
@@ -305,12 +305,12 @@ header::before {
   position: relative;
   transition: all 0.18s;
 }
-.bar-card:hover {
+.venue-card:hover {
   border-color: var(--orange);
   transform: translateY(-2px);
   box-shadow: 0 6px 24px rgba(247,150,33,0.12);
 }
-.bar-card::before {
+.venue-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -320,12 +320,12 @@ header::before {
   opacity: 0;
   transition: opacity 0.18s;
 }
-.bar-card:hover::before { opacity: 1; }
-.bar-spacer { flex: 1; }
-.bar-name { font-weight: 700; font-size: 1.15rem; color: var(--white); margin-bottom: 4px; }
+.venue-card:hover::before { opacity: 1; }
+.venue-spacer { flex: 1; }
+.venue-name { font-weight: 700; font-size: 1.15rem; color: var(--white); margin-bottom: 4px; }
 .bar-nations { font-size: 0.78rem; color: var(--orange); font-weight: 600; margin-bottom: 4px; }
-.bar-address { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; min-height: 2.8em; line-height: 1.4; }
-.bar-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+.venue-detail { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; min-height: 2.8em; line-height: 1.4; }
+.venue-meta { display: flex; gap: 6px; flex-wrap: wrap; }
 .pill { font-size: 0.82rem; padding: 3px 10px; border-radius: 4px; font-weight: 600; border: 1px solid; }
 .pill-type   { color: var(--muted);  border-color: var(--border); background: var(--card2); font-weight: 500; }
 .pill-hours  { color: var(--green);  border-color: rgba(37,182,124,0.3); background: rgba(37,182,124,0.07); }
@@ -375,8 +375,8 @@ footer a { color: var(--orange); text-decoration: none; }
 .hidden { display: none !important; }
 
 @media (pointer: coarse) {
-  .bar-name { font-size: 1.05rem; }
-  .bar-address { font-size: 0.82rem; }
+  .venue-name { font-size: 1.05rem; }
+  .venue-detail { font-size: 0.82rem; }
   .map-link { font-size: 0.8rem; padding: 6px 12px; }
 }
 
@@ -872,8 +872,8 @@ footer a { color: var(--orange); text-decoration: none; }
   .cat-flag img      { width: 40px; height: 30px; }
 
   /* Bar cards */
-  .bar-name          { font-size: 1rem; }
-  .bar-address       { font-size: 0.85rem; }
+  .venue-name          { font-size: 1rem; }
+  .venue-detail       { font-size: 0.85rem; }
   .pill              { font-size: 0.78rem; padding: 3px 8px; }
   .map-link          { font-size: 0.88rem; padding: 6px 14px; margin-top: 10px; }
 
@@ -940,22 +940,22 @@ footer a { color: var(--orange); text-decoration: none; }
 }
  
 /* ─── Roots Events Section ────────────────────────────────────────────────────── */
-#watchPartyList .bar-grid {
+#watchPartyList .venue-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
 }
-#watchPartyList .bar-card--watch-party {
+#watchPartyList .venue-card--watch-party {
   width: clamp(160px, 280px, 100%);
 }
 
 /* ─── Roots Events Card ───────────────────────────────────────────────────────── */
-.bar-card--watch-party::before {
+.venue-card--watch-party::before {
   background: var(--green);
   opacity: 1;
 }
-.bar-card--watch-party:hover {
+.venue-card--watch-party:hover {
   border-color: var(--green);
   box-shadow: 0 6px 24px rgba(37,182,124,0.12);
 }
@@ -993,22 +993,22 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 
 /* ─── Hotels Section ──────────────────────────────────────────────────────────── */
-#hotelsList .bar-grid {
+#hotelsList .venue-grid {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
 }
-#hotelsList .bar-card--hotel {
+#hotelsList .venue-card--hotel {
   width: clamp(160px, 280px, 100%);
 }
 
 /* ─── Hotel Card ──────────────────────────────────────────────────────────────── */
-.bar-card--hotel::before {
+.venue-card--hotel::before {
   background: #65C2EE;
   opacity: 1;
 }
-.bar-card--hotel:hover {
+.venue-card--hotel:hover {
   border-color: #65C2EE;
   box-shadow: 0 6px 24px rgba(101,194,238,0.12);
 }
@@ -1334,14 +1334,14 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 .map-link--yellow:hover { background: var(--yellow); color: var(--black); }
 
-.bar-card--restaurant::after { background: var(--yellow); }
-.bar-card--restaurant:hover { border-color: var(--yellow); box-shadow: 0 8px 32px rgba(252,227,84,0.1); }
+.venue-card--restaurant::after { background: var(--yellow); }
+.venue-card--restaurant:hover { border-color: var(--yellow); box-shadow: 0 8px 32px rgba(252,227,84,0.1); }
 
-.bar-card--event {
+.venue-card--event {
   border-color: #e63946;
 }
 
-.bar-card--event:hover {
+.venue-card--event:hover {
   border-color: #e63946;
   box-shadow: 0 0 0 2px #e63946;
 }
@@ -1372,11 +1372,11 @@ footer a { color: var(--orange); text-decoration: none; }
   border-color: #e63946;
 }
 
-.bar-card--event {
+.venue-card--event {
   border-color: #e63946;
   border-top-color: #e63946;
 }
 
-.bar-card--event::before {
+.venue-card--event::before {
   background: #e63946;
 }

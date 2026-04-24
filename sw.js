@@ -6,7 +6,6 @@ const CACHE_NAME = 'worldcup-roots-v1';
 const ASSETS = [
   '/',
   '/index.html',
-  '/guide.html',
   '/css/style.css',
   '/js/constants.js',
   '/js/utils.js',
@@ -14,7 +13,6 @@ const ASSETS = [
   '/js/ui.js',
   '/js/matches.js',
   '/js/main.js',
-  '/js/guide.js',
   '/assets/Oakland_Roots.png',
   '/assets/Oakland_Soul.png',
   '/assets/3d_crest_roots.png',

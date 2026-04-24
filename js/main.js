@@ -72,6 +72,59 @@ async function loadBars() {
   }
 }
 
+// ─── Fetch hotels and restaurants CSVs ───────────────────────────────────────
+async function loadHotelsAndRestaurants() {
+  const TTL = 24 * 60 * 60 * 1000;
+
+  const fetchCSV = async (url, lsKey, lsTs) => {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      const data = parseCSV(text);
+      try {
+        localStorage.setItem(lsKey, JSON.stringify(data));
+        localStorage.setItem(lsTs, Date.now().toString());
+      } catch (e) {}
+      return data;
+    } catch (err) {
+      console.warn(`Fetch failed for ${lsKey}, trying cache:`, err);
+      try {
+        const cached = localStorage.getItem(lsKey);
+        const ts = localStorage.getItem(lsTs);
+        if (cached && ts && (Date.now() - Number(ts)) < TTL) return JSON.parse(cached);
+      } catch (e) {}
+      return [];
+    }
+  };
+
+  const [hotels, restaurants] = await Promise.all([
+    fetchCSV(HOTELS_CSV_URL,      'wc_hotels_cache',      'wc_hotels_ts'),
+    fetchCSV(RESTAURANTS_CSV_URL, 'wc_restaurants_cache', 'wc_restaurants_ts'),
+  ]);
+
+  window._hotelsData      = hotels;
+  window._restaurantsData = restaurants;
+
+  // Render cards into the page
+  if (hotels.length)      renderHotelCards(hotels);
+  if (restaurants.length) renderRestaurantCards(restaurants);
+
+  // Place markers once map is ready
+  const tryPlace = () => {
+    if (window._gMapReady) {
+      if (hotels.length)      window.buildHotelMarkers(hotels);
+      if (restaurants.length) window.buildRestaurantMarkers(restaurants);
+    } else {
+      setTimeout(tryPlace, 200);
+    }
+  };
+  tryPlace();
+}
+
 // ─── Google Maps async callback ───────────────────────────────────────────────
 function initMap() {
   if (window._barsReady) {
@@ -94,11 +147,11 @@ function dismissLoader() {
   setTimeout(() => loader.classList.add('hidden'), 400);
 }
 
-Promise.all([loadBars(), loadMatchesAndWatchParties()]).then(dismissLoader);
+Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotelsAndRestaurants()]).then(dismissLoader);
 
 // Dynamically load Maps script
 const script = document.createElement('script');
-script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap&loading=async`;
 script.async = true;
 script.defer = true;
 document.head.appendChild(script);
