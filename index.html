@@ -236,8 +236,26 @@
 </script>
 <!-- STICKY CTA BAR -->
 <div class="sticky-cta">
-  <a href="https://shop.oaklandrootssc.com" target="_blank" class="sticky-cta-btn sticky-cta-btn--store">Roots Store</a>
-  <a href="https://www.oaklandrootssc.com/schedule" target="_blank" class="sticky-cta-btn sticky-cta-btn--schedule">Roots Schedule</a>
+  <a href="https://shop.oaklandrootssc.com" 
+   target="_blank" 
+   class="sticky-cta-btn sticky-cta-btn--store"   
+   onclick="gtag('event', 'click', { 
+     'event_category': 'CTA', 
+     'event_label': 'Roots Store', 
+     'transport_type': 'beacon' 
+   });">  
+   Roots Store
+</a>
+  <a href="https://www.oaklandrootssc.com/schedule" 
+   target="_blank" 
+   class="sticky-cta-btn sticky-cta-btn--schedule"   
+   onclick="gtag('event', 'click', { 
+     'event_category': 'CTA', 
+     'event_label': 'Roots Schedule', 
+     'transport_type': 'beacon' 
+   });">  
+   Roots Schedule
+</a>
 </div>
 </body>
 </html>
