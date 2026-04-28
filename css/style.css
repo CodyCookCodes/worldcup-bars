@@ -52,7 +52,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 button, a { touch-action: manipulation; }
-body { font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif; background: var(--black); color: var(--text); min-height: 100vh; }
+body { font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif; background: var(--black); color: var(--text); min-height: 100vh; padding-bottom: 40px;}
 
 /* ── HEADER ── */
 header {
@@ -896,7 +896,7 @@ footer a { color: var(--orange); text-decoration: none; }
   .match-badge       { font-size: 0.72rem; padding: 3px 10px; top: -12px; }
 
   /* Footer */
-  footer             { font-size: 0.74rem; line-height: 1.8; }
+  footer             { font-size: 0.74rem; line-height: 1.8;}
   .footer-badge      { font-size: 0.72rem; padding: 6px 14px; }
 
   /* Loading / error */
@@ -1378,4 +1378,43 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .venue-card--event::before {
   background: #e63946;
+}
+
+.sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  display: flex;
+  background: #0d0d0d;
+  border-top: 2px solid #222;
+}
+
+.sticky-cta-btn {
+  flex: 1;
+  padding: 14px 0;
+  text-align: center;
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #ccc;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sticky-cta-btn--store {
+  border-right: 1px solid #222;
+}
+
+.sticky-cta-btn--store:hover {
+  background: #F79621;
+  color: #111;
+}
+
+.sticky-cta-btn--schedule:hover {
+  background: #23B67C;
+  color: #111;
 }
