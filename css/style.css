@@ -1418,3 +1418,40 @@ footer a { color: var(--orange); text-decoration: none; }
   background: #23B67C;
   color: #111;
 }
+
+.sponsors-strip {
+  background: #111;
+  padding: 28px 24px;
+}
+
+.sponsors-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px 48px;
+  max-width: 520px;
+  margin: 0 auto;
+  align-items: center;
+  justify-items: center;
+}
+
+.sponsor-logo-link img {
+  height: 60px;
+  width: auto;
+  max-width: 180px;
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+.sponsor-logo-link--pge img {
+  height: 90px;
+}
+
+.sponsor-logo-link--liuna img {
+  mix-blend-mode: screen;
+  height: 50px;
+  max-width: 160px;
+}
+
+.sponsor-logo-link--gusto img {
+  height: 40px;
+}
