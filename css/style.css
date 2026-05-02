@@ -1426,32 +1426,86 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .sponsors-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px 48px;
-  max-width: 520px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px 32px;
+  max-width: 900px;
   margin: 0 auto;
   align-items: center;
   justify-items: center;
+  justify-content: center;
+}
+.sponsors-grid--6 {
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 960px;
 }
 
 .sponsor-logo-link img {
-  height: 60px;
+  height: 82px;
   width: auto;
-  max-width: 180px;
+  max-width: 240px;
   opacity: 0.9;
   transition: opacity 0.2s;
 }
 
+.sponsor-logo-link:hover img {
+  opacity: 1;
+}
+
+
 .sponsor-logo-link--pge img {
-  height: 90px;
+  height: 72px !important;
+}
+
+.sponsor-logo-link--gusto img {
+  height: 44px !important;
 }
 
 .sponsor-logo-link--liuna img {
   mix-blend-mode: screen;
-  height: 50px;
-  max-width: 160px;
+  height: 44px !important;
+  max-width: 170px;
 }
 
-.sponsor-logo-link--gusto img {
-  height: 40px;
+.partner-logo-link img {
+  mix-blend-mode: screen;
+  height: 114px !important;
+  max-width: 140px;
+}
+
+.sponsor-logo-link--rjr img {
+  mix-blend-mode: screen;
+}
+
+.sponsors-label {
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #555;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sponsors-divider {
+  border: none;
+  border-top: 1px solid #222;
+  margin: 28px auto;
+  max-width: 900px;
+}
+
+@media (max-width: 600px) {
+  .sponsors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+
+  .sponsors-grid--6 {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 100%;
+  }
+
+  .sponsor-logo-link--rjr img {
+    max-width: 140px;
+  }
 }
