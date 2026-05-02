@@ -1454,6 +1454,7 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .sponsor-logo-link--pge img {
   height: 72px !important;
+  padding-left: 110px;
 }
 
 .sponsor-logo-link--gusto img {
@@ -1505,7 +1506,20 @@ footer a { color: var(--orange); text-decoration: none; }
     max-width: 100%;
   }
 
+.sponsor-logo-link--pge img {
+    justify-self: center;
+    height: 60px !important;
+    padding-left: 0; /* Add this to reset the desktop padding */
+  }
+
   .sponsor-logo-link--rjr img {
     max-width: 140px;
+  }
+  .sponsor-logo-link--liuna {
+    justify-self: center;
+  }
+  .sponsor-logo-link--rjr img {
+    max-width: 180px; /* Increased width so it's not "super small" */
+    height: auto !important; /* Forces proportional scaling[cite: 1] */
   }
 }

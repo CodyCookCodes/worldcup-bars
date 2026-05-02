@@ -302,7 +302,7 @@ function buildHotelInfoWindow(hotel, marker) {
     : '';
 
   gInfoWindow.setContent(`
-    <div style="background:#0d1620;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
+    <div style="background:#1a1a1a;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
       <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#65C2EE;margin-bottom:5px;">Hotel</div>
       <div style="font-weight:700;white-space:normal;overflow-wrap:break-word;font-size:1.2rem;color:#ffffff;margin-bottom:4px;">${esc(hotel.name)}</div>
       ${neighborhoodLine}${starsLine}${priceLine}
@@ -328,7 +328,7 @@ function buildWatchPartyInfoWindow(wp, marker) {
     : '';
 
   gInfoWindow.setContent(`
-    <div style="background:#0d1f16;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
+    <div style="background:#1a1a1a;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
       <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">Roots Events</div>
       <div style="font-weight:700;white-space:normal;padding-right:50px;overflow-wrap:break-word;font-size:1.35rem;color:#ffffff;margin-bottom:6px;">${esc(wp.name)}</div>
       ${matchLine}
@@ -399,7 +399,7 @@ function buildRestaurantInfoWindow(restaurant, marker) {
     : '';
 
   gInfoWindow.setContent(`
-    <div style="background:#1a1600;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
+    <div style="background:#1a1a1a;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
       <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#FCE354;margin-bottom:5px;">Restaurant</div>
       <div style="font-weight:700;white-space:normal;overflow-wrap:break-word;font-size:1.2rem;color:#ffffff;margin-bottom:4px;">${esc(restaurant.name)}</div>
       ${neighborhoodLine}${cuisineLine}${priceLine}
