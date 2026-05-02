@@ -96,7 +96,7 @@ function buildMatchRow(match, watchPartyMatchIds) {
 
   const hasWatchParty = watchPartyMatchIds && watchPartyMatchIds.has(match.match_id);
   const watchPartyBadge = hasWatchParty
-    ? `<span class="mr-watch-party">Official Roots Events</span>`
+    ? `<span class="mr-watch-party">Official OSG Events</span>`
     : '';
 
   const clickable = !hasScore;

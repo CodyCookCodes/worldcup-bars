@@ -97,7 +97,7 @@ function buildPage(bars) {
   wpSection.innerHTML = `
     <div class="category-block">
       <div class="category-header">
-        <span class="cat-title" style="color:var(--green)">Official Roots Events</span>
+        <span class="cat-title" style="color:var(--green)">Official OSG Events</span>
       </div>
       <div id="watchPartyCards" class="venue-grid">
         <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading watch parties…</div>
