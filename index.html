@@ -11,6 +11,7 @@
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied' });
     gtag('js', new Date());
     gtag('config', 'G-G5L0TEB3LN');
   </script>
@@ -43,6 +44,25 @@
         placeholder="your@email.com"
         autocomplete="email"
       >
+      <input
+        type="tel"
+        class="popup-input"
+        id="popupPhone"
+        placeholder="Phone number"
+        autocomplete="tel"
+      >
+      <div class="popup-consent">
+        <label class="consent-label">
+          <input type="checkbox" id="consentSMS" class="consent-checkbox">
+          <span>I agree to receive recurring automated promotional and informational text messages from Oakland Pro Soccer LLC, including texts sent by autodialer. Message frequency varies. Message &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase.</span>
+        </label>
+      </div>
+      <div class="popup-consent">
+        <label class="consent-label">
+          <input type="checkbox" id="consentTerms" class="consent-checkbox">
+          <span>By submitting this form, you agree to our <a href="https://www.uslsoccer.com/usl-privacy-policy" target="_blank" class="consent-link">Terms of Service and Privacy Policy</a>.</span>
+        </label>
+      </div>
       <button class="popup-submit" id="popupSubmit">Count Me In</button>
       <button class="popup-skip" id="popupSkip">No thanks, just take me to the site</button>
     </div>
@@ -197,20 +217,24 @@
 <script>
 // ─── Email Popup ──────────────────────────────────────────────────────────────
 (function() {
-  const LS_KEY   = 'wc_email_captured';
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe8UBP2kQP3bYMgCM7SceHVcyo4_Iwew_-Ejv_Cd-gsgd2kOg/formResponse';
-  const ENTRY_ID = 'entry.1075542564';
+  const LS_KEY      = 'wc_email_captured';
+  const FORM_URL    = 'https://docs.google.com/forms/d/e/1FAIpQLSe8UBP2kQP3bYMgCM7SceHVcyo4_Iwew_-Ejv_Cd-gsgd2kOg/formResponse';
+  const ENTRY_EMAIL = 'entry.1075542564';
+  const ENTRY_PHONE = 'entry.623188828';
+  const ENTRY_SMS   = 'entry.716396109';
 
-  // Don't show if user has already submitted or skipped
   if (localStorage.getItem(LS_KEY)) return;
 
-  const overlay    = document.getElementById('email-popup-overlay');
-  const closeBtn   = document.getElementById('popupClose');
-  const skipBtn    = document.getElementById('popupSkip');
-  const submitBtn  = document.getElementById('popupSubmit');
-  const emailInput = document.getElementById('popupEmail');
-  const form       = document.getElementById('popupForm');
-  const success    = document.getElementById('popupSuccess');
+  const overlay      = document.getElementById('email-popup-overlay');
+  const closeBtn     = document.getElementById('popupClose');
+  const skipBtn      = document.getElementById('popupSkip');
+  const submitBtn    = document.getElementById('popupSubmit');
+  const emailInput   = document.getElementById('popupEmail');
+  const phoneInput   = document.getElementById('popupPhone');
+  const consentSMS   = document.getElementById('consentSMS');
+  const consentTerms = document.getElementById('consentTerms');
+  const form         = document.getElementById('popupForm');
+  const success      = document.getElementById('popupSuccess');
 
   function showPopup() {
     overlay.classList.remove('hidden');
@@ -229,17 +253,37 @@
 
   async function submitEmail() {
     const email = emailInput.value.trim();
+    const phone = phoneInput ? phoneInput.value.trim() : '';
+
+    // Email is required
     if (!email || !email.includes('@')) {
       emailInput.focus();
       emailInput.style.borderColor = '#EF4859';
       return;
     }
 
+    // Terms consent is required
+    if (!consentTerms.checked) {
+      consentTerms.closest('.consent-label').style.color = '#EF4859';
+      return;
+    }
+
+    // If phone is provided, SMS consent is required
+    if (phone && !consentSMS.checked) {
+      consentSMS.closest('.consent-label').style.color = '#EF4859';
+      return;
+    }
+
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting\u2026';
 
+    // Build query string
+    let params = `${ENTRY_EMAIL}=${encodeURIComponent(email)}`;
+    if (phone) params += `&${ENTRY_PHONE}=${encodeURIComponent(phone)}`;
+    if (consentSMS.checked) params += `&${ENTRY_SMS}=${encodeURIComponent('Yes')}`;
+
     try {
-      await fetch(`${FORM_URL}?${ENTRY_ID}=${encodeURIComponent(email)}`, {
+      await fetch(`${FORM_URL}?${params}`, {
         method: 'POST',
         mode: 'no-cors',
       });
@@ -258,6 +302,8 @@
   submitBtn.addEventListener('click', submitEmail);
   emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitEmail(); });
   emailInput.addEventListener('input', () => { emailInput.style.borderColor = ''; });
+  consentTerms.addEventListener('change', () => { consentTerms.closest('.consent-label').style.color = ''; });
+  consentSMS.addEventListener('change', () => { consentSMS.closest('.consent-label').style.color = ''; });
 
   // Show after page loader dismisses
   const loader = document.getElementById('page-loader');
@@ -274,6 +320,38 @@
   }
 })();
 </script>
+<!-- COOKIE CONSENT -->
+<div id="cookie-banner" style="display:none;position:fixed;bottom:60px;left:0;right:0;z-index:9998;background:#111;padding:16px 20px;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid #222;">
+  <p style="flex:1;min-width:200px;font-size:0.8rem;color:#ccc;margin:0;">This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics, personalization, and targeted advertising. <a href="https://www.uslsoccer.com/usl-privacy-policy" target="_blank" style="color:#EF4859;">Privacy Policy</a></p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">
+    <button id="cookieAccept" style="background:#EF4859;color:#fff;border:none;padding:8px 18px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Accept</button>
+    <button id="cookieDeny" style="background:transparent;color:#fff;border:2px solid #EF4859;padding:8px 18px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Deny Non-Essential</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const LS_KEY = 'wc_cookie_consent';
+  const banner = document.getElementById('cookie-banner');
+
+  if (localStorage.getItem(LS_KEY)) return;
+
+  setTimeout(() => { banner.style.display = 'flex'; }, 1500);
+
+  document.getElementById('cookieAccept').addEventListener('click', () => {
+    localStorage.setItem(LS_KEY, 'accepted');
+    banner.style.display = 'none';
+    gtag('consent', 'update', { analytics_storage: 'granted' });
+  });
+
+  document.getElementById('cookieDeny').addEventListener('click', () => {
+    localStorage.setItem(LS_KEY, 'denied');
+    banner.style.display = 'none';
+    gtag('consent', 'update', { analytics_storage: 'denied' });
+  });
+})();
+</script>
+
 <!-- STICKY CTA BAR -->
 <div class="sticky-cta">
   <a href="https://shop.oaklandrootssc.com" 

@@ -1253,6 +1253,35 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 .popup-skip:hover { color: var(--muted); }
 
+.popup-consent {
+  margin: 10px 0 4px;
+  text-align: left;
+}
+
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.72rem;
+  color: #aaa;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.consent-checkbox {
+  margin-top: 3px;
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--orange);
+  cursor: pointer;
+}
+
+.consent-link {
+  color: var(--orange);
+  text-decoration: underline;
+}
+
 .popup-success { text-align: center; padding: 12px 0 4px; }
 .popup-success-icon { font-size: 2rem; margin-bottom: 8px; }
 .popup-success-msg {
