@@ -114,16 +114,22 @@ function buildWatchPartyCard(wp) {
   const dateLine = (wp.match_date || wp.match_time)
     ? `<div class="venue-detail">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
     : '';
+  const ticketBtn = wp.url
+    ? `<a class="map-link map-link--green" href="${esc(wp.url)}" target="_blank">Tickets</a>`
+    : '';
 
   return `
-    <a class="venue-card venue-card--watch-party" href="${buildMapsUrl(wp)}" target="_blank">
+    <div class="venue-card venue-card--watch-party">
       <div class="wp-badge">OSG Events</div>
       <div class="venue-name">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}
       <div class="venue-spacer"></div>
-      <span class="map-link map-link--green">Open in Maps</span>
-    </a>`;
+      <div class="venue-card-actions">
+        ${ticketBtn}
+        <a class="map-link map-link--green" href="${buildMapsUrl(wp)}" target="_blank">Open in Maps</a>
+      </div>
+    </div>`;
 }
 
 // ─── Populate OSG Events cards (called once data is ready) ───────────────────
