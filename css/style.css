@@ -1455,7 +1455,7 @@ footer a { color: var(--orange); text-decoration: none; }
 
 .sponsors-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 28px 32px;
   max-width: 900px;
   margin: 0 auto;
@@ -1548,8 +1548,12 @@ footer a { color: var(--orange); text-decoration: none; }
     justify-self: center;
   }
   .sponsor-logo-link--rjr img {
-    max-width: 180px; /* Increased width so it's not "super small" */
-    height: auto !important; /* Forces proportional scaling[cite: 1] */
+    max-width: 180px;
+    height: auto !important;
+  }
+  .sponsors-grid .sponsor-logo-link:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 }
 
