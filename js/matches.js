@@ -336,7 +336,7 @@ async function loadMatchesAndWatchParties() {
 
   window._watchPartiesData = enrichedWatchParties;
 
-  // Poll for gMap to be initialized before placing Roots Events markers
+  // Poll for gMap to be initialized before placing OSG Events markers
   // Poll until gMap is ready, then place markers
   const tryPlaceWatchParties = () => {
     if (window._gMapReady) {

@@ -46,11 +46,11 @@ function buildPage(bars) {
   watchPartiesBtn.onclick = function() { filterBars('all', this); };
   filterContainer.appendChild(watchPartiesBtn);
 
-  // Add Roots Events tab button
+  // Add OSG Events tab button
   const wpBtn = document.createElement('button');
   wpBtn.className = 'filter-btn filter-btn--watch-party';
   wpBtn.id = 'watchPartyTabBtn';
-  wpBtn.innerHTML = `Roots Events`;
+  wpBtn.innerHTML = `OSG Events`;
   wpBtn.onclick = function() { filterWatchParties(this); };
   filterContainer.appendChild(wpBtn);
 
@@ -106,7 +106,7 @@ function buildPage(bars) {
   document.getElementById('barList').before(wpSection);
 }
 
-// ─── Build a Roots Events card ─────────────────────────────────────────────────
+// ─── Build a OSG Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const matchLine = (wp.home_team && wp.away_team)
     ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
@@ -117,7 +117,7 @@ function buildWatchPartyCard(wp) {
 
   return `
     <a class="venue-card venue-card--watch-party" href="${buildMapsUrl(wp)}" target="_blank">
-      <div class="wp-badge">Roots Events</div>
+      <div class="wp-badge">OSG Events</div>
       <div class="venue-name">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}
@@ -126,7 +126,7 @@ function buildWatchPartyCard(wp) {
     </a>`;
 }
 
-// ─── Populate Roots Events cards (called once data is ready) ───────────────────
+// ─── Populate OSG Events cards (called once data is ready) ───────────────────
 function renderWatchPartyCards() {
   const container = document.getElementById('watchPartyCards');
   if (!container) return;
@@ -146,7 +146,7 @@ function filterWatchParties(btn) {
   // Clear match row highlight
   document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
 
-  // Hide bar list, show Roots Events list
+  // Hide bar list, show OSG Events list
   document.getElementById('barList').classList.add('hidden');
   const wpList = document.getElementById('watchPartyList');
   if (wpList) wpList.classList.remove('hidden');

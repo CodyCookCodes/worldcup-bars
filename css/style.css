@@ -923,7 +923,7 @@ footer a { color: var(--orange); text-decoration: none; }
   .match-row  { padding: 10px 12px 8px; }
 }
 
-/* ─── Roots Events Tab Button ─────────────────────────────────────────────────── */
+/* ─── OSG Events Tab Button ─────────────────────────────────────────────────── */
 .filter-btn--watch-party {
   border-color: rgba(37, 182, 124, 0.4);
   color: var(--green);
@@ -938,7 +938,7 @@ footer a { color: var(--orange); text-decoration: none; }
   border-color: var(--green);
 }
  
-/* ─── Roots Events Section ────────────────────────────────────────────────────── */
+/* ─── OSG Events Section ────────────────────────────────────────────────────── */
 #watchPartyList .venue-grid {
   display: flex;
   flex-wrap: wrap;
@@ -949,7 +949,7 @@ footer a { color: var(--orange); text-decoration: none; }
   width: clamp(160px, 280px, 100%);
 }
 
-/* ─── Roots Events Card ───────────────────────────────────────────────────────── */
+/* ─── OSG Events Card ───────────────────────────────────────────────────────── */
 .venue-card--watch-party::before {
   background: var(--green);
   opacity: 1;
@@ -1066,7 +1066,7 @@ footer a { color: var(--orange); text-decoration: none; }
 .match-row--no-click { cursor: default; }
 .match-row--no-click:hover { border-color: #222; background: #1a1a1a; }
 
-/* ── MR Roots Events BADGE ── */
+/* ── MR OSG Events BADGE ── */
 .mr-watch-party {
   display: inline-block;
   margin-top: 5px;

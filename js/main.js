@@ -133,7 +133,7 @@ function initMap() {
     window._mapReady = true;
   }
 
-  // Place Roots Events markers if they loaded before the map was ready
+  // Place OSG Events markers if they loaded before the map was ready
   if (window._watchPartiesReady && window._watchPartiesData && window._watchPartiesData.length) {
     window.buildWatchPartyMarkers(window._watchPartiesData);
   }
@@ -149,27 +149,11 @@ async function loadNextEvent() {
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
-    const res = await fetch(EVENTS_CSV_URL, { signal: controller.signal });
+    const res = await fetch(WATCH_PARTIES_CSV_URL, { signal: controller.signal });
     clearTimeout(timeout);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
-    // Parse manually since events use 'event name' not 'name'
-    const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
-    events = lines.slice(1).map(line => {
-      const cols = [];
-      let cur = '', inQ = false;
-      for (let i = 0; i < line.length; i++) {
-        const c = line[i];
-        if (c === '"') { inQ = !inQ; }
-        else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-        else { cur += c; }
-      }
-      cols.push(cur.trim());
-      const row = {};
-      headers.forEach((h, i) => row[h] = (cols[i] || '').replace(/^"|"$/g, '').trim());
-      return row;
-    }).filter(row => row['event name'] || row.name);
+    events = parseCSV(text);
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(events));
       localStorage.setItem(LS_TS, Date.now().toString());
@@ -183,32 +167,33 @@ async function loadNextEvent() {
     } catch (e) {}
   }
 
-  if (!events.length) return;
+  // Only show rows that have a date and time — skip pure watch party rows
+  const eventRows = events.filter(e => e['date and time'] || e.date);
+  if (!eventRows.length) return;
 
   // Find first upcoming event by date, fall back to first row
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const upcoming = events.find(e => {
-    const dateStr = e['date and time'] || e.date_and_time || e.date || '';
+  const upcoming = eventRows.find(e => {
+    const dateStr = e['date and time'] || e.date || '';
     const match = dateStr.match(/(\w+ \d+|\d{4}-\d{2}-\d{2})/);
     if (!match) return true;
     const parsed = new Date(match[0] + (dateStr.includes('202') ? '' : ', 2026'));
     return isNaN(parsed) || parsed >= today;
-  }) || events[0];
+  }) || eventRows[0];
 
   if (!upcoming) return;
 
-  const name     = upcoming['event name'] || upcoming.name || '';
-  const location = upcoming.location || '';
-  const dateTime = upcoming['date and time'] || upcoming.date_and_time || upcoming.date || '';
-  const url      = upcoming.url || '';
+  const name     = upcoming.name || '';
+  const location = upcoming.location || upcoming.address || '';
+  const dateTime = upcoming['date and time'] || upcoming.date || '';
 
   const banner   = document.getElementById('next-event-banner');
   const nameEl   = document.getElementById('next-event-name');
   const detailEl = document.getElementById('next-event-details');
   const linkEl   = document.getElementById('next-event-link');
 
-  if (!banner || !nameEl) return;
+  if (!banner || !nameEl || !name) return;
 
   nameEl.textContent = name;
   detailEl.textContent = [location, dateTime].filter(Boolean).join(' · ');
