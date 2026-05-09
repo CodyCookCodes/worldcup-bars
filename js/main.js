@@ -1,3 +1,9 @@
+// ─── City filter (set window.CITY_FILTER before loading this script) ─────────
+function applyCityFilter(items) {
+  if (!window.CITY_FILTER) return items;
+  return items.filter(item => (item.city || '').toLowerCase().trim() === window.CITY_FILTER);
+}
+
 // ─── Fetch CSV, parse bars, kick off rendering ────────────────────────────────
 async function loadBars() {
   const LS_KEY = 'wc_bars_cache';
@@ -20,10 +26,11 @@ async function loadBars() {
       localStorage.setItem(LS_TS, Date.now().toString());
     } catch (e) { /* storage full — ignore */ }
 
-    buildPage(bars);
-    window._barsData = bars;
+    const filteredBars = applyCityFilter(bars);
+    buildPage(filteredBars);
+    window._barsData = filteredBars;
     if (window._mapReady) {
-      window.buildMap(bars);
+      window.buildMap(filteredBars);
     } else {
       window._barsReady = true;
     }
@@ -35,7 +42,7 @@ async function loadBars() {
       const cached = localStorage.getItem(LS_KEY);
       const ts     = localStorage.getItem(LS_TS);
       if (cached && ts && (Date.now() - Number(ts)) < TTL) {
-        const bars = JSON.parse(cached);
+        const bars = applyCityFilter(JSON.parse(cached));
         if (bars.length) {
           buildPage(bars);
           window._barsData = bars;
@@ -101,10 +108,13 @@ async function loadHotelsAndRestaurants() {
     }
   };
 
-  const [hotels, restaurants] = await Promise.all([
+  const [rawHotels, rawRestaurants] = await Promise.all([
     fetchCSV(HOTELS_CSV_URL,      'wc_hotels_cache',      'wc_hotels_ts'),
     fetchCSV(RESTAURANTS_CSV_URL, 'wc_restaurants_cache', 'wc_restaurants_ts'),
   ]);
+
+  const hotels      = applyCityFilter(rawHotels);
+  const restaurants = applyCityFilter(rawRestaurants);
 
   window._hotelsData      = hotels;
   window._restaurantsData = restaurants;

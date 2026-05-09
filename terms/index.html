@@ -103,7 +103,12 @@
 <div class="mosaic-divider"></div>
 
 <div class="legal-page">
-  <a href="/" class="legal-back">← Back to Soccer Trail</a>
+  <a href="/" class="legal-back" id="legalBack">← Back to Soccer Trail</a>
+  <script>
+    if (new URLSearchParams(location.search).get('ref') === 'oakland') {
+      document.getElementById('legalBack').href = '/oakland';
+    }
+  </script>
 
   <h1>Terms of Service</h1>
   <div class="effective">Effective Date: May 4, 2026 &nbsp;·&nbsp; Last Updated: May 4, 2026</div>
