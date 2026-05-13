@@ -109,14 +109,43 @@ function buildPage(bars) {
 // ─── Build a OSG Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const isCatchAll = !wp.match_id || !wp.match_id.trim();
-  const matchLine = isCatchAll
-    ? `<div class="venue-detail" style="color:var(--green);">Every Match</div>`
-    : (wp.home_team && wp.away_team)
-    ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
-    : '';
-  const dateLine = (wp.match_date || wp.match_time)
-    ? `<div class="venue-detail">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
-    : '';
+
+  let matchLine = '';
+  let dateLine = '';
+
+  if (isCatchAll) {
+    // Find next upcoming match from window._matchById
+    const matchById = window._matchById || {};
+    const allMatches = Object.values(matchById);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Sort by date then time, find first without a score
+    const upcoming = allMatches
+      .filter(m => !m.home_score || m.home_score === '')
+      .sort((a, b) => {
+        const da = a.date || '', db = b.date || '';
+        if (da !== db) return da.localeCompare(db);
+        return (a.time || '').localeCompare(b.time || '');
+      })[0] || allMatches.sort((a, b) => (a.date || '').localeCompare(b.date || ''))[0];
+
+    if (upcoming) {
+      matchLine = (upcoming.home_team && upcoming.away_team)
+        ? `<div class="venue-detail" style="color:var(--green);">${esc(upcoming.home_team)} vs ${esc(upcoming.away_team)}</div>`
+        : '';
+      dateLine = (upcoming.date || upcoming.time)
+        ? `<div class="venue-detail">${esc(upcoming.date || '')}${upcoming.time ? ' · ' + esc(upcoming.time) : ''}</div>`
+        : '';
+    }
+  } else {
+    matchLine = (wp.home_team && wp.away_team)
+      ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
+      : '';
+    dateLine = (wp.match_date || wp.match_time)
+      ? `<div class="venue-detail">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
+      : '';
+  }
+
   const ticketBtn = wp.url
     ? `<a class="map-link map-link--green" href="${esc(wp.url)}" target="_blank">Tickets</a>`
     : '';
