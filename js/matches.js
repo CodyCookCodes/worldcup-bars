@@ -74,7 +74,7 @@ function stageLabel(stage) {
 }
 
 // ─── Single match row ─────────────────────────────────────────────────────────
-function buildMatchRow(match, watchPartyMatchIds) {
+function buildMatchRow(match, watchPartyMatchIds, hasCatchAll) {
   const hasScore = match.home_score !== '' && match.away_score !== '';
   const homeWon = hasScore && Number(match.home_score) > Number(match.away_score);
   const awayWon = hasScore && Number(match.away_score) > Number(match.home_score);
@@ -94,7 +94,7 @@ function buildMatchRow(match, watchPartyMatchIds) {
   const homeKey = (match.home_team || '').toLowerCase().trim();
   const awayKey = (match.away_team || '').toLowerCase().trim();
 
-  const hasWatchParty = watchPartyMatchIds && watchPartyMatchIds.has(match.match_id);
+  const hasWatchParty = hasCatchAll || (watchPartyMatchIds && watchPartyMatchIds.has(match.match_id));
   const watchPartyBadge = hasWatchParty
     ? `<span class="mr-watch-party">Official OSG Events</span>`
     : '';
@@ -121,20 +121,15 @@ function buildMatchRow(match, watchPartyMatchIds) {
 }
 
 // ─── Day column card ──────────────────────────────────────────────────────────
-function buildDayCard(dateStr, matchesForDay, state, watchPartyMatchIds) {
+function buildDayCard(dateStr, matchesForDay, state, watchPartyMatchIds, hasCatchAll) {
   const date = parseLocalDate(dateStr);
   const stateClass = { past: 'day-card--past', today: 'day-card--today', soon: 'day-card--soon', future: 'day-card--future' }[state] || '';
-  const badge = state === 'today'
-    ? `<span class="match-badge match-badge--today">TODAY</span>`
-    : state === 'soon'
-    ? `<span class="match-badge match-badge--soon">THIS WEEK</span>`
-    : '';
 
   return `
     <div class="day-card ${stateClass}">
       <div class="day-header">${formatDayHeader(date)}</div>
       <div class="day-matches">
-        ${matchesForDay.map(m => buildMatchRow(m, watchPartyMatchIds)).join('')}
+        ${matchesForDay.map(m => buildMatchRow(m, watchPartyMatchIds, hasCatchAll)).join('')}
       </div>
     </div>`;
 }
@@ -161,7 +156,9 @@ function handleMatchRowClick(e) {
   const matchWPs = allWPs.filter(wp => {
     const wpHome = (wp.home_team || '').toLowerCase().trim();
     const wpAway = (wp.away_team || '').toLowerCase().trim();
-    return (matchId && wp.match_id && wp.match_id.trim() === matchId.trim())
+    const isCatchAll = !wp.match_id || !wp.match_id.trim();
+    return isCatchAll
+        || (matchId && wp.match_id && wp.match_id.trim() === matchId.trim())
         || (wpHome && wpAway && wpHome === home && wpAway === away);
   });
   const wpList = document.getElementById('watchPartyList');
@@ -192,6 +189,9 @@ function buildMatchCarousel(matches, watchParties) {
   const watchPartyMatchIds = new Set(
     (watchParties || []).map(wp => wp.match_id).filter(Boolean)
   );
+
+  // If any watch party has no match_id, it applies to every match
+  const hasCatchAll = (watchParties || []).some(wp => !wp.match_id || !wp.match_id.trim());
 
   const matchById = {};
   matches.forEach(m => { if (m.match_id) matchById[m.match_id] = m; });
@@ -237,7 +237,7 @@ function buildMatchCarousel(matches, watchParties) {
       firstFutureDone = true;
     }
 
-    return buildDayCard(dateStr, dayMatches, state, watchPartyMatchIds);
+    return buildDayCard(dateStr, dayMatches, state, watchPartyMatchIds, hasCatchAll);
   }).join('');
 
   track.querySelectorAll('.match-row:not(.match-row--no-click)').forEach(row => {

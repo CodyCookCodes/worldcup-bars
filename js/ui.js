@@ -108,7 +108,10 @@ function buildPage(bars) {
 
 // ─── Build a OSG Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
-  const matchLine = (wp.home_team && wp.away_team)
+  const isCatchAll = !wp.match_id || !wp.match_id.trim();
+  const matchLine = isCatchAll
+    ? `<div class="venue-detail" style="color:var(--green);">Every Match</div>`
+    : (wp.home_team && wp.away_team)
     ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
     : '';
   const dateLine = (wp.match_date || wp.match_time)
