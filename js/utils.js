@@ -48,39 +48,51 @@ function parseCSV(text) {
 
 // ─── Build a Maps URL from a bar row ───────────────────────────────────
 function buildMapsUrl(row) {
+  // Safeguard: Ensure we can read the place_id even if spacing/formatting varies
   const id = row.place_id ? row.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
 
-  // Extract coordinates if they exist
+  // Check for 'cords' or 'coords' spelling variations in the data
+  const rawCords = row.cords || row.coords || '';
   let lat = null, lng = null;
-  if (row.cords && row.cords.trim()) {
-    const split = row.cords.split(',').map(s => s.trim());
+  
+  if (rawCords && rawCords.trim()) {
+    const split = rawCords.split(',').map(s => s.trim());
     if (!isNaN(parseFloat(split[0])) && !isNaN(parseFloat(split[1]))) {
       [lat, lng] = split;
     }
   }
 
-  // 1. iOS — Force Apple Maps App
+  // 1. iOS — Force Apple Maps App via coordinates
   if (isIOS && lat && lng) {
     return `https://maps.apple.com/?q=${encodeURIComponent(row.name || '')}&ll=${lat},${lng}`;
   }
 
-  // 2. Android / Mobile Fallbacks — Universal "geo:" URI scheme
-  // This prompts the OS to open the user's default preferred map app (Google Maps, Waze, etc.)
+  // 2. Android — Universal "geo:" URI scheme to open default system map
   if (isAndroid && lat && lng) {
-    // geo:latitude,longitude?q=query string
     return `geo:${lat},${lng}?q=${encodeURIComponent(row.name || '')}`;
   }
 
-  // 3. Desktop / General Fallback — Official Google Maps Universal Links
+  // 3. Desktop / General Fallback — Official Google Maps Links
+  // Priority A: Use Place ID if it exists (highly accurate)
   if (id) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row.name || '')}&query_place_id=${id}`;
   }
+  
+  // Priority B: Use precise Coordinates if Place ID failed
   if (lat && lng) {
     return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   }
 
-  const searchQuery = `${row.name || ''} ${row.address || ''}`.trim();
+  // Priority C: Text Search Fallback (Anchored strictly to local city context)
+  let searchQuery = `${row.name || ''} ${row.address || ''}`.trim();
+  
+  // Explicitly inject the city modifier if the string doesn't include it
+  const cityModifier = row.city || 'Oakland';
+  if (!searchQuery.toLowerCase().includes(cityModifier.toLowerCase())) {
+    searchQuery += ` ${cityModifier}`;
+  }
+
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchQuery)}`;
 }
