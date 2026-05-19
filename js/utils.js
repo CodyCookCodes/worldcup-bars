@@ -46,53 +46,36 @@ function parseCSV(text) {
   }).filter(row => row.name || row['event name']);
 }
 
-// ─── Build a Maps URL from a bar row ───────────────────────────────────
+// ─── Build a Maps URL combining Name and Address for a premium look ───────────
 function buildMapsUrl(row) {
-  // Safeguard: Ensure we can read the place_id even if spacing/formatting varies
-  const id = row.place_id ? row.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
+  const name = (row.name || '').trim();
+  const address = (row.address || '').trim();
+  
+  // Combine them cleanly: "Bar Name, Street Address"
+  // If one is somehow missing, fall back to what's available
+  let combinedQuery = name;
+  if (address) {
+    combinedQuery = name ? `${name}, ${address}` : address;
+  }
+
+  // Safety net: If the combined string doesn't include the local city, anchor it
+  if (combinedQuery && !combinedQuery.toLowerCase().includes('oakland')) {
+    combinedQuery += ' Oakland, CA';
+  }
+
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   const isAndroid = /Android/i.test(navigator.userAgent);
 
-  // Check for 'cords' or 'coords' spelling variations in the data
-  const rawCords = row.cords || row.coords || '';
-  let lat = null, lng = null;
-  
-  if (rawCords && rawCords.trim()) {
-    const split = rawCords.split(',').map(s => s.trim());
-    if (!isNaN(parseFloat(split[0])) && !isNaN(parseFloat(split[1]))) {
-      [lat, lng] = split;
-    }
+  // 1. iOS — Hand off Name + Address to native Apple Maps
+  if (isIOS) {
+    return `https://maps.apple.com/?q=${encodeURIComponent(combinedQuery)}`;
   }
 
-  // 1. iOS — Force Apple Maps App via coordinates
-  if (isIOS && lat && lng) {
-    return `https://maps.apple.com/?q=${encodeURIComponent(row.name || '')}&ll=${lat},${lng}`;
+  // 2. Android — Open in default maps app via geo: scheme
+  if (isAndroid) {
+    return `geo:0,0?q=${encodeURIComponent(combinedQuery)}`;
   }
 
-  // 2. Android — Universal "geo:" URI scheme to open default system map
-  if (isAndroid && lat && lng) {
-    return `geo:${lat},${lng}?q=${encodeURIComponent(row.name || '')}`;
-  }
-
-  // 3. Desktop / General Fallback — Official Google Maps Links
-  // Priority A: Use Place ID if it exists (highly accurate)
-  if (id) {
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row.name || '')}&query_place_id=${id}`;
-  }
-  
-  // Priority B: Use precise Coordinates if Place ID failed
-  if (lat && lng) {
-    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
-  }
-
-  // Priority C: Text Search Fallback (Anchored strictly to local city context)
-  let searchQuery = `${row.name || ''} ${row.address || ''}`.trim();
-  
-  // Explicitly inject the city modifier if the string doesn't include it
-  const cityModifier = row.city || 'Oakland';
-  if (!searchQuery.toLowerCase().includes(cityModifier.toLowerCase())) {
-    searchQuery += ` ${cityModifier}`;
-  }
-
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchQuery)}`;
+  // 3. Desktop / General Fallback — Clean universal Google Maps search link
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(combinedQuery)}`;
 }
