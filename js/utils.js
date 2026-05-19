@@ -59,7 +59,7 @@ function buildMapsUrl(row) {
   }
 
   // Android — Google Maps with place_id for full venue listing
-  if (isAndroid && id) return `https://maps.google.com/?q=place_id:${id}`;
+  if (isAndroid && id) return `https://www.google.com/maps/search/?api=1&query=place_id:${id}`;
 
   // Everything else (desktop, Windows Phone, other map apps) — geo: URI
   if (row.cords && row.cords.trim()) {
