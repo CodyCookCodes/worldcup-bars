@@ -1,94 +1,69 @@
-// ─── East Bay Soccer Trail · Service Worker ──────────────────────────────────
-// Cache version is auto-bumped by GitHub Actions on every deploy
-const CACHE_NAME = 'worldcup-roots-v1';
-
-// Assets to cache on install — all local files, no external APIs
+const CACHE_NAME = 'baf-v1';
 const ASSETS = [
   '/',
   '/index.html',
-  '/css/style.css',
-  '/js/constants.js',
-  '/js/utils.js',
-  '/js/map.js',
-  '/js/ui.js',
-  '/js/matches.js',
-  '/js/main.js',
-  '/assets/Oakland_Roots.png',
-  '/assets/Oakland_Soul.png',
-  '/assets/3d_crest_roots.png',
-  '/assets/roots_mosaic_pattern_big_stroke.svg',
-  '/assets/oakland_roots_single_color.svg',
-  '/fonts/UnitedSansCdBd.otf',
-  '/fonts/texgyreheroscn-regular.otf',
-  '/fonts/texgyreheroscn-bold.otf',
-  '/fonts/texgyreheroscn-italic.otf',
-  '/fonts/texgyreheroscn-bolditalic.otf',
+  '/styles.css',
+  '/app.js',
+  '/utils.js',
+  '/bars.csv',
+  '/matches.csv',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
-// ─── Install — pre-cache all local assets ─────────────────────────────────────
-self.addEventListener('install', e => {
+// Install Event — Cache Core Assets
+self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS);
+    }).then(() => self.skipWaiting()) // Force immediate activation
   );
 });
 
-// ─── Activate — delete old caches ────────────────────────────────────────────
-self.addEventListener('activate', e => {
+// Activate Event — Clean Up Old Caches
+self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys
-          .filter(k => k !== CACHE_NAME)
-          .map(k => caches.delete(k))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
-
-// ─── Fetch — network-first for JS/HTML, cache-first for everything else ───────
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-
-  // Always go to network for external APIs — Google Maps, Sheets, flagcdn
-  const isExternal = (
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('google.com') ||
-    url.hostname.includes('flagcdn.com') ||
-    url.hostname.includes('docs.google.com')
-  );
-
-  if (isExternal) return;
-
-  // Network-first for HTML and JS — always get fresh code
-  if (e.request.mode === 'navigate' || url.pathname.endsWith('.js')) {
-    e.respondWith(
-      fetch(e.request)
-        .then(response => {
-          if (response && response.status === 200 && response.type === 'basic') {
-            const toCache = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(e.request, toCache));
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
-          return response;
         })
-        .catch(() => caches.match(e.request))
-    );
+      );
+    }).then(() => self.clients.claim()) // Take control of open pages immediately
+  );
+});
+
+// Fetch Event — Network First, falling back to Cache
+self.addEventListener('fetch', (e) => {
+  // CRITICAL FIX: Skip non-HTTP protocols (like geo:, mailto:, tel:)
+  if (!e.request.url.startsWith('http')) {
     return;
   }
 
-  // Cache-first for everything else (CSS, fonts, images)
+  // OPTIONAL FIX: Don't intercept external map links
+  const url = new URL(e.request.url);
+  if (url.hostname.includes('google.com') || url.hostname.includes('apple.com')) {
+    return;
+  }
+
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
+    fetch(e.request)
+      .then((response) => {
+        // If valid network response, clone it into the cache
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(e.request, responseToCache);
+          });
         }
-        const toCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, toCache));
         return response;
-      });
-    })
+      })
+      .catch(() => {
+        // If offline/network fails, try the cache
+        return caches.match(e.request);
+      })
   );
 });
