@@ -47,7 +47,7 @@ self.addEventListener('activate', e => {
   );
 });
 
-// ─── Fetch — cache-first for local assets, network-only for external ──────────
+// ─── Fetch — network-first for JS/HTML, cache-first for everything else ───────
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
@@ -59,49 +59,25 @@ self.addEventListener('fetch', e => {
     url.hostname.includes('docs.google.com')
   );
 
-  if (isExternal) {
-    // Network only — don't cache, don't intercept
-    return;
-  }
-
-  // Cache-first for all local assets
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      // Not in cache yet — fetch and cache it
-      return fetch(e.request).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-        const toCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, toCache));
-        return response;
-      });
-    })
-  );
-});
-
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-
-  const isExternal = (
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('google.com') ||
-    url.hostname.includes('flagcdn.com') ||
-    url.hostname.includes('docs.google.com')
-  );
-
   if (isExternal) return;
 
-  // Network-first for HTML navigation requests
-  if (e.request.mode === 'navigate') {
+  // Network-first for HTML and JS — always get fresh code
+  if (e.request.mode === 'navigate' || url.pathname.endsWith('.js')) {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
+      fetch(e.request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const toCache = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(e.request, toCache));
+          }
+          return response;
+        })
+        .catch(() => caches.match(e.request))
     );
     return;
   }
 
-  // Cache-first for everything else (JS, CSS, fonts, images)
+  // Cache-first for everything else (CSS, fonts, images)
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;

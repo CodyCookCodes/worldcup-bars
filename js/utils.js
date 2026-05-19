@@ -50,7 +50,6 @@ function parseCSV(text) {
 function buildMapsUrl(row) {
   const id = row.place_id ? row.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  const isAndroid = /Android/.test(navigator.userAgent);
 
   // iOS — Apple Maps with name + coordinates
   if (isIOS && row.cords && row.cords.trim()) {
@@ -58,18 +57,15 @@ function buildMapsUrl(row) {
     return `https://maps.apple.com/?q=${encodeURIComponent(row.name || '')}&ll=${lat},${lng}`;
   }
 
-  // Android — Google Maps with place_id for full venue listing
-  if (isAndroid && id) return `https://www.google.com/maps/search/?api=1&query=place_id:${id}`;
+  // All other platforms — official Google Maps search URL (works on Android, desktop, etc.)
+  if (id) return `https://www.google.com/maps/search/?api=1&query=place_id:${id}`;
 
-  // Everything else (desktop, Windows Phone, other map apps) — geo: URI
   if (row.cords && row.cords.trim()) {
     const [lat, lng] = row.cords.split(',').map(s => s.trim());
     if (!isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
-      return `geo:${lat},${lng}?q=${lat},${lng}(${encodeURIComponent(row.name || '')})`;
+      return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
     }
   }
 
-  // Final fallback — Google Maps name search
-  if (id) return `https://maps.google.com/?q=place_id:${id}`;
-  return `https://www.google.com/maps/search/${encodeURIComponent((row.name || '') + ' ' + (row.address || ''))}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((row.name || '') + ' ' + (row.address || ''))}`;
 }
