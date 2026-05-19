@@ -80,3 +80,39 @@ self.addEventListener('fetch', e => {
     })
   );
 });
+
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+
+  const isExternal = (
+    url.hostname.includes('googleapis.com') ||
+    url.hostname.includes('google.com') ||
+    url.hostname.includes('flagcdn.com') ||
+    url.hostname.includes('docs.google.com')
+  );
+
+  if (isExternal) return;
+
+  // Network-first for HTML navigation requests
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch(e.request).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Cache-first for everything else (JS, CSS, fonts, images)
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request).then(response => {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+        const toCache = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, toCache));
+        return response;
+      });
+    })
+  );
+});
