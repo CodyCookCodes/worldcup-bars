@@ -46,26 +46,41 @@ function parseCSV(text) {
   }).filter(row => row.name || row['event name']);
 }
 
-// ─── Build a Google Maps URL from a bar row ───────────────────────────────────
+// ─── Build a Maps URL from a bar row ───────────────────────────────────
 function buildMapsUrl(row) {
   const id = row.place_id ? row.place_id.replace(/[^a-zA-Z0-9_-]/g, '') : null;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
 
-  // iOS — Apple Maps with name + coordinates
-  if (isIOS && row.cords && row.cords.trim()) {
-    const [lat, lng] = row.cords.split(',').map(s => s.trim());
-    return `https://maps.apple.com/?q=${encodeURIComponent(row.name || '')}&ll=${lat},${lng}`;
-  }
-
-  // All other platforms — official Google Maps search URL (works on Android, desktop, etc.)
-  if (id) return `https://www.google.com/maps/search/?api=1&query=place_id:${id}`;
-
+  // Extract coordinates if they exist
+  let lat = null, lng = null;
   if (row.cords && row.cords.trim()) {
-    const [lat, lng] = row.cords.split(',').map(s => s.trim());
-    if (!isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
-      return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    const split = row.cords.split(',').map(s => s.trim());
+    if (!isNaN(parseFloat(split[0])) && !isNaN(parseFloat(split[1]))) {
+      [lat, lng] = split;
     }
   }
 
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((row.name || '') + ' ' + (row.address || ''))}`;
+  // 1. iOS — Force Apple Maps App
+  if (isIOS && lat && lng) {
+    return `https://maps.apple.com/?q=${encodeURIComponent(row.name || '')}&ll=${lat},${lng}`;
+  }
+
+  // 2. Android / Mobile Fallbacks — Universal "geo:" URI scheme
+  // This prompts the OS to open the user's default preferred map app (Google Maps, Waze, etc.)
+  if (isAndroid && lat && lng) {
+    // geo:latitude,longitude?q=query string
+    return `geo:${lat},${lng}?q=${encodeURIComponent(row.name || '')}`;
+  }
+
+  // 3. Desktop / General Fallback — Official Google Maps Universal Links
+  if (id) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(row.name || '')}&query_place_id=${id}`;
+  }
+  if (lat && lng) {
+    return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+  }
+
+  const searchQuery = `${row.name || ''} ${row.address || ''}`.trim();
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(searchQuery)}`;
 }
