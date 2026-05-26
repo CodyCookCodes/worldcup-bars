@@ -1,3 +1,9 @@
+// ─── Active filter state ──────────────────────────────────────────────────────
+// activeTypes: Set of 'watchparties' | 'osgevents' | 'hotels' | 'restaurants'
+// activeNations: Set of nation strings (lowercase)
+window._activeTypes   = new Set(['watchparties']);
+window._activeNations = new Set();
+
 // ─── Build a single bar card ──────────────────────────────────────────────────
 function buildCard(bar) {
   const nations = (bar.nation || '').split(',').map(n => n.trim()).filter(Boolean);
@@ -18,12 +24,92 @@ function buildCard(bar) {
     </a>`;
 }
 
-// ─── Render filter buttons + grouped bar list ─────────────────────────────────
+// ─── Update dropdown label ────────────────────────────────────────────────────
+function updateDropdownLabel() {
+  const btn = document.getElementById('filterDropdownBtn');
+  if (!btn) return;
+
+  const types   = window._activeTypes;
+  const nations = window._activeNations;
+
+  const typeLabels = {
+    watchparties: 'Watch Parties',
+    osgevents:    'OSG Events',
+    hotels:       'Hotels',
+    restaurants:  'Restaurants',
+  };
+
+  const activeLabels = [];
+  types.forEach(t => { if (typeLabels[t]) activeLabels.push(typeLabels[t]); });
+  nations.forEach(n => activeLabels.push(n.split(' ').map(w => w[0].toUpperCase() + w.slice(1)).join(' ')));
+
+  if (activeLabels.length === 0) {
+    btn.textContent = 'Watch Parties ▾';
+  } else if (activeLabels.length === 1) {
+    btn.textContent = activeLabels[0] + ' ▾';
+  } else if (activeLabels.length === 2) {
+    btn.textContent = activeLabels.join(' + ') + ' ▾';
+  } else {
+    btn.textContent = activeLabels.length + ' filters active ▾';
+  }
+}
+
+// ─── Apply all active filters to lists and map ───────────────────────────────
+function applyFilters() {
+  const types   = window._activeTypes;
+  const nations = window._activeNations;
+
+  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
+
+  // Show/hide bar list
+  const showBars = types.has('watchparties') || nations.size > 0;
+  document.getElementById('barList').classList.toggle('hidden', !showBars);
+
+  // Show/hide OSG Events
+  const wpList = document.getElementById('watchPartyList');
+  if (wpList) {
+    if (types.has('osgevents')) {
+      wpList.classList.remove('hidden');
+      renderWatchPartyCards();
+    } else {
+      wpList.classList.add('hidden');
+    }
+  }
+
+  // Show/hide Hotels
+  const hotelList = document.getElementById('hotelList');
+  if (hotelList) hotelList.classList.toggle('hidden', !types.has('hotels'));
+
+  // Show/hide Restaurants
+  const restaurantList = document.getElementById('restaurantList');
+  if (restaurantList) restaurantList.classList.toggle('hidden', !types.has('restaurants'));
+
+  // Filter bar category blocks by nation
+  if (showBars) {
+    document.querySelectorAll('#barList .category-block').forEach(block => {
+      const blockNations = (block.dataset.nations || '').split(',');
+      const isAllNations = blockNations.includes('all nations');
+      let show = false;
+      if (nations.size === 0 && types.has('watchparties')) {
+        show = true; // show all bars when Watch Parties is on with no nation filter
+      } else if (nations.size > 0) {
+        show = isAllNations || [...nations].some(n => blockNations.includes(n));
+      }
+      block.classList.toggle('hidden', !show);
+    });
+  }
+
+  // Update map
+  if (window.filterMapMulti) window.filterMapMulti(types, nations);
+
+  updateDropdownLabel();
+}
+
+// ─── Build dropdown ───────────────────────────────────────────────────────────
 function buildPage(bars) {
   const groups = {};
   bars.forEach(bar => {
-    const nations = (bar.nation || 'All Nations')
-      .split(',').map(n => n.trim()).filter(Boolean);
+    const nations = (bar.nation || 'All Nations').split(',').map(n => n.trim()).filter(Boolean);
     nations.forEach(nation => {
       if (!groups[nation]) groups[nation] = [];
       groups[nation].push(bar);
@@ -36,47 +122,65 @@ function buildPage(bars) {
     return a.localeCompare(b);
   });
 
+  // Store sorted nations for match row click use
+  window._sortedNations = sorted.map(n => n.toLowerCase());
+
   const filterContainer = document.getElementById('filterButtons');
+  filterContainer.innerHTML = '';
 
-  // Add Watch Parties tab button — first
-  const watchPartiesBtn = document.createElement('button');
-  watchPartiesBtn.className = 'filter-btn filter-btn--orange active';
-  watchPartiesBtn.id = 'watchPartiesAllBtn';
-  watchPartiesBtn.innerHTML = `Watch Parties`;
-  watchPartiesBtn.onclick = function() { filterBars('all', this); };
-  filterContainer.appendChild(watchPartiesBtn);
+  // ── Dropdown button ──
+  const wrapper = document.createElement('div');
+  wrapper.className = 'filter-dropdown-wrapper';
+  wrapper.innerHTML = `
+    <button class="filter-dropdown-btn" id="filterDropdownBtn">Watch Parties ▾</button>
+    <div class="filter-dropdown-menu hidden" id="filterDropdownMenu">
+      <div class="filter-dropdown-section">VIEWS</div>
+      <label class="filter-dropdown-item">
+        <input type="checkbox" data-type="watchparties" checked> Watch Parties
+      </label>
+      <label class="filter-dropdown-item">
+        <input type="checkbox" data-type="osgevents"> OSG Events
+      </label>
+      <label class="filter-dropdown-item">
+        <input type="checkbox" data-type="hotels"> Hotels
+      </label>
+      <label class="filter-dropdown-item">
+        <input type="checkbox" data-type="restaurants"> Restaurants
+      </label>
+      <div class="filter-dropdown-section">NATIONS</div>
+      ${sorted.map(nation => `
+        <label class="filter-dropdown-item">
+          <input type="checkbox" data-nation="${esc(nation.toLowerCase())}">
+          ${getFlag(nation)} ${esc(nation)}
+        </label>
+      `).join('')}
+    </div>
+  `;
+  filterContainer.appendChild(wrapper);
 
-  // Add OSG Events tab button
-  const wpBtn = document.createElement('button');
-  wpBtn.className = 'filter-btn filter-btn--watch-party';
-  wpBtn.id = 'watchPartyTabBtn';
-  wpBtn.innerHTML = `OSG Events`;
-  wpBtn.onclick = function() { filterWatchParties(this); };
-  filterContainer.appendChild(wpBtn);
+  // Toggle dropdown open/close
+  const btn = wrapper.querySelector('#filterDropdownBtn');
+  const menu = wrapper.querySelector('#filterDropdownMenu');
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    menu.classList.toggle('hidden');
+  });
+  document.addEventListener('click', () => menu.classList.add('hidden'));
+  menu.addEventListener('click', e => e.stopPropagation());
 
-  // Add Hotels tab button
-  const hotelsBtn = document.createElement('button');
-  hotelsBtn.className = 'filter-btn filter-btn--hotels';
-  hotelsBtn.id = 'hotelsTabBtn';
-  hotelsBtn.innerHTML = `Hotels`;
-  hotelsBtn.onclick = function() { filterHotels(this); };
-  filterContainer.appendChild(hotelsBtn);
-
-  // Add Restaurants tab button
-  const restaurantsBtn = document.createElement('button');
-  restaurantsBtn.className = 'filter-btn filter-btn--restaurants';
-  restaurantsBtn.id = 'restaurantsTabBtn';
-  restaurantsBtn.innerHTML = `Restaurants`;
-  restaurantsBtn.onclick = function() { filterRestaurants(this); };
-  filterContainer.appendChild(restaurantsBtn);
-
-  // Render nation filter buttons
-  sorted.forEach(nation => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn';
-    btn.innerHTML = `${getFlag(nation)} ${esc(nation)}`;
-    btn.onclick = function() { filterBars(nation.toLowerCase(), this); };
-    filterContainer.appendChild(btn);
+  // Handle checkbox changes
+  menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.dataset.type) {
+        if (cb.checked) window._activeTypes.add(cb.dataset.type);
+        else window._activeTypes.delete(cb.dataset.type);
+      }
+      if (cb.dataset.nation) {
+        if (cb.checked) window._activeNations.add(cb.dataset.nation);
+        else window._activeNations.delete(cb.dataset.nation);
+      }
+      applyFilters();
+    });
   });
 
   // Render category blocks
@@ -90,7 +194,7 @@ function buildPage(bars) {
     </div>
   `).join('');
 
-  // Watch parties section — hidden by default, shown when tab is active
+  // Watch parties section
   const wpSection = document.createElement('div');
   wpSection.id = 'watchPartyList';
   wpSection.className = 'hidden';
@@ -104,23 +208,19 @@ function buildPage(bars) {
       </div>
     </div>`;
   document.getElementById('barList').before(wpSection);
+
+  // Apply initial state
+  applyFilters();
 }
 
 // ─── Build a OSG Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const isCatchAll = !wp.match_id || !wp.match_id.trim();
-
-  let matchLine = '';
-  let dateLine = '';
+  let matchLine = '', dateLine = '';
 
   if (isCatchAll) {
-    // Find next upcoming match from window._matchById
     const matchById = window._matchById || {};
     const allMatches = Object.values(matchById);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // Sort by date then time, find first without a score
     const upcoming = allMatches
       .filter(m => !m.home_score || m.home_score === '')
       .sort((a, b) => {
@@ -164,7 +264,7 @@ function buildWatchPartyCard(wp) {
     </div>`;
 }
 
-// ─── Populate OSG Events cards (called once data is ready) ───────────────────
+// ─── Populate OSG Events cards ───────────────────────────────────────────────
 function renderWatchPartyCards() {
   const container = document.getElementById('watchPartyCards');
   if (!container) return;
@@ -176,56 +276,52 @@ function renderWatchPartyCards() {
   container.innerHTML = wps.map(buildWatchPartyCard).join('');
 }
 
-// ─── Switch to Watch Parties view ────────────────────────────────────────────
+// ─── Legacy shims — called by matches.js match row click ─────────────────────
 function filterWatchParties(btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  // Clear match row highlight
-  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
-
-  // Hide bar list, show OSG Events list
-  document.getElementById('barList').classList.add('hidden');
-  const wpList = document.getElementById('watchPartyList');
-  if (wpList) wpList.classList.remove('hidden');
-
-  // Render cards if not yet done
-  renderWatchPartyCards();
-
-  // Map: show only green pins
-  if (window.filterMapWatchParties) window.filterMapWatchParties();
+  window._activeTypes = new Set(['osgevents']);
+  window._activeNations = new Set();
+  syncDropdownCheckboxes();
+  applyFilters();
 }
 
-// ─── Filter the visible category blocks and map pins ─────────────────────────
 function filterBars(nation, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  // Clear match row highlight
-  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
-
-  // Show bar list, hide special lists
-  document.getElementById('barList').classList.remove('hidden');
-  const wpList = document.getElementById('watchPartyList');
-  if (wpList) wpList.classList.add('hidden');
-  const hotelList = document.getElementById('hotelList');
-  if (hotelList) hotelList.classList.add('hidden');
-  const restaurantList = document.getElementById('restaurantList');
-  if (restaurantList) restaurantList.classList.add('hidden');
-
-  // Restore all map pins before filtering
-  if (window.restoreMapPins) window.restoreMapPins();
-
-  document.querySelectorAll('#barList .category-block').forEach(block => {
-    const blockNations = (block.dataset.nations || '').split(',');
-    const isMatch = nation === 'all' || blockNations.includes(nation);
-    block.classList.toggle('hidden', !isMatch);
-  });
-
-  if (window.filterMapPins) window.filterMapPins(nation);
+  if (nation === 'all') {
+    window._activeTypes = new Set(['watchparties']);
+    window._activeNations = new Set();
+  } else {
+    window._activeTypes = new Set(['watchparties']);
+    window._activeNations = new Set([nation]);
+  }
+  syncDropdownCheckboxes();
+  applyFilters();
 }
 
-// ─── Build a hotel card ───────────────────────────────────────────────────────
+function filterHotels(btn) {
+  window._activeTypes = new Set(['hotels']);
+  window._activeNations = new Set();
+  syncDropdownCheckboxes();
+  applyFilters();
+}
+
+function filterRestaurants(btn) {
+  window._activeTypes = new Set(['restaurants']);
+  window._activeNations = new Set();
+  syncDropdownCheckboxes();
+  applyFilters();
+}
+
+function syncDropdownCheckboxes() {
+  const menu = document.getElementById('filterDropdownMenu');
+  if (!menu) return;
+  menu.querySelectorAll('input[data-type]').forEach(cb => {
+    cb.checked = window._activeTypes.has(cb.dataset.type);
+  });
+  menu.querySelectorAll('input[data-nation]').forEach(cb => {
+    cb.checked = window._activeNations.has(cb.dataset.nation);
+  });
+}
+
+// ─── Build hotel card ─────────────────────────────────────────────────────────
 function buildHotelCard(hotel) {
   const priceLine = hotel.price_range
     ? `<div class="venue-detail" style="color:#65C2EE;">${esc(hotel.price_range)}</div>` : '';
@@ -239,7 +335,7 @@ function buildHotelCard(hotel) {
     </a>`;
 }
 
-// ─── Build a restaurant card ──────────────────────────────────────────────────
+// ─── Build restaurant card ────────────────────────────────────────────────────
 function buildRestaurantCard(restaurant) {
   const cuisineLine = restaurant.cuisine
     ? `<div class="venue-detail">${esc(restaurant.cuisine)}</div>` : '';
@@ -256,7 +352,6 @@ function buildRestaurantCard(restaurant) {
     </a>`;
 }
 
-// ─── Inject hotel list section into DOM (called once on load) ─────────────────
 function renderHotelCards(hotels) {
   let section = document.getElementById('hotelList');
   if (!section) {
@@ -276,7 +371,6 @@ function renderHotelCards(hotels) {
   if (container) container.innerHTML = hotels.map(buildHotelCard).join('');
 }
 
-// ─── Inject restaurant list section into DOM (called once on load) ────────────
 function renderRestaurantCards(restaurants) {
   let section = document.getElementById('restaurantList');
   if (!section) {
@@ -294,38 +388,4 @@ function renderRestaurantCards(restaurants) {
   }
   const container = document.getElementById('restaurantCards');
   if (container) container.innerHTML = restaurants.map(buildRestaurantCard).join('');
-}
-
-// ─── Switch to Hotels view ────────────────────────────────────────────────────
-function filterHotels(btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
-
-  document.getElementById('barList').classList.add('hidden');
-  const wpList = document.getElementById('watchPartyList');
-  if (wpList) wpList.classList.add('hidden');
-  const restaurantList = document.getElementById('restaurantList');
-  if (restaurantList) restaurantList.classList.add('hidden');
-  const hotelList = document.getElementById('hotelList');
-  if (hotelList) hotelList.classList.remove('hidden');
-
-  if (window.filterMapHotels) window.filterMapHotels();
-}
-
-// ─── Switch to Restaurants view ───────────────────────────────────────────────
-function filterRestaurants(btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.match-row--active').forEach(r => r.classList.remove('match-row--active'));
-
-  document.getElementById('barList').classList.add('hidden');
-  const wpList = document.getElementById('watchPartyList');
-  if (wpList) wpList.classList.add('hidden');
-  const hotelList = document.getElementById('hotelList');
-  if (hotelList) hotelList.classList.add('hidden');
-  const restaurantList = document.getElementById('restaurantList');
-  if (restaurantList) restaurantList.classList.remove('hidden');
-
-  if (window.filterMapRestaurants) window.filterMapRestaurants();
 }

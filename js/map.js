@@ -6,6 +6,7 @@ let wMarkers = [];   // { marker, wp }
 let hMarkers = [];   // { marker, hotel }
 let rMarkers = [];   // { marker, restaurant }
 let gInfoWindow = null;
+let gClusterer = null; // MarkerClusterer instance for bar pins
 
 // ─── Build a Google Maps pin icon ─────────────────────────────────────────────
 function makePinIcon(mode = 'orange') {
@@ -96,7 +97,11 @@ window.buildMap = function(bars) {
   let resolved = 0;
 
   const checkDone = () => {
-    if (resolved === mappable.length) refitBounds();
+    if (resolved === mappable.length) {
+      refitBounds();
+      // Initialize clusterer with all bar markers
+      initClusterer(gMarkers.map(({ marker }) => marker));
+    }
   };
 
   gInfoWindow = new google.maps.InfoWindow({
@@ -109,7 +114,7 @@ window.buildMap = function(bars) {
     gBounds.extend(pos);
     const marker = new google.maps.Marker({
       position: pos,
-      map: gMap,
+      map: null,  // clusterer manages map placement
       title: bar.name,
       icon: makePinIcon('orange'),
       optimized: false,
@@ -410,9 +415,45 @@ function buildRestaurantInfoWindow(restaurant, marker) {
   gInfoWindow.open(gMap, marker);
 }
 
-// ─── Show only OSG Events pins, hide all bar, hotel, restaurant pins ────────
+// ─── Initialize clusterer for visible bar markers ─────────────────────────────
+function initClusterer(visibleMarkers) {
+  if (gClusterer) {
+    gClusterer.clearMarkers();
+    gClusterer = null;
+  }
+  if (!visibleMarkers.length || !gMap) return;
+
+  gClusterer = new markerClusterer.MarkerClusterer({
+    map: gMap,
+    markers: visibleMarkers,
+    renderer: {
+      render({ count, position }) {
+        const size = count > 10 ? 48 : count > 5 ? 42 : 36;
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+            <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}" fill="#111" stroke="#F79621" stroke-width="2.5"/>
+            <text x="${size/2}" y="${size/2}" text-anchor="middle" dominant-baseline="central"
+              font-family="Arial,sans-serif" font-size="${size < 42 ? 13 : 15}" font-weight="700" fill="#F79621">${count}</text>
+          </svg>`;
+        return new google.maps.Marker({
+          position,
+          icon: {
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+            scaledSize: new google.maps.Size(size, Math.round(size * 1.3)),
+            anchor: new google.maps.Point(size / 2, Math.round(size * 1.3)),
+          },
+          zIndex: 100,
+        });
+      }
+    },
+    algorithm: new markerClusterer.SuperClusterAlgorithm({ maxZoom: 12 }),
+  });
+}
+
+// ─── Show/hide OSG Events pins ────────────────────────────────────────────────
 window.filterMapWatchParties = function() {
   if (gInfoWindow) gInfoWindow.close();
+  if (gClusterer) gClusterer.clearMarkers();
   gMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
   rMarkers.forEach(({ marker }) => marker.setMap(null));
@@ -425,7 +466,8 @@ window.filterMapHotels = function() {
   gMarkers.forEach(({ marker }) => marker.setMap(null));
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   rMarkers.forEach(({ marker }) => marker.setMap(null));
-  hMarkers.forEach(({ marker }) => marker.setMap(gMap));
+  hMarkers.forEach(({ marker }) => marker.setMap(null));
+  initClusterer(hMarkers.map(({ marker }) => marker));
 };
 
 // ─── Show only restaurant pins ────────────────────────────────────────────────
@@ -434,30 +476,84 @@ window.filterMapRestaurants = function() {
   gMarkers.forEach(({ marker }) => marker.setMap(null));
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
-  rMarkers.forEach(({ marker }) => marker.setMap(gMap));
+  rMarkers.forEach(({ marker }) => marker.setMap(null));
+  initClusterer(rMarkers.map(({ marker }) => marker));
 };
 
-// ─── Restore all bar pins (called when leaving special views) ─────────────────
+// ─── Restore all bar pins ─────────────────────────────────────────────────────
 window.restoreMapPins = function() {
   if (gInfoWindow) gInfoWindow.close();
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
   rMarkers.forEach(({ marker }) => marker.setMap(null));
-  gMarkers.forEach(({ marker }) => marker.setMap(gMap));
+  gMarkers.forEach(({ marker }) => marker.setIcon(makePinIcon('orange')));
+  const visible = gMarkers.map(({ marker }) => marker);
+  initClusterer(visible);
 };
 
-// ─── Show/grey-out bar pins based on the active nation filter ─────────────────
+// ─── Single nation filter (legacy shim for match row clicks) ─────────────────
 window.filterMapPins = function(nation) {
   if (gInfoWindow) gInfoWindow.close();
   wMarkers.forEach(({ marker }) => marker.setMap(null));
   hMarkers.forEach(({ marker }) => marker.setMap(null));
   rMarkers.forEach(({ marker }) => marker.setMap(null));
-  gMarkers.forEach(({ marker }) => marker.setMap(gMap));
+
+  const visible = [];
   gMarkers.forEach(({ marker, nations }) => {
     const isMatch = nation === 'all' || nations.includes(nation);
+    marker.setMap(null); // remove from map — clusterer will manage
     marker.setIcon(makePinIcon(isMatch ? 'orange' : 'grey'));
     marker.setZIndex(isMatch ? 10 : 1);
+    visible.push(marker);
   });
+  initClusterer(visible);
+};
+
+// ─── Multi-filter map update (called by ui.js applyFilters) ──────────────────
+window.filterMapMulti = function(types, nations) {
+  if (gInfoWindow) gInfoWindow.close();
+
+  // OSG Events pins — never clustered, always individually managed
+  wMarkers.forEach(({ marker }) =>
+    marker.setMap(types.has('osgevents') ? gMap : null)
+  );
+
+  // Build list of all markers to cluster
+  const visible = [];
+
+  // Bar pins — show when watchparties or any nation is active
+  const showBars = types.has('watchparties') || nations.size > 0;
+  if (showBars) {
+    gMarkers.forEach(({ marker, nations: pinNations }) => {
+      marker.setMap(null);
+      if (nations.size === 0) {
+        marker.setIcon(makePinIcon('orange'));
+        marker.setZIndex(10);
+      } else {
+        const isAllNations = pinNations.includes('all nations');
+        const isMatch = [...nations].some(n => pinNations.includes(n));
+        marker.setIcon(makePinIcon(isMatch ? 'red' : isAllNations ? 'orange' : 'grey'));
+        marker.setZIndex(isMatch ? 10 : isAllNations ? 5 : 1);
+      }
+      visible.push(marker);
+    });
+  } else {
+    gMarkers.forEach(({ marker }) => marker.setMap(null));
+  }
+
+  // Hotel pins
+  hMarkers.forEach(({ marker }) => {
+    marker.setMap(null);
+    if (types.has('hotels')) visible.push(marker);
+  });
+
+  // Restaurant pins
+  rMarkers.forEach(({ marker }) => {
+    marker.setMap(null);
+    if (types.has('restaurants')) visible.push(marker);
+  });
+
+  initClusterer(visible);
 };
 
 // ─── Highlight pins for multiple nations (match row click) ────────────────────
@@ -465,24 +561,25 @@ window.filterMapPinsMulti = function(nations, matchId) {
   if (gInfoWindow) gInfoWindow.close();
   hMarkers.forEach(({ marker }) => marker.setMap(null));
   rMarkers.forEach(({ marker }) => marker.setMap(null));
-  gMarkers.forEach(({ marker }) => marker.setMap(gMap));
+
+  const visible = [];
   gMarkers.forEach(({ marker, nations: pinNations }) => {
+    marker.setMap(null);
     const isAllNations = pinNations.includes('all nations');
     const isMatch = nations.some(n => pinNations.includes(n));
     const mode = isMatch ? 'red' : isAllNations ? 'orange' : 'grey';
     marker.setIcon(makePinIcon(mode));
     marker.setZIndex(isMatch ? 10 : isAllNations ? 5 : 1);
+    visible.push(marker);
   });
+  initClusterer(visible);
+
   wMarkers.forEach(({ marker, wp }) => {
     const home = (wp.home_team || '').toLowerCase().trim();
     const away = (wp.away_team || '').toLowerCase().trim();
     const matchesById   = matchId && wp.match_id && wp.match_id.trim() === matchId.trim();
     const matchesByTeam = home && away && nations.includes(home) && nations.includes(away);
-    if (matchesById || matchesByTeam) {
-      marker.setMap(gMap);
-      marker.setZIndex(30);
-    } else {
-      marker.setMap(null);
-    }
+    marker.setMap((matchesById || matchesByTeam) ? gMap : null);
+    if (matchesById || matchesByTeam) marker.setZIndex(30);
   });
 };
