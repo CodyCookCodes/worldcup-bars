@@ -1,4 +1,4 @@
-const CACHE_NAME = 'baf-v3-05192026';
+const CACHE_NAME = 'baf-v4-05262026';
 const ASSETS = [
   '/',
   '/index.html',
