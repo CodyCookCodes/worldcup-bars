@@ -161,12 +161,25 @@ function buildPage(bars) {
   // Toggle dropdown open/close
   const btn = wrapper.querySelector('#filterDropdownBtn');
   const menu = wrapper.querySelector('#filterDropdownMenu');
+
   btn.addEventListener('click', e => {
     e.stopPropagation();
+    e.preventDefault();
     menu.classList.toggle('hidden');
   });
-  document.addEventListener('click', () => menu.classList.add('hidden'));
+
+  // Close when clicking/touching outside
+  const closeMenu = (e) => {
+    if (!wrapper.contains(e.target)) {
+      menu.classList.add('hidden');
+    }
+  };
+  document.addEventListener('click', closeMenu);
+  document.addEventListener('touchstart', closeMenu, { passive: true });
+
+  // Prevent clicks inside menu from closing it
   menu.addEventListener('click', e => e.stopPropagation());
+  menu.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
 
   // Handle checkbox changes
   menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
@@ -216,9 +229,18 @@ function buildPage(bars) {
 // ─── Build a OSG Events card ─────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const isCatchAll = !wp.match_id || !wp.match_id.trim();
+  const hasOwnDate = wp.date || wp.time;
   let matchLine = '', dateLine = '';
 
-  if (isCatchAll) {
+  if (isCatchAll && hasOwnDate) {
+    // Standalone event with its own date — not linked to any match
+    // Show location as matchLine, date/time as dateLine
+    matchLine = wp.location
+      ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.location)}</div>`
+      : '';
+    dateLine = `<div class="venue-detail">${esc(wp.date || '')}${wp.time ? ' · ' + esc(wp.time) : ''}</div>`;
+  } else if (isCatchAll) {
+    // True catch-all — no date, show next upcoming match
     const matchById = window._matchById || {};
     const allMatches = Object.values(matchById);
     const upcoming = allMatches
@@ -238,6 +260,7 @@ function buildWatchPartyCard(wp) {
         : '';
     }
   } else {
+    // Match-linked event
     matchLine = (wp.home_team && wp.away_team)
       ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
       : '';
