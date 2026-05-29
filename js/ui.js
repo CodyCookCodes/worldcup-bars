@@ -105,7 +105,7 @@ function applyFilters() {
   updateDropdownLabel();
 }
 
-// ─── Build dropdown ───────────────────────────────────────────────────────────
+// ─── Build filter buttons (horizontal scroll, multi-select) ──────────────────
 function buildPage(bars) {
   const groups = {};
   bars.forEach(bar => {
@@ -122,78 +122,56 @@ function buildPage(bars) {
     return a.localeCompare(b);
   });
 
-  // Store sorted nations for match row click use
   window._sortedNations = sorted.map(n => n.toLowerCase());
 
   const filterContainer = document.getElementById('filterButtons');
   filterContainer.innerHTML = '';
 
-  // ── Dropdown button ──
-  const wrapper = document.createElement('div');
-  wrapper.className = 'filter-dropdown-wrapper';
-  wrapper.innerHTML = `
-    <button class="filter-dropdown-btn" id="filterDropdownBtn">Watch Parties ▾</button>
-    <div class="filter-dropdown-menu hidden" id="filterDropdownMenu">
-      <div class="filter-dropdown-section">VIEWS</div>
-      <label class="filter-dropdown-item">
-        <input type="checkbox" data-type="watchparties" checked> Watch Parties
-      </label>
-      <label class="filter-dropdown-item">
-        <input type="checkbox" data-type="osgevents"> OSG Events
-      </label>
-      <label class="filter-dropdown-item">
-        <input type="checkbox" data-type="hotels"> Hotels
-      </label>
-      <label class="filter-dropdown-item">
-        <input type="checkbox" data-type="restaurants"> Restaurants
-      </label>
-      <div class="filter-dropdown-section">NATIONS</div>
-      ${sorted.map(nation => `
-        <label class="filter-dropdown-item">
-          <input type="checkbox" data-nation="${esc(nation.toLowerCase())}">
-          ${getFlag(nation)} ${esc(nation)}
-        </label>
-      `).join('')}
-    </div>
-  `;
-  filterContainer.appendChild(wrapper);
+  // ── Type buttons ──
+  const typeButtons = [
+    { id: 'watchPartiesAllBtn', type: 'watchparties', label: 'Watch Parties', cls: 'filter-btn--orange' },
+    { id: 'watchPartyTabBtn',   type: 'osgevents',    label: 'OSG Events',    cls: 'filter-btn--watch-party' },
+    { id: 'hotelsTabBtn',       type: 'hotels',       label: 'Hotels',        cls: 'filter-btn--hotels' },
+    { id: 'restaurantsTabBtn',  type: 'restaurants',  label: 'Restaurants',   cls: 'filter-btn--restaurants' },
+  ];
 
-  // Toggle dropdown open/close
-  const btn = wrapper.querySelector('#filterDropdownBtn');
-  const menu = wrapper.querySelector('#filterDropdownMenu');
-
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    e.preventDefault();
-    menu.classList.toggle('hidden');
-  });
-
-  // Close when clicking/touching outside
-  const closeMenu = (e) => {
-    if (!wrapper.contains(e.target)) {
-      menu.classList.add('hidden');
-    }
-  };
-  document.addEventListener('click', closeMenu);
-  document.addEventListener('touchstart', closeMenu, { passive: true });
-
-  // Prevent clicks inside menu from closing it
-  menu.addEventListener('click', e => e.stopPropagation());
-  menu.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
-
-  // Handle checkbox changes
-  menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.dataset.type) {
-        if (cb.checked) window._activeTypes.add(cb.dataset.type);
-        else window._activeTypes.delete(cb.dataset.type);
-      }
-      if (cb.dataset.nation) {
-        if (cb.checked) window._activeNations.add(cb.dataset.nation);
-        else window._activeNations.delete(cb.dataset.nation);
+  typeButtons.forEach(({ id, type, label, cls }) => {
+    const btn = document.createElement('button');
+    btn.id = id;
+    btn.className = `filter-btn ${cls}${type === 'watchparties' ? ' active' : ''}`;
+    btn.textContent = label;
+    btn.addEventListener('click', () => {
+      if (window._activeTypes.has(type)) {
+        // Don't allow deselecting if it's the only active type and no nations
+        if (window._activeTypes.size === 1 && window._activeNations.size === 0) return;
+        window._activeTypes.delete(type);
+        btn.classList.remove('active');
+      } else {
+        window._activeTypes.add(type);
+        btn.classList.add('active');
       }
       applyFilters();
     });
+    filterContainer.appendChild(btn);
+  });
+
+  // ── Nation buttons ──
+  sorted.forEach(nation => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn';
+    btn.innerHTML = `${getFlag(nation)} ${esc(nation)}`;
+    btn.addEventListener('click', () => {
+      const key = nation.toLowerCase();
+      if (window._activeNations.has(key)) {
+        window._activeNations.delete(key);
+        btn.classList.remove('active');
+      } else {
+        window._activeNations.add(key);
+        btn.classList.add('active');
+      }
+      applyFilters();
+    });
+    filterContainer.appendChild(btn);
   });
 
   // Render category blocks
@@ -303,7 +281,7 @@ function renderWatchPartyCards() {
 function filterWatchParties(btn) {
   window._activeTypes = new Set(['osgevents']);
   window._activeNations = new Set();
-  syncDropdownCheckboxes();
+  syncFilterButtons();
   applyFilters();
 }
 
@@ -315,32 +293,37 @@ function filterBars(nation, btn) {
     window._activeTypes = new Set(['watchparties']);
     window._activeNations = new Set([nation]);
   }
-  syncDropdownCheckboxes();
+  syncFilterButtons();
   applyFilters();
 }
 
 function filterHotels(btn) {
   window._activeTypes = new Set(['hotels']);
   window._activeNations = new Set();
-  syncDropdownCheckboxes();
+  syncFilterButtons();
   applyFilters();
 }
 
 function filterRestaurants(btn) {
   window._activeTypes = new Set(['restaurants']);
   window._activeNations = new Set();
-  syncDropdownCheckboxes();
+  syncFilterButtons();
   applyFilters();
 }
 
-function syncDropdownCheckboxes() {
-  const menu = document.getElementById('filterDropdownMenu');
-  if (!menu) return;
-  menu.querySelectorAll('input[data-type]').forEach(cb => {
-    cb.checked = window._activeTypes.has(cb.dataset.type);
+function syncFilterButtons() {
+  const typeMap = {
+    watchparties: 'watchPartiesAllBtn',
+    osgevents:    'watchPartyTabBtn',
+    hotels:       'hotelsTabBtn',
+    restaurants:  'restaurantsTabBtn',
+  };
+  Object.entries(typeMap).forEach(([type, id]) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.classList.toggle('active', window._activeTypes.has(type));
   });
-  menu.querySelectorAll('input[data-nation]').forEach(cb => {
-    cb.checked = window._activeNations.has(cb.dataset.nation);
+  document.querySelectorAll('.filter-btn[data-nation]').forEach(btn => {
+    btn.classList.toggle('active', window._activeNations.has(btn.dataset.nation));
   });
 }
 
