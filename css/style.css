@@ -188,9 +188,13 @@ header::before {
 
 /* ── FILTERS ── */
 .filters {
-  max-width: 960px;
-  margin: 28px auto 0;
-  padding: 0 16px;
+  background: var(--black);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  overflow: visible;  /* add this */
 }
 .filter-label {
   font-size: 0.75rem;
