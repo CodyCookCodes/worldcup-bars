@@ -10,8 +10,13 @@ function buildCard(bar) {
   const nationLine = nations.length > 1
     ? `<div class="bar-nations">${nations.map(n => esc(n)).join(' / ')}</div>`
     : '';
+
+  const websiteBtn = bar.link
+    ? `<a class="map-link" href="${esc(bar.link)}" target="_blank" rel="noopener">Visit Website</a>`
+    : '';
+
   return `
-    <a class="venue-card" href="${buildMapsUrl(bar)}" target="_blank">
+    <div class="venue-card">
       <div class="venue-name">${esc(bar.name)}</div>
       ${nationLine}
       <div class="venue-detail">${esc(bar.address || '').replace(/([A-Za-z]+)\s+(Oakland|Emeryville|Berkeley|San Leandro|San Francisco)/, '$1, $2')}</div>
@@ -20,8 +25,11 @@ function buildCard(bar) {
         ${bar.type  ? `<span class="pill pill-type">${esc(bar.type)}</span>` : ''}
         ${bar.hours ? `<span class="pill pill-hours">${esc(bar.hours)}</span>` : ''}
       </div>
-      <span class="map-link">Open in Maps</span>
-    </a>`;
+      <div class="venue-card-actions">
+        ${websiteBtn}
+        <a class="map-link" href="${buildMapsUrl(bar)}" target="_blank" rel="noopener">Open in Maps</a>
+      </div>
+    </div>`;
 }
 
 // ─── Update dropdown label ────────────────────────────────────────────────────
