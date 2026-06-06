@@ -260,6 +260,67 @@ function buildMatchCarousel(matches, watchParties) {
   });
 }
 
+// ─── Event schema injection ───────────────────────────────────────────────────
+function injectEventSchema(watchParties) {
+  const events = (watchParties || [])
+    .filter(wp => wp.name && (wp.match_date || wp.date))
+    .map(wp => {
+      const dateStr = wp.match_date || wp.date;
+      const timeStr = (wp.match_time || wp.time || '').trim().toUpperCase();
+
+      let isoStart = dateStr;
+      if (timeStr) {
+        const ampm = timeStr.includes('PM') ? 'PM' : timeStr.includes('AM') ? 'AM' : null;
+        const digits = timeStr.replace(/[^0-9:]/g, '');
+        const parts = digits.split(':');
+        let hours = parseInt(parts[0], 10);
+        const minutes = parts[1] ? parts[1].padStart(2, '0') : '00';
+        if (ampm === 'PM' && hours !== 12) hours += 12;
+        if (ampm === 'AM' && hours === 12) hours = 0;
+        isoStart = `${dateStr}T${String(hours).padStart(2, '0')}:${minutes}:00`;
+      }
+
+      const hasTeams = wp.home_team && wp.away_team;
+      const eventName = hasTeams
+        ? `${wp.name} — ${wp.home_team} vs ${wp.away_team} Watch Party`
+        : `${wp.name} — Soccer Watch Party`;
+
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Event',
+        name: eventName,
+        description: '2026 soccer watch party in Oakland and the East Bay. Find watch parties and soccer bars at eastbaysoccertrail.com.',
+        startDate: isoStart,
+        eventStatus: 'https://schema.org/EventScheduled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        location: {
+          '@type': 'Place',
+          name: wp.name,
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: wp.address || wp.location || '',
+            addressLocality: 'Oakland',
+            addressRegion: 'CA',
+          },
+        },
+        organizer: {
+          '@type': 'Organization',
+          name: 'Oakland Sports Group',
+          url: 'https://oaklandsportsgroup.org',
+        },
+        url: wp.url || 'https://eastbaysoccertrail.com',
+        image: 'https://eastbaysoccertrail.com/assets/Oakland_Roots.png',
+      };
+    });
+
+  if (!events.length) return;
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.textContent = JSON.stringify(events, null, 2);
+  document.head.appendChild(script);
+}
+
 // ─── Load matches + watch parties together ────────────────────────────────────
 async function loadMatchesAndWatchParties() {
   const LS_MATCHES = 'wc_matches_cache';
@@ -335,6 +396,7 @@ async function loadMatchesAndWatchParties() {
   });
 
   window._watchPartiesData = enrichedWatchParties;
+  injectEventSchema(enrichedWatchParties);
 
   // Poll for gMap to be initialized before placing OSG Events markers
   // Poll until gMap is ready, then place markers
