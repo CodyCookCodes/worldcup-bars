@@ -221,9 +221,33 @@ function dismissLoader() {
 
 Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotelsAndRestaurants(), loadNextEvent()]).then(dismissLoader);
 
-// Dynamically load Maps script
-const script = document.createElement('script');
-script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
-script.async = true;
-script.defer = true;
-document.head.appendChild(script);
+// ─── Lazy-load Google Maps only when map section scrolls into view ────────────
+// This prevents the Maps JS bundle from blocking LCP (Largest Contentful Paint)
+(function() {
+  const mapSection = document.querySelector('.map-section');
+  if (!mapSection) return;
+
+  let loaded = false;
+  const loadMaps = () => {
+    if (loaded) return;
+    loaded = true;
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  };
+
+  // Load when map section is within 300px of viewport
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      observer.disconnect();
+      loadMaps();
+    }
+  }, { rootMargin: '300px' });
+
+  observer.observe(mapSection);
+
+  // Fallback: load after 4s regardless (ensures map loads even if user never scrolls)
+  setTimeout(loadMaps, 4000);
+})();

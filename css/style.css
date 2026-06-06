@@ -7,6 +7,7 @@
        url('../fonts/UnitedSansCondHeavy.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -14,6 +15,7 @@
   src: url('../fonts/texgyreheroscn-regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -21,6 +23,7 @@
   src: url('../fonts/texgyreheroscn-bold.otf') format('opentype');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
@@ -28,6 +31,7 @@
   src: url('../fonts/texgyreheroscn-italic.otf') format('opentype');
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
@@ -35,6 +39,7 @@
   src: url('../fonts/texgyreheroscn-bolditalic.otf') format('opentype');
   font-weight: 700;
   font-style: italic;
+  font-display: swap;
 }
 
 :root {
