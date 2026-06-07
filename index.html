@@ -3,10 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="preconnect" href="https://doc-00-ac-sheets.googleusercontent.com" crossorigin>
-  <link rel="preconnect" href="https://maps.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://maps.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://flagcdn.com" crossorigin>
   <title>East Bay Watch Parties 2026 | Soccer Trail — Oakland &amp; East Bay</title>
   <meta property="og:title" content="East Bay Watch Parties 2026 — Oakland Soccer Trail">
   <meta property="og:description" content="Find 2026 soccer watch parties, bars, and events across Oakland and the East Bay. Presented by Oakland Sports Group.">
@@ -17,22 +13,14 @@
   <meta property="og:locale" content="en_US">
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/Oakland_Roots.png" type="image/png">
-  <!-- Google Analytics — stub immediately for consent, load after page is interactive -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('consent', 'default', { analytics_storage: 'denied' });
-  </script>
-  <script>
-    function _loadGtag() {
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN';
-      document.head.appendChild(s);
-      s.onload = function() { gtag('js', new Date()); gtag('config', 'G-G5L0TEB3LN'); };
-    }
-    if (document.readyState === 'complete') { _loadGtag(); }
-    else { window.addEventListener('load', _loadGtag); }
+    gtag('js', new Date());
+    gtag('config', 'G-G5L0TEB3LN');
   </script>
   <meta name="description" content="Find 2026 soccer watch parties, bars, and events in Oakland and the East Bay. Official bar and venue finder presented by Oakland Sports Group and Oakland Roots SC.">
   <meta name="keywords" content="East Bay watch parties, soccer watch parties Oakland, Oakland watch parties 2026, soccer bars East Bay, Oakland Roots watch party, East Bay soccer bars, watch parties Oakland CA">
@@ -63,10 +51,7 @@
 
 <!-- PAGE LOADER -->
 <div id="page-loader">
-  <picture>
-    <source srcset="assets/Oakland_Roots.webp" type="image/webp">
-    <img src="assets/Oakland_Roots.png" alt="East Bay Soccer Trail — Oakland Roots SC" class="loader-logo" width="100" height="100" fetchpriority="high">
-  </picture>
+  <img src="assets/Oakland_Roots.png" alt="East Bay Soccer Trail — Oakland Roots SC" class="loader-logo" width="100" height="100">
   <div class="loader-bar">
     <div class="loader-fill"></div>
   </div>
@@ -173,8 +158,8 @@
 
 <!-- MAP -->
 <div class="map-section">
-  <div id="map" style="visibility:hidden;width:100%;height:100%;"></div>
-  <div id="map-loading" class="map-loading" aria-live="polite">
+  <div id="map"></div>
+  <div id="map-loading" class="map-loading">
     <div class="spinner"></div>
     <p>Loading map&#8230;</p>
   </div>

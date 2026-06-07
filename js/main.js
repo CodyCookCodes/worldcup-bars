@@ -137,11 +137,11 @@ async function loadHotelsAndRestaurants() {
 
 // ─── Google Maps async callback ───────────────────────────────────────────────
 function initMap() {
-  // Hide map-loading, show map — using visibility to avoid CLS
+  // Hide loader, reveal map via opacity (preserves layout space — avoids CLS)
   const mapLoading = document.getElementById('map-loading');
   if (mapLoading) mapLoading.classList.add('hidden');
   const mapEl = document.getElementById('map');
-  if (mapEl) mapEl.style.visibility = 'visible';
+  if (mapEl) mapEl.classList.add('ready');
 
   if (window._barsReady) {
     window.buildMap(window._barsData);
