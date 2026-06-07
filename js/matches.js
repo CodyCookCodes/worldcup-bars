@@ -151,15 +151,10 @@ function handleMatchRowClick(e) {
     block.classList.toggle('hidden', !isMatch);
   });
 
-  // Show watch parties for this match (if any), hidden otherwise
+  // Show events for this match only if explicitly linked via match_id
   const allWPs = window._watchPartiesData || [];
   const matchWPs = allWPs.filter(wp => {
-    const wpHome = (wp.home_team || '').toLowerCase().trim();
-    const wpAway = (wp.away_team || '').toLowerCase().trim();
-    const isCatchAll = !wp.match_id || !wp.match_id.trim();
-    return isCatchAll
-        || (matchId && wp.match_id && wp.match_id.trim() === matchId.trim())
-        || (wpHome && wpAway && wpHome === home && wpAway === away);
+    return (matchId && wp.match_id && wp.match_id.trim() === matchId.trim());
   });
   const wpList = document.getElementById('watchPartyList');
   if (wpList) {
@@ -190,8 +185,8 @@ function buildMatchCarousel(matches, watchParties) {
     (watchParties || []).map(wp => wp.match_id).filter(Boolean)
   );
 
-  // If any watch party has no match_id, it applies to every match
-  const hasCatchAll = (watchParties || []).some(wp => !wp.match_id || !wp.match_id.trim());
+  // No catch-all logic — events only show on match rows they're explicitly linked to via match_id
+  const hasCatchAll = false;
 
   const matchById = {};
   matches.forEach(m => { if (m.match_id) matchById[m.match_id] = m; });

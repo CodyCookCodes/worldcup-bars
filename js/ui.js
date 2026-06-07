@@ -261,8 +261,8 @@ function buildWatchPartyCard(wp) {
 
   return `
     <div class="venue-card venue-card--watch-party">
-      <div class="wp-badge">Oakland Sports Group Events</div>
       <div class="venue-name">${esc(wp.name)}</div>
+      ${(wp.osg || '').toLowerCase() === 'true' ? '<div class="wp-badge">OSG Events</div>' : ''}
       ${matchLine}
       ${dateLine}
       <div class="venue-spacer"></div>

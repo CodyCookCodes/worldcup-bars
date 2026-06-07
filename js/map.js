@@ -37,10 +37,11 @@ function makeRestaurantPinIcon() {
   };
 }
 
-function makeWatchPartyPinIcon(large = false) {
+function makeWatchPartyPinIcon(large = false, isOSG = false) {
   const size = large ? 32 : 26;
+  const svg = isOSG ? ROOTS_PIN_SVG : GREEN_PIN_SVG;
   return {
-    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(ROOTS_PIN_SVG),
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
     scaledSize: new google.maps.Size(size, Math.round(size * 1.3)),
     anchor: new google.maps.Point(size / 2, Math.round(size * 1.3)),
   };
@@ -208,7 +209,7 @@ window.buildWatchPartyMarkers = function(watchParties) {
         position: pos,
         map: null,  // hidden by default — only shown when OSG Events filter is active
         title: wp.name,
-        icon: makeWatchPartyPinIcon(false),
+        icon: makeWatchPartyPinIcon(false, (wp.osg || '').toLowerCase() === 'true'),
         optimized: false,
         zIndex: 20,
       });
@@ -328,13 +329,15 @@ function buildWatchPartyInfoWindow(wp, marker) {
        </div>`
     : '';
 
-  const dateLine = (wp.match_date || wp.match_time)
-    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
+  const eventDate = wp.match_date || wp.date || '';
+  const eventTime = wp.match_time || wp.time || '';
+  const dateLine = (eventDate || eventTime)
+    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(eventDate)}${eventTime ? ' · ' + esc(eventTime) : ''}</div>`
     : '';
 
   gInfoWindow.setContent(`
     <div style="background:#1a1a1a;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
-      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">OSG Events</div>
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">${(wp.osg || '').toLowerCase() === 'true' ? 'OSG Events' : 'Event'}</div>
       <div style="font-weight:700;white-space:normal;padding-right:50px;overflow-wrap:break-word;font-size:1.35rem;color:#ffffff;margin-bottom:6px;">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}

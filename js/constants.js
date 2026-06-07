@@ -46,20 +46,20 @@ const MAP_STYLE = [
   { featureType: 'road.highway',    elementType: 'geometry.stroke', stylers: [{ color: '#333333' }] },
   { featureType: 'water',           elementType: 'geometry',       stylers: [{ color: '#0a0a0a' }] },
   { featureType: 'water',           elementType: 'labels.text.fill', stylers: [{ color: '#444444' }] },
-  { featureType: 'poi',             elementType: 'geometry',       stylers: [{ color: '#151515' }] },
-  { featureType: 'poi',             elementType: 'labels.text.fill', stylers: [{ color: '#555555' }] },
-  { featureType: 'poi.park',        elementType: 'geometry',       stylers: [{ color: '#131a14' }] },
   { featureType: 'transit',         elementType: 'geometry',       stylers: [{ color: '#181818' }] },
   { featureType: 'administrative',  elementType: 'geometry.stroke', stylers: [{ color: '#2a2a2a' }] },
   { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#aaaaaa' }] },
   { featureType: 'landscape',       elementType: 'geometry',       stylers: [{ color: '#111111' }] },
-  { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.business', stylers: [{ visibility: 'off' }] },
-  { featureType: 'transit', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'road', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.park', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi.attraction', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi', stylers: [{ visibility: 'off' }] },
+  { featureType: 'road',            elementType: 'labels.icon',    stylers: [{ visibility: 'off' }] },
+  { featureType: 'transit',         elementType: 'labels.icon',    stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi',             stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park',        stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.attraction',  stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.business',    stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park', elementType: 'labels.text', stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park', elementType: 'labels',      stylers: [{ visibility: 'off' }] },
+  { featureType: 'poi.park',                             stylers: [{ visibility: 'off' }] },
 ];
 
 // ─── Map pin SVGs ─────────────────────────────────────────────────────────────
@@ -88,6 +88,13 @@ const BLUE_PIN_SVG = `
 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
   <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
         fill="#65C2EE" stroke="#4a9ab5" stroke-width="1.5"/>
+  <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
+</svg>`;
+
+const GREEN_PIN_SVG = `
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="36" viewBox="0 0 28 36">
+  <path d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
+        fill="#25B67C" stroke="#1a8a5c" stroke-width="1.5"/>
   <circle cx="14" cy="14" r="5" fill="#ffffff" opacity="0.9"/>
 </svg>`;
 
