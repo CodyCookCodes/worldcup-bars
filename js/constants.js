@@ -35,6 +35,8 @@ const FLAGS = {
 };
 
 // ─── Google Maps dark style ───────────────────────────────────────────────────
+// ─── Google Maps dark style ───────────────────────────────────────────────────
+// ─── Google Maps dark style ───────────────────────────────────────────────────
 const MAP_STYLE = [
   { elementType: 'geometry',        stylers: [{ color: '#111111' }] },
   { elementType: 'labels.text.fill',stylers: [{ color: '#888888' }] },
@@ -60,6 +62,10 @@ const MAP_STYLE = [
   { featureType: 'poi.park', elementType: 'labels.text', stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.park', elementType: 'labels',      stylers: [{ visibility: 'off' }] },
   { featureType: 'poi.park',                             stylers: [{ visibility: 'off' }] },
+  
+  // ─── THE FIX FOR MOUNTAIN PEAKS ─────────────────────────────────────────────
+  { featureType: 'landscape.natural', elementType: 'labels',      stylers: [{ visibility: 'off' }] },
+  { featureType: 'landscape.natural', elementType: 'labels.icon', stylers: [{ visibility: 'off' }] }
 ];
 
 // ─── Map pin SVGs ─────────────────────────────────────────────────────────────
