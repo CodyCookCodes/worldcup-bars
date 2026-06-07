@@ -37,11 +37,10 @@ function makeRestaurantPinIcon() {
   };
 }
 
-function makeWatchPartyPinIcon(large = false, isOSG = false) {
+function makeWatchPartyPinIcon(large = false) {
   const size = large ? 32 : 26;
-  const svg = isOSG ? ROOTS_PIN_SVG : GREEN_PIN_SVG;
   return {
-    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(ROOTS_PIN_SVG),
     scaledSize: new google.maps.Size(size, Math.round(size * 1.3)),
     anchor: new google.maps.Point(size / 2, Math.round(size * 1.3)),
   };
@@ -62,14 +61,14 @@ window.buildMap = function(bars) {
   const mappable = bars.filter(b => b.address);
 
   if (!mappable.length) {
-    if (loadingEl) loadingEl.style.display = 'none';
+    if (loadingEl) loadingEl.classList.add('hidden');
     document.querySelector('.map-section').style.display = 'none';
     return;
   }
 
   const mapEl = document.getElementById('map');
-  if (loadingEl) loadingEl.style.display = 'none';
-  mapEl.style.display = 'block';
+  if (loadingEl) loadingEl.classList.add('hidden');
+  mapEl.style.visibility = 'visible';
 
   gMap = new google.maps.Map(mapEl, {
     zoom: 15,
@@ -209,7 +208,7 @@ window.buildWatchPartyMarkers = function(watchParties) {
         position: pos,
         map: null,  // hidden by default — only shown when OSG Events filter is active
         title: wp.name,
-        icon: makeWatchPartyPinIcon(false, (wp.osg || '').toLowerCase() === 'true'),
+        icon: makeWatchPartyPinIcon(false),
         optimized: false,
         zIndex: 20,
       });
@@ -329,15 +328,13 @@ function buildWatchPartyInfoWindow(wp, marker) {
        </div>`
     : '';
 
-  const eventDate = wp.match_date || wp.date || '';
-  const eventTime = wp.match_time || wp.time || '';
-  const dateLine = (eventDate || eventTime)
-    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(eventDate)}${eventTime ? ' · ' + esc(eventTime) : ''}</div>`
+  const dateLine = (wp.match_date || wp.match_time)
+    ? `<div style="font-size:0.78rem;color:#888;margin-bottom:8px;">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
     : '';
 
   gInfoWindow.setContent(`
     <div style="background:#1a1a1a;color:#f0f0f0;padding:10px 12px;border-radius:6px;min-width:180px;max-width:240px;">
-      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">${(wp.osg || '').toLowerCase() === 'true' ? 'OSG Events' : 'Event'}</div>
+      <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#25B67C;margin-bottom:5px;">OSG Events</div>
       <div style="font-weight:700;white-space:normal;padding-right:50px;overflow-wrap:break-word;font-size:1.35rem;color:#ffffff;margin-bottom:6px;">${esc(wp.name)}</div>
       ${matchLine}
       ${dateLine}

@@ -137,12 +137,11 @@ async function loadHotelsAndRestaurants() {
 
 // ─── Google Maps async callback ───────────────────────────────────────────────
 function initMap() {
-  // Hide the loading placeholder — map is ready
+  // Hide map-loading, show map — using visibility to avoid CLS
   const mapLoading = document.getElementById('map-loading');
   if (mapLoading) mapLoading.classList.add('hidden');
-
   const mapEl = document.getElementById('map');
-  if (mapEl) mapEl.style.display = 'block';
+  if (mapEl) mapEl.style.visibility = 'visible';
 
   if (window._barsReady) {
     window.buildMap(window._barsData);
@@ -228,33 +227,33 @@ function dismissLoader() {
 
 Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotelsAndRestaurants(), loadNextEvent()]).then(dismissLoader);
 
-// ─── Lazy-load Google Maps when map section nears viewport ───────────────────
-// Keeps 469 KiB of Maps JS out of the critical path, improving LCP/FCP
+// ─── Lazy-load Google Maps only when map section scrolls into view ────────────
+// This prevents the Maps JS bundle from blocking LCP (Largest Contentful Paint)
 (function() {
-  let loaded = false;
+  const mapSection = document.querySelector('.map-section');
+  if (!mapSection) return;
 
-  function loadMapsScript() {
+  let loaded = false;
+  const loadMaps = () => {
     if (loaded) return;
     loaded = true;
     const script = document.createElement('script');
     script.src = `https://maps.googleapis.com/maps/api/js?key=${MAPS_API_KEY}&callback=initMap`;
     script.async = true;
+    script.defer = true;
     document.head.appendChild(script);
-  }
+  };
 
-  const mapSection = document.querySelector('.map-section');
-  if (!mapSection) { loadMapsScript(); return; }
-
-  // Load when map section is within 400px of viewport
+  // Load when map section is within 300px of viewport
   const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {
       observer.disconnect();
-      loadMapsScript();
+      loadMaps();
     }
-  }, { rootMargin: '400px' });
+  }, { rootMargin: '300px' });
 
   observer.observe(mapSection);
 
-  // Hard fallback: 5s ensures map loads even if user never scrolls
-  setTimeout(loadMapsScript, 5000);
+  // Fallback: load after 4s regardless (ensures map loads even if user never scrolls)
+  setTimeout(loadMaps, 4000);
 })();
