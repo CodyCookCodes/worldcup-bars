@@ -138,7 +138,7 @@ function buildPage(bars) {
   // ── Type buttons ──
   const typeButtons = [
     { id: 'watchPartiesAllBtn', type: 'watchparties', label: 'Watch Parties', cls: 'filter-btn--orange' },
-    { id: 'watchPartyTabBtn',   type: 'osgevents',    label: 'OSG Events',    cls: 'filter-btn--watch-party' },
+    { id: 'watchPartyTabBtn',   type: 'osgevents',    label: 'Events',        cls: 'filter-btn--watch-party' },
     { id: 'hotelsTabBtn',       type: 'hotels',       label: 'Hotels',        cls: 'filter-btn--hotels' },
     { id: 'restaurantsTabBtn',  type: 'restaurants',  label: 'Restaurants',   cls: 'filter-btn--restaurants' },
   ];
