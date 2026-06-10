@@ -103,6 +103,13 @@
     </div>
   </div>
 </div>
+<!-- ─── Flyer Popup ──────────────────────────────────────────────────────────── -->
+<div id="flyer-popup-overlay" class="hidden">
+  <div id="flyer-popup">
+    <button class="popup-close" id="flyerClose" aria-label="Close">&#x2715;</button>
+    <img src="assets/flyer.png" alt="Oakland Sports Group Event Flyer" id="flyerImg" style="width:100%;border-radius:8px;display:block;">
+  </div>
+</div>
 
 <!-- HEADER -->
 <header>
@@ -191,7 +198,7 @@
   <div class="sponsors-label">East Bay Soccer Trail Made Possible By Our Brand Partners</div>
   <div class="sponsors-grid">
     <a href="https://www.liuna.org" target="_blank" class="sponsor-logo-link sponsor-logo-link--liuna">
-      <picture><source srcset="assets/sponsor-liuna.webp" type="image/webp"><img src="assets/sponsor-liuna.png" alt="LiUNA Laborers Local 304" width="120" height="60" loading="lazy"></picture>
+      <picture><source srcset="assets/sponsor-liuna.webp" type="image/webp"><img src="assets/sponsor-liuna.png" alt="LiUNA Laborers Local 304" width="200" height="auto" loading="lazy"></picture>
     </a>
     <a href="https://gusto.com" target="_blank" class="sponsor-logo-link sponsor-logo-link--gusto">
       <picture><source srcset="assets/sponsor-gusto.webp" type="image/webp"><img src="assets/sponsor-gusto.png" alt="Gusto — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
@@ -413,5 +420,48 @@
    Roots Schedule
 </a>
 </div>
+
+<script>
+// ─── Flyer Popup ──────────────────────────────────────────────────────────────
+// Increment FLYER_VERSION to show the flyer to all users again
+(function() {
+  const FLYER_VERSION = 'v2';
+  const LS_KEY = 'wc_flyer_seen_' + FLYER_VERSION;
+
+  if (localStorage.getItem(LS_KEY)) return;
+
+  const overlay  = document.getElementById('flyer-popup-overlay');
+  const closeBtn = document.getElementById('flyerClose');
+  if (!overlay || !closeBtn) return;
+
+  function showFlyer() {
+    overlay.classList.remove('hidden');
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+  }
+
+  function dismissFlyer() {
+    localStorage.setItem(LS_KEY, '1');
+    overlay.classList.remove('visible');
+    setTimeout(() => overlay.classList.add('hidden'), 300);
+  }
+
+  closeBtn.addEventListener('click', dismissFlyer);
+  overlay.addEventListener('click', e => { if (e.target === overlay) dismissFlyer(); });
+
+  // Show after email popup is dismissed (or 4s if email popup was already seen)
+  const emailOverlay = document.getElementById('email-popup-overlay');
+  if (emailOverlay) {
+    const observer = new MutationObserver(() => {
+      if (emailOverlay.classList.contains('hidden')) {
+        observer.disconnect();
+        setTimeout(showFlyer, 800);
+      }
+    });
+    observer.observe(emailOverlay, { attributes: true, attributeFilter: ['class'] });
+  } else {
+    setTimeout(showFlyer, 4000);
+  }
+})();
+</script>
 </body>
 </html>

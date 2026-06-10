@@ -42,7 +42,7 @@ function updateDropdownLabel() {
 
   const typeLabels = {
     watchparties: 'Watch Parties',
-    osgevents:    'OSG Events',
+    osgevents:    'Events',
     hotels:       'Hotels',
     restaurants:  'Restaurants',
   };
@@ -138,7 +138,7 @@ function buildPage(bars) {
   // ── Type buttons ──
   const typeButtons = [
     { id: 'watchPartiesAllBtn', type: 'watchparties', label: 'Watch Parties', cls: 'filter-btn--orange' },
-    { id: 'watchPartyTabBtn',   type: 'osgevents',    label: 'Events',        cls: 'filter-btn--watch-party' },
+    { id: 'watchPartyTabBtn',   type: 'osgevents',    label: 'Events',    cls: 'filter-btn--watch-party' },
     { id: 'hotelsTabBtn',       type: 'hotels',       label: 'Hotels',        cls: 'filter-btn--hotels' },
     { id: 'restaurantsTabBtn',  type: 'restaurants',  label: 'Restaurants',   cls: 'filter-btn--restaurants' },
   ];
@@ -198,9 +198,9 @@ function buildPage(bars) {
   wpSection.id = 'watchPartyList';
   wpSection.className = 'hidden';
   wpSection.innerHTML = `
-    <div class="category-block">
+    <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
       <div class="category-header">
-        <span class="cat-title" style="color:var(--green)">Official OSG Events</span>
+        <span class="cat-title">Events</span>
       </div>
       <div id="watchPartyCards" class="venue-grid">
         <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading watch parties…</div>
@@ -212,7 +212,19 @@ function buildPage(bars) {
   applyFilters();
 }
 
-// ─── Build a OSG Events card ─────────────────────────────────────────────────
+// ─── Normalize event date string for display ─────────────────────────────────
+function formatEventDate(dateStr) {
+  if (!dateStr) return '';
+  dateStr = dateStr.trim();
+  // Already human-readable (e.g. "June 24th") — return as-is
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+  // ISO format (2026-06-11) — convert to "Jun 11, 2026"
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ─── Build an Event card ────────────────────────────────────────────────────
 function buildWatchPartyCard(wp) {
   const isCatchAll = !wp.match_id || !wp.match_id.trim();
   const hasOwnDate = wp.date || wp.time;
@@ -224,7 +236,7 @@ function buildWatchPartyCard(wp) {
     matchLine = wp.location
       ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.location)}</div>`
       : '';
-    dateLine = `<div class="venue-detail">${esc(wp.date || '')}${wp.time ? ' · ' + esc(wp.time) : ''}</div>`;
+    dateLine = `<div class="venue-detail">${esc(formatEventDate(wp.date || ''))}${wp.time ? ' · ' + esc(wp.time) : ''}</div>`;
   } else if (isCatchAll) {
     // True catch-all — no date, show next upcoming match
     const matchById = window._matchById || {};
@@ -242,7 +254,7 @@ function buildWatchPartyCard(wp) {
         ? `<div class="venue-detail" style="color:var(--green);">${esc(upcoming.home_team)} vs ${esc(upcoming.away_team)}</div>`
         : '';
       dateLine = (upcoming.date || upcoming.time)
-        ? `<div class="venue-detail">${esc(upcoming.date || '')}${upcoming.time ? ' · ' + esc(upcoming.time) : ''}</div>`
+        ? `<div class="venue-detail">${esc(formatEventDate(upcoming.date || ''))}${upcoming.time ? ' · ' + esc(upcoming.time) : ''}</div>`
         : '';
     }
   } else {
@@ -251,7 +263,7 @@ function buildWatchPartyCard(wp) {
       ? `<div class="venue-detail" style="color:var(--green);">${esc(wp.home_team)} vs ${esc(wp.away_team)}</div>`
       : '';
     dateLine = (wp.match_date || wp.match_time)
-      ? `<div class="venue-detail">${esc(wp.match_date || '')}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
+      ? `<div class="venue-detail">${esc(formatEventDate(wp.match_date || ''))}${wp.match_time ? ' · ' + esc(wp.match_time) : ''}</div>`
       : '';
   }
 
@@ -373,9 +385,9 @@ function renderHotelCards(hotels) {
     section.id = 'hotelList';
     section.className = 'hidden';
     section.innerHTML = `
-      <div class="category-block">
+      <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
         <div class="category-header">
-          <span class="cat-title" style="color:#65C2EE">Hotels</span>
+          <span class="cat-title">Hotels</span>
         </div>
         <div id="hotelCards" class="venue-grid"></div>
       </div>`;
@@ -392,9 +404,9 @@ function renderRestaurantCards(restaurants) {
     section.id = 'restaurantList';
     section.className = 'hidden';
     section.innerHTML = `
-      <div class="category-block">
+      <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
         <div class="category-header">
-          <span class="cat-title" style="color:var(--yellow)">Restaurants</span>
+          <span class="cat-title">Restaurants</span>
         </div>
         <div id="restaurantCards" class="venue-grid"></div>
       </div>`;

@@ -68,6 +68,7 @@ window.buildMap = function(bars) {
 
   const mapEl = document.getElementById('map');
   if (loadingEl) loadingEl.classList.add('hidden');
+  mapEl.style.display = 'block';
   mapEl.classList.add('ready');
 
   gMap = new google.maps.Map(mapEl, {

@@ -141,7 +141,7 @@ function initMap() {
   const mapLoading = document.getElementById('map-loading');
   if (mapLoading) mapLoading.classList.add('hidden');
   const mapEl = document.getElementById('map');
-  if (mapEl) mapEl.classList.add('ready');
+  if (mapEl) { mapEl.style.display = 'block'; mapEl.classList.add('ready'); }
 
   if (window._barsReady) {
     window.buildMap(window._barsData);
