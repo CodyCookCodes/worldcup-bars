@@ -96,7 +96,7 @@ function buildMatchRow(match, watchPartyMatchIds, hasCatchAll) {
 
   const hasWatchParty = hasCatchAll || (watchPartyMatchIds && watchPartyMatchIds.has(match.match_id));
   const watchPartyBadge = hasWatchParty
-    ? `<span class="mr-watch-party">Official OSG Events</span>`
+    ? `<span class="mr-watch-party">Official Event</span>`
     : '';
 
   const clickable = !hasScore;
@@ -198,10 +198,21 @@ function buildMatchCarousel(matches, watchParties) {
     return;
   }
 
+  function timeTo24(t) {
+    if (!t) return 0;
+    const m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+    if (!m) return 0;
+    let h = parseInt(m[1]), min = parseInt(m[2]);
+    const ampm = (m[3] || '').toUpperCase();
+    if (ampm === 'PM' && h < 12) h += 12;
+    if (ampm === 'AM' && h === 12) h = 0;
+    return h * 60 + min;
+  }
+
   matches.sort((a, b) => {
     const da = parseLocalDate(a.date), db = parseLocalDate(b.date);
     if (da && db && da.getTime() !== db.getTime()) return da - db;
-    return (a.time || '').localeCompare(b.time || '');
+    return timeTo24(a.time) - timeTo24(b.time);
   });
 
   const byDate = {};

@@ -155,68 +155,6 @@ function initMap() {
   }
 }
 
-// ─── Load and display next upcoming event ────────────────────────────────────
-async function loadNextEvent() {
-  const TTL    = 24 * 60 * 60 * 1000;
-  const LS_KEY = 'wc_events_cache';
-  const LS_TS  = 'wc_events_ts';
-
-  let events = [];
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-    const res = await fetch(WATCH_PARTIES_CSV_URL, { signal: controller.signal });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const text = await res.text();
-    events = parseCSV(text);
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify(events));
-      localStorage.setItem(LS_TS, Date.now().toString());
-    } catch (e) {}
-  } catch (err) {
-    console.warn('Events fetch failed, trying cache:', err);
-    try {
-      const cached = localStorage.getItem(LS_KEY);
-      const ts = localStorage.getItem(LS_TS);
-      if (cached && ts && (Date.now() - Number(ts)) < TTL) events = JSON.parse(cached);
-    } catch (e) {}
-  }
-
-  // Only show rows that have a date and time — skip pure watch party rows
-  const eventRows = events.filter(e => e['date and time'] || e.date);
-  if (!eventRows.length) return;
-
-  // Find first upcoming event by date, fall back to first row
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const upcoming = eventRows.find(e => {
-    const dateStr = e['date and time'] || e.date || '';
-    const match = dateStr.match(/(\w+ \d+|\d{4}-\d{2}-\d{2})/);
-    if (!match) return true;
-    const parsed = new Date(match[0] + (dateStr.includes('202') ? '' : ', 2026'));
-    return isNaN(parsed) || parsed >= today;
-  }) || eventRows[0];
-
-  if (!upcoming) return;
-
-  const name     = upcoming.name || '';
-  const location = upcoming.location || upcoming.address || '';
-  const dateTime = upcoming['date and time'] || upcoming.date || '';
-
-  const banner   = document.getElementById('next-event-banner');
-  const nameEl   = document.getElementById('next-event-name');
-  const detailEl = document.getElementById('next-event-details');
-  const linkEl   = document.getElementById('next-event-link');
-
-  if (!banner || !nameEl || !name) return;
-
-  nameEl.textContent = name;
-  detailEl.textContent = [location, dateTime].filter(Boolean).join(' · ');
-  linkEl.style.display = 'inline-block';
-  banner.style.display = 'block';
-}
-
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 function dismissLoader() {
   const loader = document.getElementById('page-loader');
@@ -225,7 +163,7 @@ function dismissLoader() {
   setTimeout(() => loader.classList.add('hidden'), 400);
 }
 
-Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotelsAndRestaurants(), loadNextEvent()]).then(dismissLoader);
+Promise.all([loadBars(), loadMatchesAndWatchParties(), loadHotelsAndRestaurants()]).then(dismissLoader);
 
 // ─── Lazy-load Google Maps only when map section scrolls into view ────────────
 // This prevents the Maps JS bundle from blocking LCP (Largest Contentful Paint)
