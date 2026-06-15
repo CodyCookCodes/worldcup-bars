@@ -1658,3 +1658,82 @@ footer a { color: var(--orange); text-decoration: none; }
 }
 
 #flyer-popup .popup-close:hover { background: rgba(0,0,0,0.9); }
+/* ─── Mobile email popup fix ─────────────────────────────────────────────────── */
+#email-popup {
+  max-height: 90dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-height: 700px) {
+  #email-popup-overlay {
+    align-items: flex-start;
+    padding: 12px 20px;
+    overflow-y: auto;
+  }
+}
+
+/* ─── Match Team Custom Dropdown ─────────────────────────────────────────────── */
+.match-team-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: var(--orange);
+  padding: 6px 14px;
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 140px;
+  user-select: none;
+  transition: border-color 0.15s;
+}
+.match-team-dropdown:hover,
+.match-team-dropdown.open { border-color: var(--orange); }
+
+.mtd-arrow {
+  font-size: 0.6rem;
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform 0.2s;
+  padding-left: 6px;
+}
+.match-team-dropdown.open .mtd-arrow { transform: rotate(180deg); }
+
+.mtd-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 100%;
+  background: #111;
+  border: 1px solid var(--orange);
+  border-radius: 4px;
+  z-index: 999;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 0;
+  list-style: none;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--orange) #111;
+}
+.mtd-options.hidden { display: none; }
+
+.mtd-options li {
+  padding: 8px 14px;
+  font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #aaa;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+.mtd-options li:hover { background: #1a1a1a; color: var(--white); }
+.mtd-options li.active { color: var(--orange); }
+.mtd-options li.host-nation { color: #ddd; }

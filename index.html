@@ -124,6 +124,11 @@
 <section class="matches-section" id="matchCarousel">
   <div class="matches-header">
     <span class="matches-title">Match Schedule</span>
+    <div class="match-team-dropdown" id="matchTeamDropdown" role="combobox" aria-label="Filter by team">
+      <span class="mtd-selected" id="matchTeamSelected">All Teams</span>
+      <span class="mtd-arrow">&#9660;</span>
+      <ul class="mtd-options hidden" id="matchTeamOptions"></ul>
+    </div>
     <div class="matches-nav">
       <button class="match-nav-btn" id="matchPrev" aria-label="Previous matches">&#8592;</button>
       <button class="match-nav-btn" id="matchNext" aria-label="Next matches">&#8594;</button>
@@ -145,14 +150,6 @@
     <img src="assets/flyer.png" alt="Oakland Sports Group Watch Party — Jun 12, Raimondi Park" loading="lazy" style="display:block;max-width:100%;height:auto;margin:0 auto;">
   </a>
 </div>
-        <div id="next-event-name" style="font-size:1.15rem;font-weight:700;color:#fff;font-family:'United Sans Cond','Arial Narrow',Arial,sans-serif;"></div>
-        <div id="next-event-details" style="font-size:0.8rem;color:#888;margin-top:3px;"></div>
-      </div>
-      <button id="next-event-link" onclick="filterWatchParties(document.getElementById('watchPartyTabBtn')); document.querySelector('.list-section, #watchPartyList').scrollIntoView({behavior:'smooth',block:'start'});" style="display:none;background:#F79621;color:#111;font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;">See Events →</button>
-    </div>
-  </div>
-</div>
-
 <!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
