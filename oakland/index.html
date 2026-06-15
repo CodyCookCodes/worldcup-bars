@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soccer Trail · Oakland</title>
   <meta property="og:title" content="Soccer Trail 2026 · Oakland">
-  <meta property="og:description" content="Find bars, watch parties, and events for the 2026 FIFA World Cup in Oakland. Presented by Oakland Sports Group.">
+  <meta property="og:description" content="Find bars, watch parties, and events for the 2026 tournament in Oakland. Presented by Oakland Sports Group.">
   <meta property="og:image" content="https://eastbaysoccertrail.com/assets/Oakland_Roots.png">
   <meta property="og:url" content="https://eastbaysoccertrail.com/oakland">
   <meta property="og:type" content="website">
-  <title>Soccer Trail · Oakland</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="icon" href="/assets/Oakland_Roots.png" type="image/png">
   <!-- Google tag (gtag.js) -->
@@ -20,7 +20,7 @@
     gtag('js', new Date());
     gtag('config', 'G-G5L0TEB3LN');
   </script>
-  <meta name="description" content="Find bars, watch parties, and events for the 2026 FIFA World Cup in Oakland. Presented by Oakland Sports Group.">
+  <meta name="description" content="Find bars, watch parties, and events for the 2026 tournament in Oakland. Presented by Oakland Sports Group.">
 </head>
 <body>
 
@@ -99,6 +99,11 @@
 <section class="matches-section" id="matchCarousel">
   <div class="matches-header">
     <span class="matches-title">Match Schedule</span>
+    <div class="match-team-dropdown" id="matchTeamDropdown" role="combobox" aria-label="Filter by team">
+      <span class="mtd-selected" id="matchTeamSelected">All Teams</span>
+      <span class="mtd-arrow">&#9660;</span>
+      <ul class="mtd-options hidden" id="matchTeamOptions"></ul>
+    </div>
     <div class="matches-nav">
       <button class="match-nav-btn" id="matchPrev" aria-label="Previous matches">&#8592;</button>
       <button class="match-nav-btn" id="matchNext" aria-label="Next matches">&#8594;</button>
@@ -114,20 +119,12 @@
 <!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
-<!-- NEXT EVENT BANNER -->
-<div id="next-event-banner" style="display:none;">
-  <div style="background:#0d0d0d;display:flex;overflow:hidden;">
-    <div style="padding:14px 20px;flex:1;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:180px;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F79621;margin-bottom:4px;">Next Event</div>
-        <div id="next-event-name" style="font-size:1.15rem;font-weight:700;color:#fff;font-family:'United Sans Cond','Arial Narrow',Arial,sans-serif;"></div>
-        <div id="next-event-details" style="font-size:0.8rem;color:#888;margin-top:3px;"></div>
-      </div>
-      <button id="next-event-link" onclick="filterWatchParties(document.getElementById('watchPartyTabBtn')); document.querySelector('.list-section, #watchPartyList').scrollIntoView({behavior:'smooth',block:'start'});" style="display:none;background:#F79621;color:#111;font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:10px 20px;border:none;cursor:pointer;white-space:nowrap;flex-shrink:0;">See Events →</button>
-    </div>
-  </div>
+<!-- FLYER BANNER -->
+<div style="background:#0d0d0d;text-align:center;padding:20px 16px;">
+  <a href="#watchPartyList" onclick="filterWatchParties(document.getElementById('watchPartyTabBtn')); document.querySelector('.list-section, #watchPartyList, .filters').scrollIntoView({behavior:'smooth',block:'start'}); return false;" style="display:inline-block;">
+    <img src="/assets/flyer.png" alt="Oakland Sports Group Watch Party — Jun 12, Raimondi Park" loading="lazy" style="display:block;max-width:100%;height:auto;margin:0 auto;">
+  </a>
 </div>
-
 <!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
@@ -166,41 +163,42 @@
   <div class="sponsors-label">Oakland Soccer Trail Made Possible By Our Brand Partners</div>
   <div class="sponsors-grid">
     <a href="https://www.liuna.org" target="_blank" class="sponsor-logo-link sponsor-logo-link--liuna">
-      <img src="/assets/sponsor-liuna.png" alt="LiUNA Laborers Local 304">
+      <picture><source srcset="/assets/sponsor-liuna.webp" type="image/webp"><img src="/assets/sponsor-liuna.png" alt="LiUNA Laborers Local 304" width="200" height="auto" loading="lazy"></picture>
     </a>
     <a href="https://gusto.com" target="_blank" class="sponsor-logo-link sponsor-logo-link--gusto">
-      <img src="/assets/sponsor-gusto.png" alt="Gusto">
+      <picture><source srcset="/assets/sponsor-gusto.webp" type="image/webp"><img src="/assets/sponsor-gusto.png" alt="Gusto — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
     </a>
     <a href="https://www.pge.com" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-pge.png" alt="PG&E">
+      <picture><source srcset="/assets/sponsor-pge.webp" type="image/webp"><img src="/assets/sponsor-pge.png" alt="PG&amp;E — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
     </a>
+    
     <a href="https://www.reubenlaw.com" target="_blank" class="sponsor-logo-link sponsor-logo-link--rjr">
-      <img src="/assets/sponsor-rjr.png" alt="Reuben, Junius & Rose LLP">
+      <picture><source srcset="/assets/sponsor-rjr.webp" type="image/webp"><img src="/assets/sponsor-rjr.png" alt="Reuben, Junius &amp; Rose LLP — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
     </a>
     <a href="https://www.ebmud.com/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-ebmud.png" alt="PG&E">
+      <picture><source srcset="/assets/sponsor-ebmud.webp" type="image/webp"><img src="/assets/sponsor-ebmud.png" alt="EBMUD — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
     </a>
   </div>
   <div class="sponsors-divider"></div>
   <div class="sponsors-label">Oakland Sports Group</div>
   <div class="sponsors-grid sponsors-grid--6">
     <a href="https://oaklandrootssc.com" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/Oakland_Roots.png" alt="Oakland Roots">
+      <picture><source srcset="/assets/Oakland_Roots.webp" type="image/webp"><img src="/assets/Oakland_Roots.png" alt="Oakland Roots SC" width="80" height="80" loading="lazy"></picture>
     </a>
     <a href="https://oakland68s.org/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-68s.png" alt="68s">
+      <picture><source srcset="/assets/sponsor-68s.webp" type="image/webp"><img src="/assets/sponsor-68s.png" alt="Oakland 68s" width="80" height="80" loading="lazy"></picture>
     </a>
     <a href="https://www.oaklandish.com/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-oaklandish.png" alt="Oaklandish">
+      <picture><source srcset="/assets/sponsor-oaklandish.webp" type="image/webp"><img src="/assets/sponsor-oaklandish.png" alt="Oaklandish" width="80" height="80" loading="lazy"></picture>
     </a>
     <a href="https://www.oaklandballers.com/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-ballers.png" alt="Oakland Ballers">
+      <picture><source srcset="/assets/sponsor-ballers.webp" type="image/webp"><img src="/assets/sponsor-ballers.png" alt="Oakland Ballers" width="80" height="80" loading="lazy"></picture>
     </a>
     <a href="https://oaklandmarathon.com/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/sponsor-marathon.png" alt="Oakland Marathon">
+      <picture><source srcset="/assets/sponsor-marathon.webp" type="image/webp"><img src="/assets/sponsor-marathon.png" alt="Oakland Marathon" width="80" height="80" loading="lazy"></picture>
     </a>
     <a href="https://www.oaklandsoulsc.com/" target="_blank" class="sponsor-logo-link">
-      <img src="/assets/Oakland_Soul.png" alt="Oakland Soul">
+      <picture><source srcset="/assets/Oakland_Soul.webp" type="image/webp"><img src="/assets/Oakland_Soul.png" alt="Oakland Soul SC" width="80" height="80" loading="lazy"></picture>
     </a>
   </div>
 </div>
@@ -219,12 +217,13 @@
 
 <script>window.CITY_FILTER = 'oakland';</script>
 <script src="/js/config.js" onerror="console.log('No local config, using deployed key')"></script>
-<script src="/js/constants.js"></script>
-<script src="/js/utils.js"></script>
-<script src="/js/map.js"></script>
-<script src="/js/ui.js"></script>
-<script src="/js/matches.js"></script>
-<script src="/js/main.js"></script>
+<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+<script src="/js/constants.js" defer></script>
+<script src="/js/utils.js" defer></script>
+<script src="/js/map.js" defer></script>
+<script src="/js/ui.js" defer></script>
+<script src="/js/matches.js" defer></script>
+<script src="/js/main.js" defer></script>
 
 <script>
 // ─── Email Popup ──────────────────────────────────────────────────────────────
@@ -287,7 +286,7 @@
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting…';
+    submitBtn.textContent = 'Submitting\u2026';
 
     // Build query string
     let params = `${ENTRY_EMAIL}=${encodeURIComponent(email)}`;
@@ -366,26 +365,27 @@
 
 <!-- STICKY CTA BAR -->
 <div class="sticky-cta">
-  <a href="https://shop.oaklandrootssc.com"
-   target="_blank"
-   class="sticky-cta-btn sticky-cta-btn--store"
-   onclick="gtag('event', 'click', {
-     'event_category': 'CTA',
-     'event_label': 'Roots Store',
-     'transport_type': 'beacon'
-   });">
+  <a href="https://shop.oaklandrootssc.com" 
+   target="_blank" 
+   class="sticky-cta-btn sticky-cta-btn--store"   
+   onclick="gtag('event', 'click', { 
+     'event_category': 'CTA', 
+     'event_label': 'Roots Store', 
+     'transport_type': 'beacon' 
+   });">  
    Roots Store
 </a>
-  <a href="https://www.oaklandrootssc.com/schedule"
-   target="_blank"
-   class="sticky-cta-btn sticky-cta-btn--schedule"
-   onclick="gtag('event', 'click', {
-     'event_category': 'CTA',
-     'event_label': 'Roots Schedule',
-     'transport_type': 'beacon'
-   });">
+  <a href="https://www.oaklandrootssc.com/schedule" 
+   target="_blank" 
+   class="sticky-cta-btn sticky-cta-btn--schedule"   
+   onclick="gtag('event', 'click', { 
+     'event_category': 'CTA', 
+     'event_label': 'Roots Schedule', 
+     'transport_type': 'beacon' 
+   });">  
    Roots Schedule
 </a>
 </div>
+
 </body>
 </html>

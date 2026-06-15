@@ -124,11 +124,23 @@ function buildPage(bars) {
     });
   });
 
-  const sorted = Object.keys(groups).sort((a, b) => {
-    if (a.toLowerCase() === 'all nations') return 1;
-    if (b.toLowerCase() === 'all nations') return -1;
-    return a.localeCompare(b);
-  });
+  // Eliminated nations from sheet (loaded by main.js before bars)
+  const eliminatedNations = window._eliminatedNations || new Set();
+
+  // Host nations pinned first, then alphabetical, eliminated nations hidden
+  const HOST_NATIONS = ['USA', 'Canada', 'Mexico'];
+  const sorted = Object.keys(groups)
+    .filter(n => !eliminatedNations.has(n.toLowerCase()))
+    .sort((a, b) => {
+      if (a.toLowerCase() === 'all nations') return 1;
+      if (b.toLowerCase() === 'all nations') return -1;
+      const ai = HOST_NATIONS.findIndex(h => h.toLowerCase() === a.toLowerCase());
+      const bi = HOST_NATIONS.findIndex(h => h.toLowerCase() === b.toLowerCase());
+      if (ai !== -1 && bi !== -1) return ai - bi;
+      if (ai !== -1) return -1;
+      if (bi !== -1) return 1;
+      return a.localeCompare(b);
+    });
 
   window._sortedNations = sorted.map(n => n.toLowerCase());
 
