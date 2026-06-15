@@ -198,9 +198,9 @@ function buildPage(bars) {
   wpSection.id = 'watchPartyList';
   wpSection.className = 'hidden';
   wpSection.innerHTML = `
-    <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
+    <div class="category-block">
       <div class="category-header">
-        <span class="cat-title">Events</span>
+        <span class="cat-title" style="color:var(--green)">Events</span>
       </div>
       <div id="watchPartyCards" class="venue-grid">
         <div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">Loading watch parties…</div>
@@ -291,10 +291,49 @@ function renderWatchPartyCards() {
   if (!container) return;
   const wps = window._watchPartiesData || [];
   if (!wps.length) {
-    container.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">No watch parties listed yet.</div>';
+    container.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">No events listed yet.</div>';
     return;
   }
-  container.innerHTML = wps.map(buildWatchPartyCard).join('');
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Parse event date from either ISO (2026-06-11) or human (June 24th)
+  function parseEventDate(wp) {
+    const raw = wp.match_date || wp.date || '';
+    if (!raw) return null;
+    // ISO format
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw.trim())) {
+      const [y, m, d] = raw.trim().split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
+    // Human format — strip ordinal suffixes (1st, 2nd, 3rd, 4th etc)
+    const cleaned = raw.replace(/(\d+)(st|nd|rd|th)/i, '$1');
+    const parsed = new Date(cleaned + (cleaned.includes('202') ? '' : ', 2026'));
+    return isNaN(parsed) ? null : parsed;
+  }
+
+  // Filter out past events
+  const upcoming = wps.filter(wp => {
+    const d = parseEventDate(wp);
+    return !d || d >= today;
+  });
+
+  // Sort by date ascending
+  upcoming.sort((a, b) => {
+    const da = parseEventDate(a), db = parseEventDate(b);
+    if (!da && !db) return 0;
+    if (!da) return 1;
+    if (!db) return -1;
+    return da - db;
+  });
+
+  if (!upcoming.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding:10px 0;">No upcoming events.</div>';
+    return;
+  }
+
+  container.innerHTML = upcoming.map(buildWatchPartyCard).join('');
 }
 
 // ─── Legacy shims — called by matches.js match row click ─────────────────────
@@ -385,9 +424,9 @@ function renderHotelCards(hotels) {
     section.id = 'hotelList';
     section.className = 'hidden';
     section.innerHTML = `
-      <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
+      <div class="category-block">
         <div class="category-header">
-          <span class="cat-title">Hotels</span>
+          <span class="cat-title" style="color:#65C2EE">Hotels</span>
         </div>
         <div id="hotelCards" class="venue-grid"></div>
       </div>`;
@@ -404,9 +443,9 @@ function renderRestaurantCards(restaurants) {
     section.id = 'restaurantList';
     section.className = 'hidden';
     section.innerHTML = `
-      <div class="category-block" style="max-width:960px;margin:28px auto 40px;padding:0 16px;">
+      <div class="category-block">
         <div class="category-header">
-          <span class="cat-title">Restaurants</span>
+          <span class="cat-title" style="color:var(--yellow)">Restaurants</span>
         </div>
         <div id="restaurantCards" class="venue-grid"></div>
       </div>`;

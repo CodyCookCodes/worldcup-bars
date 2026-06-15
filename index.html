@@ -103,13 +103,6 @@
     </div>
   </div>
 </div>
-<!-- ─── Flyer Popup ──────────────────────────────────────────────────────────── -->
-<div id="flyer-popup-overlay" class="hidden">
-  <div id="flyer-popup">
-    <button class="popup-close" id="flyerClose" aria-label="Close">&#x2715;</button>
-    <img src="assets/flyer.png" alt="Oakland Sports Group Event Flyer" id="flyerImg" style="width:100%;border-radius:8px;display:block;">
-  </div>
-</div>
 
 <!-- HEADER -->
 <header>
@@ -146,12 +139,12 @@
 <!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
-<!-- NEXT EVENT BANNER -->
-<div id="next-event-banner" style="display:none;">
-  <div style="background:#0d0d0d;display:flex;overflow:hidden;">
-    <div style="padding:14px 20px;flex:1;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:180px;">
-        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#F79621;margin-bottom:4px;">Next Event</div>
+<!-- FLYER BANNER -->
+<div style="background:#0d0d0d;text-align:center;padding:20px 16px;">
+  <a href="#watchPartyList" onclick="filterWatchParties(document.getElementById('watchPartyTabBtn')); document.querySelector('.list-section, #watchPartyList, .filters').scrollIntoView({behavior:'smooth',block:'start'}); return false;" style="display:inline-block;">
+    <img src="assets/flyer.png" alt="Oakland Sports Group Watch Party — Jun 12, Raimondi Park" loading="lazy" style="display:block;max-width:100%;height:auto;margin:0 auto;">
+  </a>
+</div>
         <div id="next-event-name" style="font-size:1.15rem;font-weight:700;color:#fff;font-family:'United Sans Cond','Arial Narrow',Arial,sans-serif;"></div>
         <div id="next-event-details" style="font-size:0.8rem;color:#888;margin-top:3px;"></div>
       </div>
@@ -421,47 +414,5 @@
 </a>
 </div>
 
-<script>
-// ─── Flyer Popup ──────────────────────────────────────────────────────────────
-// Increment FLYER_VERSION to show the flyer to all users again
-(function() {
-  const FLYER_VERSION = 'v2';
-  const LS_KEY = 'wc_flyer_seen_' + FLYER_VERSION;
-
-  if (localStorage.getItem(LS_KEY)) return;
-
-  const overlay  = document.getElementById('flyer-popup-overlay');
-  const closeBtn = document.getElementById('flyerClose');
-  if (!overlay || !closeBtn) return;
-
-  function showFlyer() {
-    overlay.classList.remove('hidden');
-    requestAnimationFrame(() => overlay.classList.add('visible'));
-  }
-
-  function dismissFlyer() {
-    localStorage.setItem(LS_KEY, '1');
-    overlay.classList.remove('visible');
-    setTimeout(() => overlay.classList.add('hidden'), 300);
-  }
-
-  closeBtn.addEventListener('click', dismissFlyer);
-  overlay.addEventListener('click', e => { if (e.target === overlay) dismissFlyer(); });
-
-  // Show after email popup is dismissed (or 4s if email popup was already seen)
-  const emailOverlay = document.getElementById('email-popup-overlay');
-  if (emailOverlay) {
-    const observer = new MutationObserver(() => {
-      if (emailOverlay.classList.contains('hidden')) {
-        observer.disconnect();
-        setTimeout(showFlyer, 800);
-      }
-    });
-    observer.observe(emailOverlay, { attributes: true, attributeFilter: ['class'] });
-  } else {
-    setTimeout(showFlyer, 4000);
-  }
-})();
-</script>
 </body>
 </html>

@@ -198,21 +198,10 @@ function buildMatchCarousel(matches, watchParties) {
     return;
   }
 
-  function timeTo24(t) {
-    if (!t) return 0;
-    const m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
-    if (!m) return 0;
-    let h = parseInt(m[1]), min = parseInt(m[2]);
-    const ampm = (m[3] || '').toUpperCase();
-    if (ampm === 'PM' && h < 12) h += 12;
-    if (ampm === 'AM' && h === 12) h = 0;
-    return h * 60 + min;
-  }
-
   matches.sort((a, b) => {
     const da = parseLocalDate(a.date), db = parseLocalDate(b.date);
     if (da && db && da.getTime() !== db.getTime()) return da - db;
-    return timeTo24(a.time) - timeTo24(b.time);
+    return (a.time || '').localeCompare(b.time || '');
   });
 
   const byDate = {};
@@ -263,6 +252,85 @@ function buildMatchCarousel(matches, watchParties) {
   });
   document.getElementById('matchNext').addEventListener('click', () => {
     track.parentElement.scrollBy({ left: 300, behavior: 'smooth' });
+  });
+
+  populateMatchTeamDropdown(matches);
+}
+
+// ─── Match team filter ────────────────────────────────────────────────────────
+function applyMatchTeamFilter(team) {
+  const track = document.getElementById('matchTrack');
+  if (!track) return;
+  track.querySelectorAll('.day-card').forEach(card => {
+    if (!team) {
+      card.classList.remove('hidden');
+      card.querySelectorAll('.match-row').forEach(r => r.classList.remove('hidden'));
+      return;
+    }
+    const t = team.toLowerCase();
+    let anyVisible = false;
+    card.querySelectorAll('.match-row:not(.match-row--no-click)').forEach(row => {
+      const visible = (row.dataset.home||'').toLowerCase()===t || (row.dataset.away||'').toLowerCase()===t;
+      row.classList.toggle('hidden', !visible);
+      if (visible) anyVisible = true;
+    });
+    card.querySelectorAll('.match-row--no-click').forEach(row => {
+      const visible = row.textContent.toLowerCase().includes(t);
+      row.classList.toggle('hidden', !visible);
+      if (visible) anyVisible = true;
+    });
+    card.classList.toggle('hidden', !anyVisible);
+  });
+  const first = track.querySelector('.day-card:not(.hidden)');
+  if (first) {
+    const left = first.offsetLeft - track.parentElement.getBoundingClientRect().width / 2 + first.getBoundingClientRect().width / 2;
+    track.parentElement.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+  }
+}
+
+function populateMatchTeamDropdown(matches) {
+  const dropdown  = document.getElementById('matchTeamDropdown');
+  const selectedEl= document.getElementById('matchTeamSelected');
+  const list      = document.getElementById('matchTeamOptions');
+  if (!dropdown || !list) return;
+
+  const teamSet = new Set();
+  matches.forEach(m => { if (m.home_team) teamSet.add(m.home_team); if (m.away_team) teamSet.add(m.away_team); });
+
+  const HOSTS = ['USA', 'Canada', 'Mexico'];
+  const hosts = HOSTS.filter(h => teamSet.has(h));
+  const rest  = [...teamSet].filter(t => !HOSTS.includes(t)).sort();
+  const teams = [...hosts, ...rest];
+
+  list.innerHTML = '<li class="active" data-value="">All Teams</li>';
+  teams.forEach(team => {
+    const li = document.createElement('li');
+    li.dataset.value = team;
+    li.textContent = team;
+    if (HOSTS.includes(team)) li.classList.add('host-nation');
+    list.appendChild(li);
+  });
+
+  dropdown.addEventListener('click', e => {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
+    list.classList.toggle('hidden');
+  });
+
+  list.addEventListener('click', e => {
+    const li = e.target.closest('li');
+    if (!li) return;
+    selectedEl.textContent = li.textContent;
+    list.querySelectorAll('li').forEach(l => l.classList.remove('active'));
+    li.classList.add('active');
+    dropdown.classList.remove('open');
+    list.classList.add('hidden');
+    applyMatchTeamFilter(li.dataset.value);
+  });
+
+  document.addEventListener('click', () => {
+    dropdown.classList.remove('open');
+    list.classList.add('hidden');
   });
 }
 
