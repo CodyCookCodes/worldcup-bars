@@ -1737,3 +1737,12 @@ footer a { color: var(--orange); text-decoration: none; }
 .mtd-options li:hover { background: #1a1a1a; color: var(--white); }
 .mtd-options li.active { color: var(--orange); }
 .mtd-options li.host-nation { color: #ddd; }
+/* ─── Penalty Shootout Indicator ─────────────────────────────────────────────── */
+.mr-pk {
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 2px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}

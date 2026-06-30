@@ -1,5 +1,6 @@
 // ─── Matches Module ───────────────────────────────────────────────────────────
-// Matches sheet columns: match_id | date | time | home_team | away_team | home_score | away_score | stage | group
+// Matches sheet columns: match_id | date | time | home_team | away_team | home_score | away_score | home_pk | away_pk | stage | group
+// home_pk / away_pk are optional — only filled in for knockout matches decided by penalty shootout
 // Watch Parties sheet columns: name | address | place_id | match_id
 
 // ─── Parse CSV for matches ────────────────────────────────────────────────────
@@ -76,15 +77,29 @@ function stageLabel(stage) {
 // ─── Single match row ─────────────────────────────────────────────────────────
 function buildMatchRow(match, watchPartyMatchIds, hasCatchAll) {
   const hasScore = match.home_score !== '' && match.away_score !== '';
-  const homeWon = hasScore && Number(match.home_score) > Number(match.away_score);
-  const awayWon = hasScore && Number(match.away_score) > Number(match.home_score);
+  const hasPK = match.home_pk !== '' && match.home_pk !== undefined && match.away_pk !== '' && match.away_pk !== undefined;
+
+  // Regulation/ET result is a draw if scores are equal — check penalties to find the real winner
+  const isDraw = hasScore && Number(match.home_score) === Number(match.away_score);
+  const homeWonPK = hasPK && Number(match.home_pk) > Number(match.away_pk);
+  const awayWonPK = hasPK && Number(match.away_pk) > Number(match.home_pk);
+
+  const homeWon = hasScore && (homeWonPK || (!isDraw && Number(match.home_score) > Number(match.away_score)));
+  const awayWon = hasScore && (awayWonPK || (!isDraw && Number(match.away_score) > Number(match.home_score)));
+
+  const pkLine = (isDraw && hasPK)
+    ? `<div class="mr-pk">${esc(match.home_pk)}-${esc(match.away_pk)} PK</div>`
+    : '';
 
   const scoreOrTime = hasScore
-    ? `<span class="mr-score">
-         <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${esc(match.home_score)}</span>
-         <span class="score-sep">–</span>
-         <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${esc(match.away_score)}</span>
-       </span>`
+    ? `<div class="mr-score-wrap">
+         <span class="mr-score">
+           <span class="${homeWon ? 'score-win' : awayWon ? 'score-loss' : ''}">${esc(match.home_score)}</span>
+           <span class="score-sep">–</span>
+           <span class="${awayWon ? 'score-win' : homeWon ? 'score-loss' : ''}">${esc(match.away_score)}</span>
+         </span>
+         ${pkLine}
+       </div>`
     : `<span class="mr-time">${esc(match.time || 'TBD')}</span>`;
 
   const groupInfo = match.group
