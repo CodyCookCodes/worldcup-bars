@@ -3,235 +3,299 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>East Bay Watch Parties 2026 | Soccer Trail — Oakland &amp; East Bay</title>
-  <meta property="og:title" content="East Bay Watch Parties 2026 — Oakland Soccer Trail">
-  <meta property="og:description" content="Find 2026 soccer watch parties, bars, and events across Oakland and the East Bay. Presented by Oakland Sports Group.">
+  <title>East Bay Soccer Trail — See You in 2030</title>
+  <meta name="description" content="Thank you for watching the 2026 tournament with us across the East Bay. See you in 2030.">
+  <meta property="og:title" content="East Bay Soccer Trail — See You in 2030">
+  <meta property="og:description" content="Thank you for watching the 2026 tournament with us across the East Bay. See you in 2030.">
   <meta property="og:image" content="https://eastbaysoccertrail.com/assets/Oakland_Roots.png">
   <meta property="og:url" content="https://eastbaysoccertrail.com">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="East Bay Soccer Trail">
-  <meta property="og:locale" content="en_US">
-  <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="assets/Oakland_Roots.png" type="image/png">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN"></script>
+
+  <!-- Google Analytics -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('consent', 'default', { analytics_storage: 'denied' });
-    gtag('js', new Date());
-    gtag('config', 'G-G5L0TEB3LN');
   </script>
-  <meta name="description" content="Find 2026 soccer watch parties, bars, and events in Oakland and the East Bay. Official bar and venue finder presented by Oakland Sports Group and Oakland Roots SC.">
-  <meta name="keywords" content="East Bay watch parties, soccer watch parties Oakland, Oakland watch parties 2026, soccer bars East Bay, Oakland Roots watch party, East Bay soccer bars, watch parties Oakland CA">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://eastbaysoccertrail.com/">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="East Bay Watch Parties 2026 — Oakland Soccer Trail">
-  <meta name="twitter:description" content="Find 2026 soccer watch parties, bars, and events across Oakland and the East Bay. Presented by Oakland Sports Group.">
-  <meta name="twitter:image" content="https://eastbaysoccertrail.com/assets/Oakland_Roots.png">
-  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "East Bay Soccer Trail",
-    "description": "Find 2026 soccer watch parties in Oakland and the East Bay. Official bar and venue finder for the 2026 tournament, presented by Oakland Sports Group.",
-    "url": "https://eastbaysoccertrail.com",
-    "email": "info@rootssc.com",
-    "areaServed": ["Oakland", "Emeryville", "Berkeley", "East Bay"],
-    "sameAs": [
-      "https://rootssc.com",
-      "https://oaklandsportsgroup.org"
-    ]
-  }
+  <script>
+    function _loadGtag() {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-G5L0TEB3LN';
+      document.head.appendChild(s);
+      s.onload = function() { gtag('js', new Date()); gtag('config', 'G-G5L0TEB3LN'); };
+    }
+    if (document.readyState === 'complete') { _loadGtag(); }
+    else { window.addEventListener('load', _loadGtag); }
   </script>
+
+  <style>
+    @font-face {
+      font-family: 'United Sans Cond';
+      src: url('fonts/UnitedSansCdBd.otf') format('opentype');
+      font-display: swap;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:  #F79621;
+      --green:   #25B67C;
+      --yellow:  #FCE354;
+      --red:     #EF4859;
+      --blue:    #65C2EE;
+      --black:   #0a0a0a;
+      --card:    #111111;
+      --border:  #222222;
+      --muted:   #555555;
+      --white:   #f0f0f0;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'TeX Gyre Heros Cn', 'Arial Narrow', Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Mosaic divider ── */
+    .mosaic-divider {
+      height: 4px;
+      background: linear-gradient(to right, #EF4859 0%, #65C2EE 25%, #FCE354 50%, #F89521 75%, #23B67C 100%);
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--black);
+      padding: 0;
+    }
+    .header-top {
+      background: #0d0d0d;
+      text-align: center;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 6px 16px;
+    }
+    .header-inner {
+      text-align: center;
+      padding: 28px 16px 24px;
+    }
+    .header-inner h1 {
+      font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1;
+    }
+    .header-inner h1 span { color: var(--orange); }
+    .header-inner .sub {
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* ── Main splash ── */
+    .splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 40px;
+      text-align: center;
+      min-height: 50vh;
+    }
+
+    .splash-logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 32px;
+      opacity: 0.9;
+    }
+
+    .splash-heading {
+      font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1.15;
+      max-width: 700px;
+      margin-bottom: 20px;
+    }
+    .splash-heading span { color: var(--orange); }
+
+    .splash-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    /* ── Countdown ── */
+    .countdown {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .countdown-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--orange);
+      padding: 20px 24px 16px;
+      min-width: 90px;
+    }
+
+    .countdown-value {
+      font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      letter-spacing: 2px;
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .countdown-label {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /* ── CTA buttons ── */
+    .splash-ctas {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-family: 'United Sans Cond', 'Arial Narrow', Arial, sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .cta-btn:hover { opacity: 0.85; }
+    .cta-btn--primary { background: var(--orange); color: #000; }
+    .cta-btn--secondary { background: transparent; border: 1px solid var(--orange); color: var(--orange); }
+
+    /* ── Sponsors ── */
+    .sponsors-strip {
+      background: #0d0d0d;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .sponsors-label {
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .sponsors-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      max-width: 900px;
+      margin: 0 auto 32px;
+    }
+    .sponsors-divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+    .sponsor-logo-link img {
+      height: 70px;
+      width: auto;
+      max-width: 200px;
+      object-fit: contain;
+      filter: brightness(0.85);
+      transition: filter 0.2s;
+    }
+    .sponsor-logo-link:hover img { filter: brightness(1); }
+    .sponsor-logo-link--liuna img { height: 56px; max-width: 240px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 24px 16px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+  </style>
 </head>
 <body>
 
-<!-- PAGE LOADER -->
-<div id="page-loader">
-  <img src="assets/Oakland_Roots.png" alt="East Bay Soccer Trail — Oakland Roots SC" class="loader-logo" width="100" height="100">
-  <div class="loader-bar">
-    <div class="loader-fill"></div>
-  </div>
-</div>
 
-<!-- EMAIL POPUP -->
-<div id="email-popup-overlay" class="hidden">
-  <div id="email-popup">
-    <button class="popup-close" id="popupClose" aria-label="Close">&#x2715;</button>
-    <div class="popup-eyebrow">Oakland Sports Group</div>
-    <div class="popup-heading">Stay in the Loop</div>
-    <p class="popup-body">
-      Be the first to know when new Watch Parties drop, Australia makes appearances, and OSG Events are announced.
-    </p>
-    <div class="popup-form" id="popupForm">
-      <input
-        type="email"
-        class="popup-input"
-        id="popupEmail"
-        placeholder="your@email.com"
-        autocomplete="email"
-      >
-      <input
-        type="tel"
-        class="popup-input"
-        id="popupPhone"
-        placeholder="Phone number"
-        autocomplete="tel"
-      >
-      <div class="popup-consent">
-        <label class="consent-label">
-          <input type="checkbox" id="consentSMS" class="consent-checkbox">
-          <span>I agree to receive recurring automated promotional and informational text messages from Oakland Pro Soccer (d/b/a Oakland Roots SC and Oakland Soul SC), Oakland 68s, Oaklandish, Oakland Ballers, Run Local Ventures LLC (d/b/a Oakland Marathon), and Oakland Sports Group related to events, updates, and offerings. Message frequency varies. Message &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent is not a condition of purchase. <a href="terms" target="_blank" class="consent-link">View our Terms and Privacy Policy</a>.</span>
-        </label>
-      </div>
-      <div class="popup-consent">
-        <label class="consent-label">
-          <input type="checkbox" id="consentTerms" class="consent-checkbox">
-          <span>By submitting this form, you agree to our <a href="terms" target="_blank" class="consent-link">Terms of Service</a> and <a href="privacy" target="_blank" class="consent-link">Privacy Policy</a>.</span>
-        </label>
-      </div>
-      <button class="popup-submit" id="popupSubmit">Count Me In</button>
-      <button class="popup-skip" id="popupSkip">No thanks, just take me to the site</button>
+
+<div class="splash">
+
+  <img src="assets/Oakland_Roots.png" alt="Oakland Roots SC" class="splash-logo">
+
+  <div class="splash-heading">
+    Thank you for watching the<br>
+    <span>2026 tournament</span> with us
+  </div>
+
+  <p class="splash-sub">
+    We brought Oakland and the East Bay together to watch the beautiful game.
+    See you in 2030.
+  </p>
+
+  <div class="countdown" id="countdown">
+    <div class="countdown-unit">
+      <span class="countdown-value" id="cd-days">—</span>
+      <span class="countdown-label">Days</span>
     </div>
-    <div class="popup-success hidden" id="popupSuccess">
-      <div class="popup-success-icon">⚽</div>
-      <div class="popup-success-msg">You're in!</div>
-      <div class="popup-success-sub">We'll be in touch!</div>
+    <div class="countdown-unit">
+      <span class="countdown-value" id="cd-hours">—</span>
+      <span class="countdown-label">Hours</span>
+    </div>
+    <div class="countdown-unit">
+      <span class="countdown-value" id="cd-minutes">—</span>
+      <span class="countdown-label">Minutes</span>
+    </div>
+    <div class="countdown-unit">
+      <span class="countdown-value" id="cd-seconds">—</span>
+      <span class="countdown-label">Seconds</span>
     </div>
   </div>
+
+  <div class="splash-ctas">
+    <a href="https://oaklandrootssc.com" target="_blank" class="cta-btn cta-btn--primary">Follow Oakland Roots</a>
+    <a href="https://oaklandsportsgroup.org" target="_blank" class="cta-btn cta-btn--secondary">Oakland Sports Group</a>
+  </div>
+
 </div>
 
-<!-- HEADER -->
-<header>
-  <div class="header-top">Oakland Sports Group · East Bay Soccer Trail</div>
-  <div class="header-inner">
-    <div class="header-logos">
-      <div class="header-title">
-        <h1>East Bay Soccer Trail <span>2026</span></h1>
-      </div>
-    </div>
-    <div class="sub">Oakland &amp; East Bay Watch Parties</div>
-  </div>
-</header>
-
-<!-- MOSAIC DIVIDER -->
 <div class="mosaic-divider"></div>
 
-<!-- MATCH CAROUSEL -->
-<section class="matches-section" id="matchCarousel">
-  <div class="matches-header">
-    <span class="matches-title">Match Schedule</span>
-    <div class="match-team-dropdown" id="matchTeamDropdown" role="combobox" aria-label="Filter by team">
-      <span class="mtd-selected" id="matchTeamSelected">All Teams</span>
-      <span class="mtd-arrow">&#9660;</span>
-      <ul class="mtd-options hidden" id="matchTeamOptions"></ul>
-    </div>
-    <div class="matches-nav">
-      <button class="match-nav-btn" id="matchPrev" aria-label="Previous matches">&#8592;</button>
-      <button class="match-nav-btn" id="matchNext" aria-label="Next matches">&#8594;</button>
-    </div>
-  </div>
-  <div class="matches-scroll">
-    <div class="matches-track" id="matchTrack">
-      <div style="color:#555; font-size:0.8rem; padding: 20px;">Loading schedule&#8230;</div>
-    </div>
-  </div>
-</section>
-
-<!-- MOSAIC DIVIDER -->
-<div class="mosaic-divider"></div>
-
-<!-- FLYER BANNER -->
-<div style="background:#0d0d0d;text-align:center;padding:20px 16px;">
-  <a href="#watchPartyList" onclick="filterWatchParties(document.getElementById('watchPartyTabBtn')); document.querySelector('.list-section, #watchPartyList, .filters').scrollIntoView({behavior:'smooth',block:'start'}); return false;" style="display:inline-block;">
-    <img src="assets/flyer.png" alt="Oakland Sports Group Watch Party — Jun 12, Raimondi Park" loading="lazy" style="display:block;max-width:100%;height:auto;margin:0 auto;">
-  </a>
-</div>
-<!-- MOSAIC DIVIDER -->
-<div class="mosaic-divider"></div>
-
-<!-- MAP -->
-<div class="map-section">
-  <div id="map"></div>
-  <div id="map-loading" class="map-loading">
-    <div class="spinner"></div>
-    <p>Loading map&#8230;</p>
-  </div>
-</div>
-
-<!-- MOSAIC DIVIDER -->
-<div class="mosaic-divider"></div>
-
-<!-- FILTERS -->
-<div class="filters">
-  <div class="filter-label">Represent Your Roots:</div>
-  <div class="filter-buttons" id="filterButtons">
-  </div>
-</div>
-
-<!-- BAR LIST -->
-<div class="list-section" id="barList">
-  <div class="state-box">
-    <div class="spinner"></div>
-    <p>Loading bars from the sheet&#8230;</p>
-  </div>
-</div>
-
-<!-- MOSAIC DIVIDER -->
-<div class="mosaic-divider"></div>
-
-<!-- SPONSORS -->
-<div class="sponsors-strip">
-  <div class="sponsors-label">East Bay Soccer Trail Made Possible By Our Brand Partners</div>
-  <div class="sponsors-grid">
-    <a href="https://www.liuna.org" target="_blank" class="sponsor-logo-link sponsor-logo-link--liuna">
-      <picture><source srcset="assets/sponsor-liuna.webp" type="image/webp"><img src="assets/sponsor-liuna.png" alt="LiUNA Laborers Local 304" width="200" height="auto" loading="lazy"></picture>
-    </a>
-    <a href="https://gusto.com" target="_blank" class="sponsor-logo-link sponsor-logo-link--gusto">
-      <picture><source srcset="assets/sponsor-gusto.webp" type="image/webp"><img src="assets/sponsor-gusto.png" alt="Gusto — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
-    </a>
-    <a href="https://www.pge.com" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-pge.webp" type="image/webp"><img src="assets/sponsor-pge.png" alt="PG&amp;E — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
-    </a>
-    
-    <a href="https://www.reubenlaw.com" target="_blank" class="sponsor-logo-link sponsor-logo-link--rjr">
-      <picture><source srcset="assets/sponsor-rjr.webp" type="image/webp"><img src="assets/sponsor-rjr.png" alt="Reuben, Junius &amp; Rose LLP — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
-    </a>
-    <a href="https://www.ebmud.com/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-ebmud.webp" type="image/webp"><img src="assets/sponsor-ebmud.png" alt="EBMUD — East Bay Soccer Trail Sponsor" width="120" height="60" loading="lazy"></picture>
-    </a>
-  </div>
-  <div class="sponsors-divider"></div>
-  <div class="sponsors-label">Oakland Sports Group</div>
-  <div class="sponsors-grid sponsors-grid--6">
-    <a href="https://oaklandrootssc.com" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/Oakland_Roots.webp" type="image/webp"><img src="assets/Oakland_Roots.png" alt="Oakland Roots SC" width="80" height="80" loading="lazy"></picture>
-    </a>
-    <a href="https://oakland68s.org/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-68s.webp" type="image/webp"><img src="assets/sponsor-68s.png" alt="Oakland 68s" width="80" height="80" loading="lazy"></picture>
-    </a>
-    <a href="https://www.oaklandish.com/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-oaklandish.webp" type="image/webp"><img src="assets/sponsor-oaklandish.png" alt="Oaklandish" width="80" height="80" loading="lazy"></picture>
-    </a>
-    <a href="https://www.oaklandballers.com/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-ballers.webp" type="image/webp"><img src="assets/sponsor-ballers.png" alt="Oakland Ballers" width="80" height="80" loading="lazy"></picture>
-    </a>
-    <a href="https://oaklandmarathon.com/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/sponsor-marathon.webp" type="image/webp"><img src="assets/sponsor-marathon.png" alt="Oakland Marathon" width="80" height="80" loading="lazy"></picture>
-    </a>
-    <a href="https://www.oaklandsoulsc.com/" target="_blank" class="sponsor-logo-link">
-      <picture><source srcset="assets/Oakland_Soul.webp" type="image/webp"><img src="assets/Oakland_Soul.png" alt="Oakland Soul SC" width="80" height="80" loading="lazy"></picture>
-    </a>
-  </div>
-</div>
-
-<!-- MOSAIC DIVIDER -->
-<div class="mosaic-divider"></div>
-
-<!-- FOOTER -->
 <footer>
   Soccer Trail 2026 · East Bay &nbsp;|&nbsp;
   <a href="https://oaklandsportsgroup.org/" target="_blank">oaklandsportsgroup.org</a>
@@ -240,176 +304,39 @@
   <a href="terms">Terms of Service</a>
 </footer>
 
-<script src="js/config.js" onerror="console.log('No local config, using deployed key')"></script>
-<script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js" defer></script>
-<script src="js/constants.js" defer></script>
-<script src="js/utils.js" defer></script>
-<script src="js/map.js" defer></script>
-<script src="js/ui.js" defer></script>
-<script src="js/matches.js" defer></script>
-<script src="js/main.js" defer></script>
-
 <script>
-// ─── Email Popup ──────────────────────────────────────────────────────────────
+// ── Countdown to 2030 World Cup (June 11, 2030) ──────────────────────────────
 (function() {
-  const LS_KEY      = 'wc_email_captured';
-  const FORM_URL    = 'https://docs.google.com/forms/d/e/1FAIpQLSe8UBP2kQP3bYMgCM7SceHVcyo4_Iwew_-Ejv_Cd-gsgd2kOg/formResponse';
-  const ENTRY_EMAIL = 'entry.1075542564';
-  const ENTRY_PHONE = 'entry.623188828';
-  const ENTRY_SMS   = 'entry.716396109';
+  // 2030 World Cup opens June 11, 2030 (Morocco/Spain/Portugal host)
+  const target = new Date('2030-06-11T00:00:00');
 
-  if (localStorage.getItem(LS_KEY)) return;
+  function pad(n) { return String(n).padStart(2, '0'); }
 
-  const overlay      = document.getElementById('email-popup-overlay');
-  const closeBtn     = document.getElementById('popupClose');
-  const skipBtn      = document.getElementById('popupSkip');
-  const submitBtn    = document.getElementById('popupSubmit');
-  const emailInput   = document.getElementById('popupEmail');
-  const phoneInput   = document.getElementById('popupPhone');
-  const consentSMS   = document.getElementById('consentSMS');
-  const consentTerms = document.getElementById('consentTerms');
-  const form         = document.getElementById('popupForm');
-  const success      = document.getElementById('popupSuccess');
+  function tick() {
+    const now  = new Date();
+    const diff = target - now;
 
-  function showPopup() {
-    overlay.classList.remove('hidden');
-    requestAnimationFrame(() => overlay.classList.add('visible'));
-  }
-
-  function dismissPopup() {
-    overlay.classList.remove('visible');
-    setTimeout(() => overlay.classList.add('hidden'), 300);
-  }
-
-  function skipPopup() {
-    localStorage.setItem(LS_KEY, 'skipped');
-    dismissPopup();
-  }
-
-  async function submitEmail() {
-    const email = emailInput.value.trim();
-    const phone = phoneInput ? phoneInput.value.trim() : '';
-
-    // Email is required
-    if (!email || !email.includes('@')) {
-      emailInput.focus();
-      emailInput.style.borderColor = '#EF4859';
+    if (diff <= 0) {
+      document.getElementById('countdown').innerHTML =
+        '<div style="color:var(--orange);font-family:\'United Sans Cond\',sans-serif;font-size:1.5rem;letter-spacing:3px;text-transform:uppercase;">It\'s time! 🎉</div>';
       return;
     }
 
-    // Terms consent is required
-    if (!consentTerms.checked) {
-      consentTerms.closest('.consent-label').style.color = '#EF4859';
-      return;
-    }
+    const days    = Math.floor(diff / 86400000);
+    const hours   = Math.floor((diff % 86400000) / 3600000);
+    const minutes = Math.floor((diff % 3600000)  / 60000);
+    const seconds = Math.floor((diff % 60000)    / 1000);
 
-    // If phone is provided, SMS consent is required
-    if (phone && !consentSMS.checked) {
-      consentSMS.closest('.consent-label').style.color = '#EF4859';
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting\u2026';
-
-    // Build query string
-    let params = `${ENTRY_EMAIL}=${encodeURIComponent(email)}`;
-    if (phone) params += `&${ENTRY_PHONE}=${encodeURIComponent(phone)}`;
-    if (consentSMS.checked) params += `&${ENTRY_SMS}=${encodeURIComponent('Yes')}`;
-
-    try {
-      await fetch(`${FORM_URL}?${params}`, {
-        method: 'POST',
-        mode: 'no-cors',
-      });
-    } catch (e) {
-      // no-cors fetch always throws — expected
-    }
-
-    localStorage.setItem(LS_KEY, 'submitted');
-    form.classList.add('hidden');
-    success.classList.remove('hidden');
-    setTimeout(dismissPopup, 2500);
+    document.getElementById('cd-days').textContent    = days;
+    document.getElementById('cd-hours').textContent   = pad(hours);
+    document.getElementById('cd-minutes').textContent = pad(minutes);
+    document.getElementById('cd-seconds').textContent = pad(seconds);
   }
 
-  closeBtn.addEventListener('click', skipPopup);
-  skipBtn.addEventListener('click', skipPopup);
-  submitBtn.addEventListener('click', submitEmail);
-  emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') submitEmail(); });
-  emailInput.addEventListener('input', () => { emailInput.style.borderColor = ''; });
-  consentTerms.addEventListener('change', () => { consentTerms.closest('.consent-label').style.color = ''; });
-  consentSMS.addEventListener('change', () => { consentSMS.closest('.consent-label').style.color = ''; });
-
-  // Show after page loader dismisses
-  const loader = document.getElementById('page-loader');
-  if (loader) {
-    const observer = new MutationObserver(() => {
-      if (loader.classList.contains('hidden')) {
-        observer.disconnect();
-        setTimeout(showPopup, 600);
-      }
-    });
-    observer.observe(loader, { attributes: true, attributeFilter: ['class'] });
-  } else {
-    setTimeout(showPopup, 1000);
-  }
+  tick();
+  setInterval(tick, 1000);
 })();
 </script>
-<!-- COOKIE CONSENT -->
-<div id="cookie-banner" style="display:none;position:fixed;bottom:60px;left:0;right:0;z-index:9998;background:#111;padding:16px 20px;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid #222;">
-  <p style="flex:1;min-width:200px;font-size:0.8rem;color:#ccc;margin:0;">This website utilizes technologies such as cookies to enable essential site functionality, as well as for analytics, personalization, and targeted advertising. <a href="privacy" target="_blank" style="color:#EF4859;">Privacy Policy</a></p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0;">
-    <button id="cookieAccept" style="background:#EF4859;color:#fff;border:none;padding:8px 18px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Accept</button>
-    <button id="cookieDeny" style="background:transparent;color:#fff;border:2px solid #EF4859;padding:8px 18px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">Deny Non-Essential</button>
-  </div>
-</div>
-
-<script>
-(function() {
-  const LS_KEY = 'wc_cookie_consent';
-  const banner = document.getElementById('cookie-banner');
-
-  if (localStorage.getItem(LS_KEY)) return;
-
-  setTimeout(() => { banner.style.display = 'flex'; }, 1500);
-
-  document.getElementById('cookieAccept').addEventListener('click', () => {
-    localStorage.setItem(LS_KEY, 'accepted');
-    banner.style.display = 'none';
-    gtag('consent', 'update', { analytics_storage: 'granted' });
-  });
-
-  document.getElementById('cookieDeny').addEventListener('click', () => {
-    localStorage.setItem(LS_KEY, 'denied');
-    banner.style.display = 'none';
-    gtag('consent', 'update', { analytics_storage: 'denied' });
-  });
-})();
-</script>
-
-<!-- STICKY CTA BAR -->
-<div class="sticky-cta">
-  <a href="https://shop.oaklandrootssc.com" 
-   target="_blank" 
-   class="sticky-cta-btn sticky-cta-btn--store"   
-   onclick="gtag('event', 'click', { 
-     'event_category': 'CTA', 
-     'event_label': 'Roots Store', 
-     'transport_type': 'beacon' 
-   });">  
-   Roots Store
-</a>
-  <a href="https://www.oaklandrootssc.com/schedule" 
-   target="_blank" 
-   class="sticky-cta-btn sticky-cta-btn--schedule"   
-   onclick="gtag('event', 'click', { 
-     'event_category': 'CTA', 
-     'event_label': 'Roots Schedule', 
-     'transport_type': 'beacon' 
-   });">  
-   Roots Schedule
-</a>
-</div>
 
 </body>
 </html>
